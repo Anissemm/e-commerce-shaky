@@ -1,0 +1,39 @@
+{
+  "dependencies": {
+    "cors": "^2.8.5",
+    "dotenv": "^16.0.1",
+    "express": "^4.18.1",
+    "express-async-errors": "^3.1.1",
+    "mongoose": "^6.4.0"
+  },
+  "devDependencies": {
+    "@types/node": "^18.0.0",
+    "nodemon": "^2.0.18",
+    "rimraf": "^3.0.2",
+    "ts-node": "^10.8.1",
+    "typescript": "^4.7.4"
+  },
+  "type": "commonjs",
+  "name": "e-commerce-shaky-server",
+  "version": "1.0.0",
+  "description": "An food supplement e-commerce web server",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start:dev": "nodemon",
+    "build": "rimraf ./build && tsc",
+    "start": "npm run build && node build/index.js"
+  },
+  "repository": {
+    "type": "github",
+    "url": "null"
+  },
+  "keywords": [
+    "e-commerce",
+    "food-supplement",
+    "proteins",
+    "backend"
+  ],
+  "author": "Anis aka \"Anissem\" Dimassi",
+  "license": "MIT"
+}
