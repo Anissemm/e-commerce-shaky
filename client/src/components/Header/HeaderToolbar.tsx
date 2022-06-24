@@ -6,7 +6,7 @@ import { ReactComponent as MenuIcon } from '../../assets/svg/icons/menu_icon.svg
 import { ReactComponent as CartIcon } from '../../assets/svg/icons/cart_icon.svg'
 import { ReactComponent as SearchIcon } from '../../assets/svg/icons/search_icon.svg'
 import { motion } from 'framer-motion'
-import { useAppDispatch, useAppSelector, toggleSideNav } from '../../store' 
+import { useAppDispatch, toggleSideNav } from '../../store' 
 
 const HeaderToolbar = () => {
     const dispatch = useAppDispatch()
@@ -16,13 +16,16 @@ const HeaderToolbar = () => {
     }
 
     return (
-        <div className='min-h-[52px] bg-ebony-clay flex items-center justify-between px-5'>
+        <div className='fixed z-[46] min-h-[52px] w-screen bg-ebony-clay shadow-lg
+             flex items-center justify-between px-5'>
             <div className='flex items-center gap-3'>
                 <motion.div className='flex items-end'>
                     <button
-                        onClick={handleSidenavToggle} 
+                        onClick={handleSidenavToggle}
+                        data-sidenav-toggle
+                        className=' p-[1px]'
                         aria-label='Side navigation toggle'>
-                        <MenuIcon />
+                        <MenuIcon width={30} height={30} />
                     </button>
                 </motion.div>
                 <motion.div>
@@ -36,16 +39,16 @@ const HeaderToolbar = () => {
             <div className='userControls flex items-center ml-auto gap-2'>
                 {/* <div className='searchInput'></div> input */}
                 <div className="flex items-center gap-5 justify-center">
-                    <button className='login' aria-label='User authentication'>
+                    <button className='login p-[1px]' aria-label='User authentication'>
                         <SearchIcon />
                     </button>
 
-                    <button className='login' aria-label='User authentication'>
-                        <UserIcon width={25} height={25} />
+                    <button className='login p-[1px]' aria-label='User authentication'>
+                        <UserIcon />
                     </button>
 
-                    <button className='login' aria-label='User authentication'>
-                        <CartIcon width={30} height={30} />
+                    <button className='login p-[1px]' aria-label='User authentication'>
+                        <CartIcon />
                     </button>
 
                 </div>

@@ -1,12 +1,17 @@
-import React from 'react'
+import { useMenuResponsive } from '../../hooks/useMenuResponsive'
 import HeaderToolbar from './HeaderToolbar'
-import HeaderMenu from './HeaderMenu'
+import Menu from './Menu'
 
 const Header = () => {
+    const [setTargetRef] = useMenuResponsive()
+
     return (
-        <header>
+        <header className='relative' ref={ref => {
+            if (typeof setTargetRef === 'function') {
+            setTargetRef(ref)
+        }}}>
             <HeaderToolbar />
-            <HeaderMenu />
+            <Menu />
         </header>
     )
 }

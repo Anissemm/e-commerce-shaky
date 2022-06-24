@@ -1,4 +1,4 @@
-import { applyMiddleware, combineReducers, configureStore } from "@reduxjs/toolkit"
+import { combineReducers, configureStore } from "@reduxjs/toolkit"
 import localforage from "localforage"
 import uiSlice from './slices/uiSlice'
 import {

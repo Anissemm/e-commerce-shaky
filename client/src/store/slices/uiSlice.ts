@@ -20,8 +20,15 @@ const uiSlice = createSlice({
         setMenuType(state, action: PayloadAction<string>) {
             state.menuType = action.payload
         },
-        toggleSideNav(state, _action: PayloadAction<undefined>) {
-            state.isSidenavShown = !state.isSidenavShown
+        toggleSideNav(state, action: PayloadAction<boolean | undefined>) {
+            if (typeof action.payload === 'boolean') {
+                console.log(action.payload)
+                state.isSidenavShown = action.payload
+            } else {
+                state.isSidenavShown = !state.isSidenavShown
+            }
+
+
         }
     }
 
