@@ -20,6 +20,7 @@ const mainReducer = combineReducers({
 const config = {
     key: 'root',
     storage: localforage,
+    blacklist: ['UI']
 }
 
 const store = configureStore({

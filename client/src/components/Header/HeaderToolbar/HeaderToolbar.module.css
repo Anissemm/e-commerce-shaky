@@ -1,0 +1,21 @@
+.svgBackground {
+  background-size: contain;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+
+.menuToggle {
+  background-image: url(../../../assets/svg/icons/menu_icon.svg);
+}
+
+.user {
+  background-image: url(../../../assets/svg/icons/user_icon.svg);
+}
+
+.cart {
+  background-image: url(../../../assets/svg/icons/cart_icon.svg);
+}
+
+.search {
+  background-image: url(../../../assets/svg/icons/search_icon.svg);
+}
