@@ -1,4 +1,5 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit"
+import { MotionValue, motionValue } from "framer-motion"
 import { type RootState } from '../store'
 
 interface uiSliceState {
@@ -6,13 +7,15 @@ interface uiSliceState {
     menuType: string
     isSidenavShown: boolean
     isModalShown: boolean
+    backgroundMotionValue: MotionValue<number>
 }
 
 const initialState: uiSliceState = {
     theme: 'dark',
     menuType: 'sidenav',
     isSidenavShown: false,
-    isModalShown: false
+    isModalShown: false,
+    backgroundMotionValue: motionValue(0)
 }
 
 
@@ -36,14 +39,18 @@ const uiSlice = createSlice({
             } else {
                 state.isModalShown = !state.isModalShown
             }
+        },
+        setBackgroundMotionValue(state, action: PayloadAction<MotionValue<number>>) {
+            state.backgroundMotionValue = action.payload
         }
     }
 
 })
 
 export default uiSlice.reducer
-export const { setMenuType, toggleSideNav, toggleModal } = uiSlice.actions
+export const { setMenuType, toggleSideNav, toggleModal, setBackgroundMotionValue } = uiSlice.actions
 
 export const getMenuType = (state: RootState) => state.UI.menuType
 export const getSidenavShow = (state: RootState) => state.UI.isSidenavShown
 export const getModalShow = (state: RootState) => state.UI.isModalShown
+export const getBackgroundMotionValue = (state: RootState) => state.UI.backgroundMotionValue

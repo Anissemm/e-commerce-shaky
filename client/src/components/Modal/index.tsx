@@ -1,6 +1,6 @@
-import { forwardRef, PropsWithChildren, SyntheticEvent, useEffect, useRef } from 'react'
+import { forwardRef, memo, PropsWithChildren, SyntheticEvent, useEffect, useRef } from 'react'
 import BackgroundOverlay from '../BackgroundOverlay'
-import { AnimatePresence, motion, Variants } from 'framer-motion'
+import { AnimatePresence, motion, useMotionTemplate, useMotionValue, useTransform, Variants } from 'framer-motion'
 import { getModalShow, useAppSelector, useAppDispatch, toggleModal } from '../../store'
 import { createPortal } from 'react-dom'
 
@@ -30,6 +30,17 @@ const modalVariants: Variants = {
     }
 }
 
+const backgroundOverlayVariants = {
+    hidden: {
+        backgroundColor: 'rgba(0,0,0,0)',
+        backdropFilter: 'blur(0px)'
+    },
+    visible: {
+        backgroundColor: 'rgba(0,0,0,0.9)',
+        backdropFilter: 'blur(2px)'
+    }
+}
+
 const Modal = forwardRef<HTMLDivElement, ModalProps>(({ width = 1050, align = 'center', children }, ref) => {
     const isShown = useAppSelector(getModalShow)
     const dispatch = useAppDispatch()
@@ -48,12 +59,27 @@ const Modal = forwardRef<HTMLDivElement, ModalProps>(({ width = 1050, align = 'c
         modalWrapperRef?.current?.parentElement?.blur()
     }, [isShown])
 
+    useEffect(() => {
+        const handleClose = (e: any) => {
+            e.preventDefault()
+            if (e.key === 'Escape') {
+                dispatch(toggleModal(false))
+            }
+        }
+
+        document.addEventListener('keydown', handleClose)
+
+        return () => {
+            document.removeEventListener('keydown', handleClose)
+        }
+    }, [])
+
     return (
         <>
             {createPortal(
                 <AnimatePresence>
                     {isShown &&
-                        <BackgroundOverlay zIndex={47}>
+                        <BackgroundOverlay motionKey='modal' zIndex={47}>
                             <motion.section
                                 tabIndex={-1}
                                 className='fixed flex items-center justify-center top-0 left-0 w-screen h-screen z-[48]'
@@ -87,4 +113,4 @@ const Modal = forwardRef<HTMLDivElement, ModalProps>(({ width = 1050, align = 'c
     )
 })
 
-export default Modal
+export default memo(Modal)

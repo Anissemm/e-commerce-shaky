@@ -1,5 +1,6 @@
 import React, { useState } from 'react'
 import { AnimatePresence, motion, Variants } from 'framer-motion'
+import { ReactComponent as SortIcon } from '../../../assets/svg/icons/sort_arrow_icon.svg'
 import style from './SearchResults.module.css'
 
 const searchResultsVariants: Variants = {
@@ -16,7 +17,7 @@ const SearchResults = () => {
     return (
         <AnimatePresence>
             <motion.section
-                className='px-[28px] mt-3'
+                className='px-[28px] mt-3 font-[Oswald]'
                 variants={searchResultsVariants}
                 initial='hidden'
                 animate='visible'
@@ -33,9 +34,17 @@ const SearchResults = () => {
                             ${gridView === 'list' ? style.viewIconList : style.viewIconGrid}`}
                             onClick={() => setGridView(prev => prev === 'grid' ? 'list' : 'grid')}
                         />
-                        <motion.button aria-label='Sort By' />
+                        <motion.button aria-label='Sort By' className={`w-auto h-[25px] text-sandy-brown font-normal text-md 
+                            uppercase ${style.sortIcon}`}>
+                            Sort by<SortIcon className='pl-1 inline'/>
+                        </motion.button>
                     </motion.div>
                 </motion.header>
+                <motion.section>
+                    <motion.div className='grid grid-flow-row grid-cols-2 gap-[10px]'>
+
+                    </motion.div>
+                </motion.section>
             </motion.section>
         </AnimatePresence>
     )

@@ -6,10 +6,12 @@ const Header = () => {
     const [setTargetRef] = useMenuResponsive()
 
     return (
-        <header className='relative' ref={ref => {
+        <header className='relative' 
+        ref={ref => {
             if (typeof setTargetRef === 'function') {
             setTargetRef(ref)
-        }}}>
+        }}}
+        >
             <HeaderToolbar />
             <Menu />
         </header>
