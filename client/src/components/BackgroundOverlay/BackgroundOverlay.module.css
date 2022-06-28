@@ -1,9 +1,0 @@
-.backdropBlur {
-  backdrop-filter: blur(10px);
-}
-
-@supports not (backdrop-filter: blur(10px)) {
-  .backdropBlur {
-    opacity: 0.7;
-  }
-}

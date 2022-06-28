@@ -1,0 +1,16 @@
+.sortIcon {
+}
+.viewIcon {
+  background-image: url(../../../assets/svg/icons/view_icon.svg);
+  background-size: cover;
+  background-repeat: no-repeat;
+  transition: all 300ms ease-in-out;
+}
+
+.viewIconGrid {
+  background-position: right;
+}
+
+.viewIconList {
+  background-position: left;
+}

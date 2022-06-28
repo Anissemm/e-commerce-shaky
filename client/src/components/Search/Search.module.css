@@ -1,0 +1,13 @@
+.resetBtn {
+  background-image: url(../../assets/svg/icons/arrow_left_icon.svg);
+  background-repeat: no-repeat;
+  background-size: contain;
+  background-position: center;
+}
+
+.searchFilter {
+  background-image: url(../../assets/svg/icons/filter_icon.svg);
+  background-repeat: no-repeat;
+  background-size: contain;
+  background-position: center;
+}

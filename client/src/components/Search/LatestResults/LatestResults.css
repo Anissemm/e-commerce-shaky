@@ -1,0 +1,65 @@
+.recentlyViewed .splide__pagination {
+  bottom: 0;
+  position: relative;
+}
+
+.recentlyViewed .splide__pagination__page {
+  background-color: #757c86;
+  border-radius: 0;
+  width: 25px;
+  height: 5px;
+  margin: 4px;
+}
+
+.recentlyViewed .splide__pagination__page.is-active {
+  background-color: #f2aa4c;
+}
+
+.recentlyViewed .splide__arrows svg {
+  fill: #f2aa4c;
+  transition: all 300ms ease-in-out;
+}
+
+.recentlyViewed .splide__arrows .splide__arrow {
+  transform: translate(0, -68%);
+  height: 53px;
+  border-radius: 5px;
+}
+
+@supports (backdrop-filter: blur(5px)) {
+  .recentlyViewed .splide__arrows .splide__arrow {
+    opacity: initial;
+    backdrop-filter: blur(2px);
+  }
+
+  .recentlyViewed .splide__arrows .splide__arrow--prev {
+    background-image: linear-gradient(
+      to left,
+      transparent,
+      rgba(117, 124, 134, 0.2) 70%
+    );
+  }
+  .recentlyViewed .splide__arrows .splide__arrow--next {
+    background-image: linear-gradient(
+      to right,
+      transparent,
+      rgba(117, 124, 134, 0.2) 70%
+    );
+  }
+}
+
+.recentlyViewed .splide__arrow--next {
+  right: 0;
+}
+
+.recentlyViewed .splide__arrow--prev {
+  left: 0;
+}
+
+.recentlyViewed .splide__arrow:hover:not(:disabled) {
+  opacity: initial;
+}
+
+.recentlyViewed .splide__arrow:hover svg {
+  filter: drop-shadow(0 0 10px #f2aa4c);
+}
