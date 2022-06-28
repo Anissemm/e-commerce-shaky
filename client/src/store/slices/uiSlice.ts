@@ -8,6 +8,7 @@ interface uiSliceState {
     isSidenavShown: boolean
     isModalShown: boolean
     backgroundMotionValue: MotionValue<number>
+    searchResultHeight: undefined | null | number
 }
 
 const initialState: uiSliceState = {
@@ -15,7 +16,8 @@ const initialState: uiSliceState = {
     menuType: 'sidenav',
     isSidenavShown: false,
     isModalShown: false,
-    backgroundMotionValue: motionValue(0)
+    backgroundMotionValue: motionValue(0),
+    searchResultHeight: undefined
 }
 
 
@@ -42,15 +44,19 @@ const uiSlice = createSlice({
         },
         setBackgroundMotionValue(state, action: PayloadAction<MotionValue<number>>) {
             state.backgroundMotionValue = action.payload
+        },
+        setSearchResultheight(state, action: PayloadAction<number | undefined | null>) {
+            state.searchResultHeight = action.payload
         }
     }
 
 })
 
 export default uiSlice.reducer
-export const { setMenuType, toggleSideNav, toggleModal, setBackgroundMotionValue } = uiSlice.actions
+export const { setMenuType, toggleSideNav, toggleModal, setBackgroundMotionValue, setSearchResultheight } = uiSlice.actions
 
 export const getMenuType = (state: RootState) => state.UI.menuType
 export const getSidenavShow = (state: RootState) => state.UI.isSidenavShown
 export const getModalShow = (state: RootState) => state.UI.isModalShown
 export const getBackgroundMotionValue = (state: RootState) => state.UI.backgroundMotionValue
+export const getSearchResultHeight = (state: RootState) => state.UI.searchResultHeight

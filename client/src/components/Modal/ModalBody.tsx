@@ -6,7 +6,7 @@ interface ModalBodyProps extends PropsWithChildren {
 }
 
 const ModalBody: React.FC<ModalBodyProps> = ({ children, maxWidth = 670 }) => {
-    return <motion.div style={{ maxWidth }} className='mx-auto'>{children}</motion.div>
+    return <motion.div style={{ maxWidth }} className='mx-auto relative max-h-[calc(100%-124px)]'>{children}</motion.div>
 }
 
 export default ModalBody

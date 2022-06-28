@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useLayoutEffect, useState } from 'react'
 import Modal from '../Modal'
 import ModalBody from '../Modal/ModalBody'
 import ModalHeader from '../Modal/ModalHeader'
@@ -11,18 +11,34 @@ import creatine from '../../assets/tempImg/Creatine_no-back.png'
 import LatestResults from './LatestResults'
 import Recommended from './Recommended'
 import SearchResults from './SearchResults'
+import { useResizeObserver } from '../../hooks/useResizeObserver'
+import { setSearchResultheight, useAppDispatch } from '../../store'
 
 
 
 const Search = () => {
+  const dispatch = useAppDispatch()
   const [searchValue, setSearchValue] = useState<string>('')
   const [showResetBtn, setShowResetBtn] = useState<boolean>(false)
   const [showSearchFilter, setShowSearchFilter] = useState<boolean>(false)
+  const [setResizeRef, entry] = useResizeObserver()
 
   const results = true /* Hard code */
 
+  useLayoutEffect(() => {
+    if (entry?.borderBoxSize) {
+      const { blockSize } = entry.borderBoxSize[0]
+      const resultsHeight = blockSize - 240
+      dispatch(setSearchResultheight(resultsHeight))
+    }
+  }, [entry])
+
   return (
-    <Modal>
+    <Modal ref={ref => {
+      if (typeof setResizeRef === 'function') {
+        setResizeRef(ref)
+      }
+    }}>
       <ModalHeader title='Modal Title' />
       <ModalBody>
         <motion.section
