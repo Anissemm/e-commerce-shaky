@@ -11,11 +11,11 @@ const rootElement = document.getElementById('root') as Element
 const root = createRoot(rootElement)
 
 root.render(
-    <ReduxProvider store={store}>
-        <PersistGate loading={null} persistor={persistor}>
-            <BrowserRouter>
-                <App />
-            </BrowserRouter>
-        </PersistGate>
-    </ReduxProvider>
+        <ReduxProvider store={store}>
+            <PersistGate loading={null} persistor={persistor}>
+                <BrowserRouter>
+                    <App />
+                </BrowserRouter>
+            </PersistGate>
+        </ReduxProvider>
 )

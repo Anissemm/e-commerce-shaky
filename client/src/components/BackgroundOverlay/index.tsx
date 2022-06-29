@@ -1,7 +1,6 @@
-import React, { PropsWithChildren, memo, useEffect, useLayoutEffect } from 'react'
-import { AnimatePresence, LayoutGroup, motion, useMotionTemplate, useMotionValue, useTransform } from 'framer-motion'
-import { createPortal } from 'react-dom'
-import { getBackgroundMotionValue, getModalShow, getSidenavShow, setBackgroundMotionValue, useAppDispatch, useAppSelector } from '../../store'
+import React, { PropsWithChildren } from 'react'
+import { motion, useMotionTemplate, useMotionValue } from 'framer-motion'
+import { useAppDispatch} from '../../store'
 
 interface BackgroundOverlayProps {
     zIndex?: number,
@@ -26,29 +25,24 @@ const backgroundOverlayVariants = {
 
 const BackgroundOverlay: React.FC<PropsWithChildren<BackgroundOverlayProps>> =
     ({ children, zIndex = -1, position = 'fixed', size = 'screen', opacityValue = 0.9, duration = 1.5, delay = 0, motionKey }) => {
-        
+
         const dispatch = useAppDispatch()
-        const backgroundValue = useAppSelector(getBackgroundMotionValue)
-        const isSidenavShown = useAppSelector(getSidenavShow)
+        // const backgroundValue = useAppSelector(getBackgroundMotionValue)
         const dimensions = size === 'screen' ? '!w-screen !h-screen' :
             size === 'full' ? '!w-full !h-full' :
                 `w-${size[0] + ' h-' + size[1]}`
-        const blurValue = useMotionValue(backgroundValue)
-        const blur = useMotionTemplate`blur(${blurValue}px)`
-
-        useLayoutEffect(() => {
-            dispatch(setBackgroundMotionValue(blurValue))
-        }, [blur])
+        const motionBlurValue = useMotionValue(0)
+        const blurTemplate = useMotionTemplate`blur(${motionBlurValue}px)`
 
         return (
             <>
-            <motion.div
+                <motion.div
                     variants={backgroundOverlayVariants}
                     initial='hidden'
                     animate='visible'
                     exit='hidden'
                     transition={{ duration, delay }}
-                    style={{ zIndex, backdropFilter: blur }}
+                    style={{ zIndex, backdropFilter: blurTemplate }}
                     className={`${position} ${dimensions} top-0 left-0 [@supports(backdrop-filter:blur(8px))]:backdrop-blur-sm`} />
                 {children}
             </>

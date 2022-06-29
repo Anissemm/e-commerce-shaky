@@ -1,5 +1,4 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit"
-import { MotionValue, motionValue } from "framer-motion"
 import { type RootState } from '../store'
 
 interface uiSliceState {
@@ -7,7 +6,7 @@ interface uiSliceState {
     menuType: string
     isSidenavShown: boolean
     isModalShown: boolean
-    backgroundMotionValue: MotionValue<number>
+    currentShownModalId: string
     searchResultHeight: undefined | null | number
 }
 
@@ -16,7 +15,7 @@ const initialState: uiSliceState = {
     menuType: 'sidenav',
     isSidenavShown: false,
     isModalShown: false,
-    backgroundMotionValue: motionValue(0),
+    currentShownModalId: '',
     searchResultHeight: undefined
 }
 
@@ -42,8 +41,8 @@ const uiSlice = createSlice({
                 state.isModalShown = !state.isModalShown
             }
         },
-        setBackgroundMotionValue(state, action: PayloadAction<MotionValue<number>>) {
-            state.backgroundMotionValue = action.payload
+        setShownModalId(state, action: PayloadAction<string>) {
+            state.currentShownModalId = action.payload
         },
         setSearchResultheight(state, action: PayloadAction<number | undefined | null>) {
             state.searchResultHeight = action.payload
@@ -53,10 +52,10 @@ const uiSlice = createSlice({
 })
 
 export default uiSlice.reducer
-export const { setMenuType, toggleSideNav, toggleModal, setBackgroundMotionValue, setSearchResultheight } = uiSlice.actions
+export const { setMenuType, toggleSideNav, toggleModal, setSearchResultheight, setShownModalId } = uiSlice.actions
 
 export const getMenuType = (state: RootState) => state.UI.menuType
 export const getSidenavShow = (state: RootState) => state.UI.isSidenavShown
 export const getModalShow = (state: RootState) => state.UI.isModalShown
-export const getBackgroundMotionValue = (state: RootState) => state.UI.backgroundMotionValue
 export const getSearchResultHeight = (state: RootState) => state.UI.searchResultHeight
+export const getCurrentShownModalId = (state: RootState) => state.UI.currentShownModalId

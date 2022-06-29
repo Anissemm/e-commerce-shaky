@@ -1,5 +1,4 @@
 import { AnimatePresence, motion } from 'framer-motion'
-import { useCallback, useEffect, useState } from 'react'
 import { useDetectClickOutside } from 'react-detect-click-outside'
 import { useAppDispatch, toggleSideNav, getSidenavShow, useAppSelector, getModalShow } from '../../../store'
 import { menuMotionVariants } from './menuMotionVariants'

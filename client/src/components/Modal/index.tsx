@@ -1,7 +1,7 @@
 import { forwardRef, memo, PropsWithChildren, SyntheticEvent, useEffect, useRef } from 'react'
 import BackgroundOverlay from '../BackgroundOverlay'
 import { AnimatePresence, motion, useMotionTemplate, useMotionValue, useTransform, Variants } from 'framer-motion'
-import { getModalShow, useAppSelector, useAppDispatch, toggleModal } from '../../store'
+import { getModalShow, useAppSelector, useAppDispatch, toggleModal, setShownModalId } from '../../store'
 import { createPortal } from 'react-dom'
 
 type AlignType = 'start' | 'center' | 'end'
@@ -9,6 +9,7 @@ type AlignType = 'start' | 'center' | 'end'
 interface ModalProps extends PropsWithChildren {
     width?: number,
     align?: AlignType
+    modalId?: string
 }
 
 const modalVariants: Variants = {
@@ -30,18 +31,7 @@ const modalVariants: Variants = {
     }
 }
 
-const backgroundOverlayVariants = {
-    hidden: {
-        backgroundColor: 'rgba(0,0,0,0)',
-        backdropFilter: 'blur(0px)'
-    },
-    visible: {
-        backgroundColor: 'rgba(0,0,0,0.9)',
-        backdropFilter: 'blur(2px)'
-    }
-}
-
-const Modal = forwardRef<HTMLDivElement, ModalProps>(({ width = 1050, align = 'center', children }, ref) => {
+const Modal = forwardRef<HTMLDivElement, ModalProps>(({ width = 1050, align = 'center', modalId = '', children }, ref) => {
     const isShown = useAppSelector(getModalShow)
     const dispatch = useAppDispatch()
     const modalWrapperRef = useRef<HTMLDivElement | null>(null)
@@ -55,14 +45,17 @@ const Modal = forwardRef<HTMLDivElement, ModalProps>(({ width = 1050, align = 'c
     useEffect(() => {
         if (isShown) {
             modalWrapperRef?.current?.parentElement?.focus()
+            dispatch(setShownModalId(modalId))
         }
         modalWrapperRef?.current?.parentElement?.blur()
+        dispatch(setShownModalId(''))
+
     }, [isShown])
 
     useEffect(() => {
         const handleClose = (e: any) => {
-            e.preventDefault()
             if (e.key === 'Escape') {
+                e.preventDefault()
                 dispatch(toggleModal(false))
             }
         }

@@ -1,9 +1,10 @@
 import React, { useState } from 'react'
 import { AnimatePresence, motion, Variants } from 'framer-motion'
 import { ReactComponent as SortIcon } from '../../../assets/svg/icons/sort_arrow_icon.svg'
-import ProductCard from '../../ProductCard'
 import style from './SearchResults.module.css'
+import GridView from './GridView'
 import { getSearchResultHeight, useAppSelector } from '../../../store'
+import ListView from './ListView'
 
 const searchResultsVariants: Variants = {
     hidden: {
@@ -15,12 +16,13 @@ const searchResultsVariants: Variants = {
 }
 
 const SearchResults = () => {
+    const [view, setView] = useState<'grid' | 'list'>('grid')
     const resultsHeight = useAppSelector(getSearchResultHeight)
-    const [gridView, setGridView] = useState<'grid' | 'list'>('grid')
+
     return (
         <AnimatePresence>
             <motion.section
-                className='px-[28px] mt-3 font-[Oswald] relative'
+                className='mt-3 font-[Oswald] relative'
                 variants={searchResultsVariants}
                 initial='hidden'
                 animate='visible'
@@ -30,12 +32,12 @@ const SearchResults = () => {
                     <motion.h4 className='sr-only'>
                         Search Results:
                     </motion.h4>
-                    <motion.div className='flex justify-between items-center'>
+                    <motion.div className='flex justify-between items-center px-[28px] '>
                         <motion.button
                             aria-label='View'
                             className={`w-[25px] h-[25px] ${style.viewIcon} 
-                            ${gridView === 'list' ? style.viewIconList : style.viewIconGrid}`}
-                            onClick={() => setGridView(prev => prev === 'grid' ? 'list' : 'grid')}
+                            ${view === 'list' ? style.viewIconGrid : style.viewIconList}`}
+                            onClick={() => setView(prev => prev === 'grid' ? 'list' : 'grid')}
                         />
                         <motion.button aria-label='Sort By' className={`w-auto h-[25px] text-sandy-brown font-normal text-md 
                             uppercase ${style.sortIcon}`}>
@@ -43,14 +45,10 @@ const SearchResults = () => {
                         </motion.button>
                     </motion.div>
                 </motion.header>
-                <motion.section style={{ height: resultsHeight }} className='overflow-y-auto py-3 pt-7 scrollbar-thin relative'>
-                    <motion.div className='grid grid-flow-row grid-cols-2 gap-[10px]'>
-                        <ProductCard />
-                        <ProductCard />
-                        <ProductCard />
-                        <ProductCard />
-                        <ProductCard />
-                    </motion.div>
+                <motion.section style={{ height: resultsHeight - 260 }} className='px-[12px] overflow-y-auto py-3 mt-5 hover:scrollbar-thumb-raven scrollbar-thin scrollbar-thumb-fiorid relative'>
+                    <AnimatePresence exitBeforeEnter>
+                        {view === 'grid' ? <GridView /> : <ListView />}
+                    </AnimatePresence>
                 </motion.section>
             </motion.section>
         </AnimatePresence>

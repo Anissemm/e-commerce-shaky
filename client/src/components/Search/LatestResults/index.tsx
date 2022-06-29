@@ -1,5 +1,5 @@
 import React from 'react'
-import { AnimatePresence, motion, Variants } from 'framer-motion'
+import { motion, Variants } from 'framer-motion'
 import { Splide, SplideSlide, SplideTrack } from '@splidejs/react-splide'
 import '@splidejs/react-splide/css/core'
 import '@splidejs/react-splide/css'
@@ -33,11 +33,11 @@ const LatestResults = () => {
                             bg-melony-clay p-2 mx-1 rounded-md hover:bg-opacity-50 focus:bg-opacity-50 transition 
                             duration-300 cursor-pointer hover:shadow-md focus:shadow-md'>
                                 <div className='!w-[50px] !h-[50px] max-h-[50px] flex items-center'>
-                                    <img src={creatine} className='object-contain object-center' alt='creatine' />
+                                    <img src={creatine} className='object-contain object-center' alt='Creatine' />
                                 </div>
                                 <div className='flex flex-col items-start justify-center gap-1'>
                                     <span className='text-[11px] text-sandy-brown max-w-[128px] truncate'>Creatine Monohydrate{item}</span>
-                                    <span>$9.90</span>
+                                    <span className='flex justify-end w-full text-sm'>$9.90</span>
                                 </div>
                             </div>
                         </SplideSlide>
