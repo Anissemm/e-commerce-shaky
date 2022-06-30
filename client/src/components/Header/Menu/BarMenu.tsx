@@ -10,7 +10,7 @@ const BarMenu = forwardRef<HTMLDivElement, PropsWithChildren>((props, ref) => {
       className='bg-ebony-clay text-white w-full'
       variants={menuMotionVariants}
       custom='sidenav'
-      initial='hidden'
+      initial={false}
       animate='visible'
       exit='hidden'
       {...props}

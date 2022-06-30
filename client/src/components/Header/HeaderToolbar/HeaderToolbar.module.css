@@ -4,12 +4,12 @@
   background-repeat: no-repeat;
 }
 
-.menuToggle {
-  background-image: url(../../../assets/svg/icons/menu_icon.svg);
-}
-
 .user {
   background-image: url(../../../assets/svg/icons/user_icon.svg);
+}
+
+.menuToggle {
+  background-image: url(../../../assets/svg/icons/menu_icon.svg);
 }
 
 .cart {

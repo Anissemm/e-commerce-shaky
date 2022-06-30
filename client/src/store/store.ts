@@ -12,10 +12,13 @@ import {
     PURGE,
     REGISTER,
 } from "redux-persist"
+import pageSlice from "./slices/pageSlice"
 
 const mainReducer = combineReducers({
     UI: uiSlice,
-    searchFilters: searchFiltersSlice
+    searchFilters: searchFiltersSlice,
+    page: pageSlice
+
 })
 
 

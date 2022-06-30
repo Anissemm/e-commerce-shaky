@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useLayoutEffect, useRef, useState } from 'react'
 import Modal from '../Modal'
 import ModalBody from '../Modal/ModalBody'
 import ModalHeader from '../Modal/ModalHeader'
@@ -8,7 +8,17 @@ import LatestResults from './LatestResults'
 import Recommended from './Recommended'
 import SearchResults from './SearchResults/index'
 import { useResizeObserver } from '../../hooks/useResizeObserver'
-import { getCurrentShownModalId, getMenuType, getModalShow, setSearchResultheight, toggleModal, useAppDispatch, useAppSelector } from '../../store'
+import {
+  getCurrentShownModalId,
+  getMenuType,
+  getModalShow,
+  setSearchResultheight,
+  toggleModal,
+  useAppDispatch,
+  toggleSearchFilters,
+  useAppSelector,
+  getSearchFiltersShow
+} from '../../store'
 import { ReactComponent as InputIcon } from '../../assets/svg/icons/search_input_icon.svg'
 import SearchFilters from './Filters'
 
@@ -17,12 +27,15 @@ const Search = () => {
   const [searchValue, setSearchValue] = useState<string>('')
   const [showResetBtn, setShowResetBtn] = useState<boolean>(false)
   const [inputFocused, setInputFocused] = useState<boolean>(false)
-  const [showSearchFilter, setShowSearchFilter] = useState<boolean>(false)
+  const showSearchFilter = useAppSelector(getSearchFiltersShow)
   const [setResizeRef, entry] = useResizeObserver()
 
   const isModalShown = useAppSelector(getModalShow)
   const currentId = useAppSelector(getCurrentShownModalId)
   const menuType = useAppSelector(getMenuType)
+  const modalInputRef = useRef<HTMLInputElement | null>(null)
+  const searchFiltersRef = useRef<HTMLDivElement | null>(null)
+  const modalRef = useRef<HTMLDivElement | null>(null)
 
   const results = true /* Hard code */
 
@@ -42,13 +55,33 @@ const Search = () => {
     }
   }
 
+  useEffect(() => {
+    if (showSearchFilter) {
+      searchFiltersRef.current?.focus()
+    } else {
+      modalRef.current?.focus()
+    }
+  }, [showSearchFilter])
+
+  useEffect(() => {
+    const escapeHandler = (e: any) => {
+      if (e.key === 'Escape') {
+        dispatch(toggleSearchFilters(false))
+      }
+    }
+
+    document.addEventListener('keydown', escapeHandler)
+
+    return () => document.removeEventListener('keydown', escapeHandler)
+
+  }, [])
+
   return (
     <>
       <AnimatePresence>
-
-        {
-          currentId !== 'search-modal' && !isModalShown && menuType === 'bar' &&
+        {currentId !== 'search-modal' && !isModalShown && menuType === 'bar' &&
           <motion.div
+            key='searchInput-toolbar'
             layoutId='searchInput'
             transition={{ duration: 0.05 }}
             className='relative mx-auto max-w-[670px] w-full rounded-xl bg-melony-clay 
@@ -80,15 +113,14 @@ const Search = () => {
       <Modal
         modalId='search-modal'
         ref={ref => {
+          modalRef.current = ref
           if (typeof setResizeRef === 'function') {
             setResizeRef(ref)
           }
         }}
       >
         <ModalHeader title='Modal Title' />
-        <AnimatePresence>
-          {showSearchFilter && <SearchFilters />}
-        </AnimatePresence>
+        <SearchFilters ref={searchFiltersRef} />
         <ModalBody>
 
           <motion.section
@@ -96,6 +128,7 @@ const Search = () => {
             <AnimatePresence>
               {showResetBtn &&
                 <motion.button
+                  transition={{ ease: 'linear' }}
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
                   exit={{ opacity: 0 }}
@@ -106,30 +139,38 @@ const Search = () => {
                     setShowResetBtn(false)
                   }}
                 />}
+              <motion.div
+                key='searchInput-modal'
+                transition={{ ease: 'linear' }}
+                layoutId='searchInput'
+                className='relative w-full rounded-xl bg-melony-clay 
+                focus-within:shadow-[0_0_5px_#000] hover:shadow-[0_0_5px_#000] transition 
+                duration-300'
+              >
+                <motion.input
+                  transition={{ ease: 'linear' }}
+                  className={`pl-8 font-["Roboto_Condensed"] relative z-[1] bg-transparent border-none text-gray-400 
+                  text-left sm:text-center placeholder:text-center placeholder:text-sandy-brown
+                  placeholder:text-opacity-50 h-[52px] text-[15px] w-full focus:!outline-none focus:!shadow-none 
+                  focus:!border-none [::-webkit-search-cancel-button]:none ${style.hideClear}`}
+                  type='search'
+                  value={searchValue}
+                  onChange={handleChange}
+                  onFocus={() => setInputFocused(true)}
+                  onBlur={() => setInputFocused(false)}
+                  ref={modalInputRef}
+                  placeholder={inputFocused ? '' : 'Search Something'} />
+                <InputIcon
+                  aria-label=''
+                  className={`z-[0] ${inputFocused || searchValue.length > 0 ? '!left-3' : ''} 
+                  ${style.inputIcon} transition-all duration-500`} />
+              </motion.div>
             </AnimatePresence>
-            <motion.div
-              layoutId='searchInput'
-              transition={{ duration: 0.05 }}
-              className='relative w-full rounded-xl bg-melony-clay 
-              focus-within:shadow-[0_0_5px_#000] hover:shadow-[0_0_5px_#000] transition 
-              duration-300'>
-              <motion.input
-                className={`pl-8 font-["Roboto_Condensed"] relative z-[1] bg-transparent border-none text-gray-400 
-              text-left sm:text-center placeholder:text-center placeholder:text-sandy-brown
-              placeholder:text-opacity-50 h-[52px] text-[15px] w-full focus:!outline-none focus:!shadow-none 
-              focus:!border-none [::-webkit-search-cancel-button]:none ${style.hideClear}`}
-                type='search'
-                value={searchValue}
-                onChange={handleChange}
-                onFocus={() => setInputFocused(true)}
-                onBlur={() => setInputFocused(false)}
-                placeholder={inputFocused ? '' : 'Search Something'} />
-              <InputIcon className={`z-[0] ${inputFocused || searchValue.length > 0 ? '!left-3' : ''} ${style.inputIcon} transition-all duration-500`} />
-            </motion.div>
             <motion.button
+              data-search-filters-toggle
               aria-label='Search Filters'
               className={`${style.searchFilter} w-5 h-6`}
-              onClick={() => setShowSearchFilter(prev => !prev)}
+              onClick={() => dispatch(toggleSearchFilters())}
             />
           </motion.section>
 

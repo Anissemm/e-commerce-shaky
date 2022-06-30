@@ -1,5 +1,5 @@
 import { MouseEventHandler } from 'react'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import { ReactComponent as Logo } from '../../../assets/svg/logo.svg'
 import { motion } from 'framer-motion'
 import { useAppDispatch, toggleSideNav, useAppSelector, getMenuType, toggleModal } from '../../../store'
@@ -7,15 +7,18 @@ import Search from '../../Search'
 import style from './HeaderToolbar.module.css'
 
 const HeaderToolbar = () => {
+    const navigate = useNavigate()
     const dispatch = useAppDispatch()
     const menuType = useAppSelector(getMenuType)
+
+    const user = null //hard coded
 
     const handleSidenavToggle: MouseEventHandler<HTMLButtonElement> = () => {
         dispatch(toggleSideNav())
     }
 
     return (
-        <div className='fixed z-[46] min-h-[52px] w-screen bg-ebony-clay shadow-lg
+        <div className='relative z-[46] min-h-[52px] w-screen bg-ebony-clay shadow-lg
              flex items-center justify-between px-5'>
             <div className='flex items-center gap-3'>
                 <motion.div className='flex items-end'>
@@ -24,7 +27,6 @@ const HeaderToolbar = () => {
                         data-sidenav-toggle
                         className={`w-[25px] h-[25px] ${style.svgBackground} ${style.menuToggle}`}
                         aria-label='Side navigation toggle'>
-                        {/* <MenuIcon width={30} height={30} /> */}
                     </motion.button>}
                 </motion.div>
                 <motion.div>
@@ -33,9 +35,8 @@ const HeaderToolbar = () => {
                     </Link>
                 </motion.div>
             </div>
-                <Search />
+            <Search />
             <div className='userControls flex items-center ml-auto gap-2'>
-                {/* <div className='searchInput'></div> input */}
                 <div className="flex items-center gap-5 justify-center">
                     {menuType === 'sidenav' &&
                         <motion.button
@@ -45,7 +46,15 @@ const HeaderToolbar = () => {
                             {/* <SearchIcon /> */}
                         </motion.button>}
 
-                    <button className={`w-[25px] h-[25px] ${style.svgBackground} ${style.user}`} aria-label='User authentication'>
+                    <button
+                        onClick={() => {
+                            if (!user) {
+                                navigate('/my-account')
+                            } else {
+                                navigate('/my-account/dashboard')
+                            }
+                        }}
+                        className={`w-[25px] h-[25px] ${style.svgBackground} ${style.user}`} aria-label='User authentication'>
                         {/* <UserIcon /> */}
                     </button>
 

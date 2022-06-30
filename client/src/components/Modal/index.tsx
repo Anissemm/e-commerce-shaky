@@ -1,9 +1,8 @@
-import { forwardRef, memo, PropsWithChildren, SyntheticEvent, useEffect, useRef, useState } from 'react'
+import { forwardRef, memo, PropsWithChildren, SyntheticEvent, useEffect, useRef } from 'react'
 import BackgroundOverlay from '../BackgroundOverlay'
-import { AnimatePresence, motion, useMotionTemplate, useMotionValue, useTransform, Variants } from 'framer-motion'
-import { getModalShow, useAppSelector, useAppDispatch, toggleModal, setShownModalId } from '../../store'
+import { AnimatePresence, motion, Variants } from 'framer-motion'
+import { getModalShow, useAppSelector, useAppDispatch, toggleModal, setShownModalId, getSearchFiltersShow } from '../../store'
 import { createPortal } from 'react-dom'
-import style from './Modal.module.css'
 
 type AlignType = 'start' | 'center' | 'end'
 
@@ -11,6 +10,7 @@ interface ModalProps extends PropsWithChildren {
     width?: number,
     align?: AlignType
     modalId?: string
+    customFocus?: boolean
 }
 
 const modalVariants: Variants = {
@@ -32,7 +32,13 @@ const modalVariants: Variants = {
     }
 }
 
-const Modal = forwardRef<HTMLDivElement, ModalProps>(({ width = 1050, align = 'center', modalId = '', children }, ref) => {
+const Modal = forwardRef<HTMLDivElement, ModalProps>(({
+    width = 1050,
+    align = 'center',
+    modalId = '',
+    customFocus = false,
+    children }, ref) => {
+
     const isShown = useAppSelector(getModalShow)
     const dispatch = useAppDispatch()
     const modalWrapperRef = useRef<HTMLDivElement | null>(null)
@@ -46,27 +52,28 @@ const Modal = forwardRef<HTMLDivElement, ModalProps>(({ width = 1050, align = 'c
     useEffect(() => {
         if (isShown) {
             dispatch(setShownModalId(modalId))
-            modalWrapperRef?.current?.parentElement?.focus()
+            if (!customFocus) {
+                modalWrapperRef?.current?.parentElement?.focus()
+            }
         } else {
             modalWrapperRef?.current?.parentElement?.blur()
             dispatch(setShownModalId(''))
         }
-
-    }, [isShown])
+    }, [isShown, customFocus])
 
     useEffect(() => {
-        const handleClose = (e: any) => {
-            if (e.key === 'Escape') {
-                e.preventDefault()
-                dispatch(toggleModal(false))
+            const handleClose = (e: any) => {
+                if (e.key === 'Escape') {
+                    e.preventDefault()
+                    dispatch(toggleModal(false))
+                }
             }
-        }
 
-        document.addEventListener('keydown', handleClose)
+            document.addEventListener('keydown', handleClose)
 
-        return () => {
-            document.removeEventListener('keydown', handleClose)
-        }
+            return () => {
+                document.removeEventListener('keydown', handleClose)
+            }
     }, [])
 
     return (
@@ -108,4 +115,4 @@ const Modal = forwardRef<HTMLDivElement, ModalProps>(({ width = 1050, align = 'c
     )
 })
 
-export default memo(Modal)
+export default Modal

@@ -10,6 +10,7 @@ interface uiSliceState {
     currentShownModalId: string
     searchResultHeight: undefined | null | number
     backgroundMotionValue: number
+    isSearchFiltersShown: boolean
 }
 
 const initialState: uiSliceState = {
@@ -17,9 +18,10 @@ const initialState: uiSliceState = {
     menuType: 'sidenav',
     isSidenavShown: false,
     isModalShown: false,
+    isSearchFiltersShown: false,
     currentShownModalId: '',
     searchResultHeight: undefined,
-    backgroundMotionValue: 0
+    backgroundMotionValue: 0,
 }
 
 const uiSlice = createSlice({
@@ -51,17 +53,32 @@ const uiSlice = createSlice({
         },
         setBackgroundMotionValue(state, action: PayloadAction<number>) {
             state.backgroundMotionValue = action.payload
-        }       
+        },
+        toggleSearchFilters(state, action: PayloadAction<boolean | undefined>) {
+            if (typeof action.payload === 'boolean') {
+                state.isSearchFiltersShown = action.payload
+            } else {
+                state.isSearchFiltersShown = !state.isSearchFiltersShown
+            }
         }
+    }
 
 })
 
 export default uiSlice.reducer
-export const { setMenuType, toggleSideNav, toggleModal, setSearchResultheight, setShownModalId, setBackgroundMotionValue } = uiSlice.actions
+export const {
+    setMenuType, 
+    toggleSideNav, 
+    toggleModal,
+    toggleSearchFilters, 
+    setSearchResultheight, 
+    setShownModalId, 
+    setBackgroundMotionValue } = uiSlice.actions
 
 export const getMenuType = (state: RootState) => state.UI.menuType
 export const getSidenavShow = (state: RootState) => state.UI.isSidenavShown
 export const getModalShow = (state: RootState) => state.UI.isModalShown
+export const getSearchFiltersShow = (state: RootState) => state.UI.isSearchFiltersShown
 export const getSearchResultHeight = (state: RootState) => state.UI.searchResultHeight
 export const getCurrentShownModalId = (state: RootState) => state.UI.currentShownModalId
 export const getBackgroundMotionValue = (state: RootState) => state.UI.backgroundMotionValue

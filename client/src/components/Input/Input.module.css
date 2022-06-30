@@ -1,0 +1,3 @@
+.input:focus + label:after {
+    border-bottom-width: 0px !important;
+}

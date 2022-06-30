@@ -12,7 +12,6 @@ const searchFiltersSlice = createSlice({
     initialState,
     reducers: {
         setFilter(state, action: PayloadAction<{ filterName: string, value: string }>) {
-            console.log(action.payload)
             if (state.hasOwnProperty(action.payload.filterName)) {
                 state[action.payload.filterName].push(action.payload.value)
             } else {

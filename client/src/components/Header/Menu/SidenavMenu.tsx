@@ -26,7 +26,7 @@ const SidenavMenu = () => {
                 {isSidenavShown && <BackgroundOverlay zIndex={-1} >
                     <motion.div
                         ref={sidenavRef}
-                        className='!h-[calc(100vh-52px)] bg-ebony-clay z-[45] top-[52px] text-white w-full max-w-[320px] fixed overflow-hidden shadow-xl'
+                        className='!h-[calc(100vh-52px)] bg-ebony-clay z-[45] top-[52px] text-white w-full max-w-[320px] absolute overflow-hidden shadow-xl'
                         variants={menuMotionVariants}
                         custom='sidenav'
                         initial='hidden'

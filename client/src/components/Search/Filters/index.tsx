@@ -1,6 +1,6 @@
-import React, { PropsWithChildren, useEffect, useState } from 'react'
+import React, { forwardRef, PropsWithChildren, useEffect, useRef, useState } from 'react'
 import { AnimatePresence, motion, useMotionTemplate, useMotionValue, Variants } from 'framer-motion'
-import { getFilter, getFilters, getSearchResultHeight, removeFilter, resetFilters, setFilter, useAppDispatch, useAppSelector } from '../../../store'
+import { getFilter, getFilters, getSearchResultHeight, removeFilter, resetFilters, setFilter, useAppDispatch, toggleSearchFilters, useAppSelector, getSearchFiltersShow } from '../../../store'
 import style from './Filters.module.css'
 import { ReactComponent as Arrow } from '../../../assets/svg/icons/arrow_left_icon.svg'
 import { ReactComponent as Tick } from '../../../assets/svg/icons/tick_icon.svg'
@@ -51,87 +51,174 @@ const FilterElementVariants: Variants = {
     }
 }
 
-const SearchFilters = () => {
+const returnButtonVariants: Variants = {
+    hidden: {
+        x: '-100%',
+        transition: {
+            duration: 0.2,
+        }
+    },
+    visible: {
+        x: 0,
+        transition: {
+            duration: 0.3,
+        }
+    }
+}
+
+const filterFromServer: Filters = [
+    { filterName: 'Product Type', values: ['Powder', 'Tablets', 'Liquid'] },
+    { filterName: 'Category', values: ['Accessories', 'Supplement', 'Other'] },
+    { filterName: 'Brand', values: ['AmSport', 'BulkForce', 'Extrive', 'HardTrain'] },
+    { filterName: 'Flavour', values: ['Strawberry', 'Chocolat', 'Vanilla', 'Coffee', 'Banana'] },
+    { filterName: 'PriceRange', values: { min: 0, max: 300, unit: '$' } },
+]
+
+const SearchFilters = forwardRef<HTMLDivElement, PropsWithChildren>((props, ref) => {
     const dispatch = useAppDispatch()
     const searchResultHeight = useAppSelector(getSearchResultHeight)
     const filters = useAppSelector(getFilters)
+    const isShown = useAppSelector(getSearchFiltersShow)
 
     const shadowTransparence = useMotionValue(0)
     const boxShadow = useMotionTemplate`0 0 5px rgba(0, 0, 0, ${shadowTransparence})`
 
-    const filterFromServer: Filters = [
-        { filterName: 'Product Type', values: ['Powder', 'Tablets', 'Liquid'] },
-        { filterName: 'Category', values: ['Accessories', 'Supplement', 'Other'] },
-        { filterName: 'Brand', values: ['AmSport', 'BulkForce', 'Extrive', 'HardTrain'] },
-        { filterName: 'Flavour', values: ['Strawberry', 'Chocolat', 'Vanilla', 'Coffee', 'Banana'] },
-        { filterName: 'PriceRange', values: { min: 0, max: 300, unit: '$' } },
-    ]
-
     const height = typeof searchResultHeight === 'number' ? searchResultHeight - 200 : undefined
-    const filterValuesHeight = height ? height - 87 : undefined
+    const filterValuesHeight = height ? height - 92 : undefined
     const [shownFilter, setShownFilter] = useState('')
 
+    const getPickedFilters = (filterName: string): string | null => {
+        if (filters.hasOwnProperty(filterName)) {
+            return filters[filterName].join(', ')
+        }
+        return null
+    }
+
+    const getFilterBtnTitleAttr = (filterName: string): string => {
+        let titleAttr = ''
+        if (filterName) {
+            const pickedFilters = getPickedFilters(filterName)
+            titleAttr = `${filterName}${!pickedFilters ? '' : `: ${pickedFilters}`}`
+        }
+        return titleAttr
+    }
+
     return (
-        <motion.aside>
-            <motion.div
-                variants={filtersVariants}
-                initial='hidden'
-                animate='visible'
-                exit='hidden'
-                style={{ boxShadow, height }}
-                className={`absolute font-[Oswald] right-0 bottom-0 max-h-[640px] px-5 h-full w-[287px] 
-                    bg-ebony-clay z-[48] bg-opacity-80 ${style.backdropBlur} shadow-[0_0_5px_#000]`}>
-                <motion.header className='flex justify-between items-center w-full pt-5 pb-10'>
-                    <motion.h4 className='text-gray-500 uppercase text-[18px]'>Refine by</motion.h4>
-                    <motion.button
-                        onClick={() => { dispatch(resetFilters()) }}
-                        className='text-sandy-brown uppercase text-[18px] hover:text-opacity-80 transition duration-300'>
-                        Clear
-                    </motion.button>
-                </motion.header>
-                <motion.div className='relative'>
-                    <button className='relative -top-6' onClick={() => setShownFilter('')}>back</button>
-                    <form onSubmit={(e: any) => {
-                        e.preventDefault()
-                    }}>
-                        {shownFilter === '' && filterFromServer.map(filter => {
-                            return (
-                                <motion.div key={filter.filterName}>
-                                    <motion.button
-                                        type='button'
-                                        onClick={() => setShownFilter(filter.filterName)}
-                                        className='w-full flex justify-between items-center'>
-                                        <motion.span>{filter.filterName}</motion.span>
-                                        <motion.span>
-                                            <motion.span></motion.span>
-                                            <Arrow className='rotate-180' />
-                                        </motion.span>
-                                    </motion.button>
-                                </motion.div>
-                            )
-                        })}
+        <AnimatePresence>
+            {isShown && <>
+                <motion.div
+                    initial={{ backgroundColor: 'rgba(0,0,0,0)' }}
+                    animate={{ backgroundColor: 'rgba(0,0,0,0.5)' }}
+                    exit={{ backgroundColor: 'rgba(0,0,0,0)' }}
+                    transition={{ duration: 0.3 }}
+                    onClick={() => dispatch(toggleSearchFilters(false))}
+                    className={`fixed z-[48] top-0 left-0 w-screen h-screen
+                            ${isShown ? style.visible : style.hidden}`} />
+                <motion.aside ref={ref} tabIndex={-1}>
+                    <motion.div
+                        variants={filtersVariants}
+                        initial='hidden'
+                        animate='visible'
+                        exit='hidden'
+                        style={{ boxShadow, height }}
+                        className={`absolute font-[Oswald] right-0 bottom-0 max-h-[640px] px-5 h-full w-[287px] 
+                    bg-ebony-clay z-[49] bg-opacity-80 ${style.backdropBlur} shadow-[0_0_5px_#000]`}>
+                        {/* <AnimatePresence> */}
+                        <motion.header layout className='flex items-center justify-between pt-5 pb-10' >
+                            <motion.button
+                                className='pr-2'
+                                onClick={() => {
+                                    if (shownFilter !== '') {
+                                        setShownFilter('')
+                                    } else {
+                                        dispatch(toggleSearchFilters(false))
+                                    }
+                                }}
+                                aria-label='Go back'
+                            >
+                                <Arrow height={16} className='!stroke-gray-500' />
+                            </motion.button>
+                            <motion.div layout transition={{ duration: 0.2 }} className='flex justify-between items-center w-full'>
+                                <motion.h4 className='text-gray-500 uppercase text-[18px]'>Refine by</motion.h4>
+                                <motion.button
+                                    onClick={() => { dispatch(resetFilters()) }}
+                                    className='text-sandy-brown uppercase text-[18px] hover:text-opacity-80 transition duration-300'>
+                                    Clear
+                                </motion.button>
+                            </motion.div>
+                        </motion.header>
+                        {/* </AnimatePresence> */}
+                        {shownFilter === '' && <motion.div
+                            style={{ maxHeight: filterValuesHeight }}
+                            className=' overflow-y-auto hover:scrollbar-thumb-raven scrollbar-thin scrollbar-thumb-fiorid'
+                        >
+                            {filterFromServer.map(filter => {
+                                return (
+                                    <motion.div
+
+                                        key={filter.filterName} >
+                                        <motion.button
+                                            type='button'
+                                            title={getFilterBtnTitleAttr(filter.filterName)}
+                                            onClick={() => setShownFilter(filter.filterName)}
+                                            className='w-full flex justify-between items-center hover:text-sandy-brown'>
+                                            <motion.span
+                                                className='grow text-left'
+                                            >{filter.filterName}</motion.span>
+                                            <motion.span className='flex items-center justify-between'>
+                                                <AnimatePresence>
+                                                    {getPickedFilters(filter.filterName) && <motion.span
+                                                        transition={{ duration: 0.2 }}
+                                                        initial={{ opacity: 0 }}
+                                                        animate={{ opacity: 1 }}
+                                                        exit={{ opacity: 0 }}
+                                                        className='leading-none max-w-[90px] truncate inline-block text-gray-400 text-xs'
+                                                    >
+                                                        {getPickedFilters(filter.filterName)}
+                                                    </motion.span>}
+                                                </AnimatePresence>
+                                                <Arrow className='rotate-180 h-[12px]' />
+                                            </motion.span>
+                                        </motion.button>
+                                    </motion.div>
+                                )
+                            })}
+                        </motion.div>}
+
                         <AnimatePresence>
+                            <motion.div
+                                style={{ maxHeight: filterValuesHeight }}
+                                className=' overflow-y-auto hover:scrollbar-thumb-raven scrollbar-thin scrollbar-thumb-fiorid px-1'
+                            ></motion.div>
                             {filterFromServer.map(filter => {
                                 return (shownFilter === filter.filterName &&
                                     <motion.div
-                                        variants={FilterElementVariants}
-                                        initial='hidden'
-                                        animate='visible'
-                                        exit='hidden'
-                                        // style={{ height: filterValuesHeight }}
-                                        className={`${style.backdropBlur} bg-opacity-90 absolute top-0 left-0 h-full w-full`}
+                                        style={{ maxHeight: filterValuesHeight }}
+                                        className='relative'
                                     >
-                                        {Array.isArray(filter.values) ? filter.values.map(value => {
-                                            return <FilterElement filterName={filter.filterName} key={value} value={value} />
-                                        }) : <motion.div />}
-                                    </motion.div> )})}
+                                        <motion.div
+                                            key={filter.filterName}
+                                            variants={FilterElementVariants}
+                                            initial='hidden'
+                                            animate='visible'
+                                            exit='hidden'
+                                            style={{ height: filterValuesHeight }}
+                                            className={`px-1 overflow-y-auto hover:scrollbar-thumb-raven scrollbar-thin scrollbar-thumb-fiorid
+                                     bg-opacity-0 absolute top-0 left-0 h-full w-full`}
+                                        >
+                                            {Array.isArray(filter.values) ? filter.values.map(value => {
+                                                return <FilterElement filterName={filter.filterName} key={value} value={value} />
+                                            }) : <motion.div />}
+                                        </motion.div>
+                                    </motion.div>)
+                            })}
                         </AnimatePresence>
-                    </form>
-                </motion.div>
-            </motion.div>
-        </motion.aside>
+                    </motion.div>
+                </motion.aside>
+            </>}
+        </AnimatePresence>
     )
-}
+})
 
 interface FilterElementProps extends PropsWithChildren {
     value: string
@@ -154,6 +241,7 @@ const FilterElement: React.FC<FilterElementProps> = ({ value, filterName }) => {
 
     return (
         <motion.div
+
             className='flex items-center justify-between mb-1'>
             <motion.label
                 className={`${checked ? 'text-sandy-brown' : ''} hover:text-sandy-brown 
