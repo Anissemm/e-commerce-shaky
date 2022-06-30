@@ -1,8 +1,9 @@
-import { forwardRef, memo, PropsWithChildren, SyntheticEvent, useEffect, useRef } from 'react'
+import { forwardRef, memo, PropsWithChildren, SyntheticEvent, useEffect, useRef, useState } from 'react'
 import BackgroundOverlay from '../BackgroundOverlay'
 import { AnimatePresence, motion, useMotionTemplate, useMotionValue, useTransform, Variants } from 'framer-motion'
 import { getModalShow, useAppSelector, useAppDispatch, toggleModal, setShownModalId } from '../../store'
 import { createPortal } from 'react-dom'
+import style from './Modal.module.css'
 
 type AlignType = 'start' | 'center' | 'end'
 
@@ -44,11 +45,12 @@ const Modal = forwardRef<HTMLDivElement, ModalProps>(({ width = 1050, align = 'c
 
     useEffect(() => {
         if (isShown) {
-            modalWrapperRef?.current?.parentElement?.focus()
             dispatch(setShownModalId(modalId))
+            modalWrapperRef?.current?.parentElement?.focus()
+        } else {
+            modalWrapperRef?.current?.parentElement?.blur()
+            dispatch(setShownModalId(''))
         }
-        modalWrapperRef?.current?.parentElement?.blur()
-        dispatch(setShownModalId(''))
 
     }, [isShown])
 
@@ -72,7 +74,7 @@ const Modal = forwardRef<HTMLDivElement, ModalProps>(({ width = 1050, align = 'c
             {createPortal(
                 <AnimatePresence>
                     {isShown &&
-                        <BackgroundOverlay motionKey='modal' zIndex={47}>
+                        <BackgroundOverlay zIndex={47}>
                             <motion.section
                                 tabIndex={-1}
                                 className='fixed flex items-center justify-center top-0 left-0 w-screen h-screen z-[48]'

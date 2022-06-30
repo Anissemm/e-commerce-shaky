@@ -1,0 +1,19 @@
+@supports (backdrop-blur: blur(5px)) {
+    .visible {
+        backdrop-filter: blur(5px);
+    }
+
+    .hidden {
+        backdrop-filter: blur(0);
+    }
+}
+
+.visible {
+    backdrop-filter: blur(5px);
+    background-color: rgba(0,0,0,0.9)
+}
+
+.hidden {
+    backdrop-filter: blur(0);
+    background-color: rgba(0,0,0,0)
+}

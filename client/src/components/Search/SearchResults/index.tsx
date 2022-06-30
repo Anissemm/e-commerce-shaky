@@ -45,7 +45,7 @@ const SearchResults = () => {
                         </motion.button>
                     </motion.div>
                 </motion.header>
-                <motion.section style={{ height: resultsHeight - 260 }} className='px-[12px] overflow-y-auto py-3 mt-5 hover:scrollbar-thumb-raven scrollbar-thin scrollbar-thumb-fiorid relative'>
+                <motion.section style={{ height: typeof resultsHeight === 'number' ? resultsHeight - 260 : undefined }} className='px-[12px] overflow-y-auto py-3 mt-5 hover:scrollbar-thumb-raven scrollbar-thin scrollbar-thumb-fiorid relative'>
                     <AnimatePresence exitBeforeEnter>
                         {view === 'grid' ? <GridView /> : <ListView />}
                     </AnimatePresence>

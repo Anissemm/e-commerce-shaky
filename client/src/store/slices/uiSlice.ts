@@ -1,4 +1,5 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit"
+import { MotionValue, motionValue } from "framer-motion"
 import { type RootState } from '../store'
 
 interface uiSliceState {
@@ -8,6 +9,7 @@ interface uiSliceState {
     isModalShown: boolean
     currentShownModalId: string
     searchResultHeight: undefined | null | number
+    backgroundMotionValue: number
 }
 
 const initialState: uiSliceState = {
@@ -16,9 +18,9 @@ const initialState: uiSliceState = {
     isSidenavShown: false,
     isModalShown: false,
     currentShownModalId: '',
-    searchResultHeight: undefined
+    searchResultHeight: undefined,
+    backgroundMotionValue: 0
 }
-
 
 const uiSlice = createSlice({
     name: 'UI',
@@ -46,16 +48,20 @@ const uiSlice = createSlice({
         },
         setSearchResultheight(state, action: PayloadAction<number | undefined | null>) {
             state.searchResultHeight = action.payload
+        },
+        setBackgroundMotionValue(state, action: PayloadAction<number>) {
+            state.backgroundMotionValue = action.payload
+        }       
         }
-    }
 
 })
 
 export default uiSlice.reducer
-export const { setMenuType, toggleSideNav, toggleModal, setSearchResultheight, setShownModalId } = uiSlice.actions
+export const { setMenuType, toggleSideNav, toggleModal, setSearchResultheight, setShownModalId, setBackgroundMotionValue } = uiSlice.actions
 
 export const getMenuType = (state: RootState) => state.UI.menuType
 export const getSidenavShow = (state: RootState) => state.UI.isSidenavShown
 export const getModalShow = (state: RootState) => state.UI.isModalShown
 export const getSearchResultHeight = (state: RootState) => state.UI.searchResultHeight
 export const getCurrentShownModalId = (state: RootState) => state.UI.currentShownModalId
+export const getBackgroundMotionValue = (state: RootState) => state.UI.backgroundMotionValue

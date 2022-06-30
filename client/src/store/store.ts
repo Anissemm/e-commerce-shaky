@@ -1,6 +1,7 @@
 import { combineReducers, configureStore } from "@reduxjs/toolkit"
 import localforage from "localforage"
 import uiSlice from './slices/uiSlice'
+import searchFiltersSlice from "./slices/searchFiltersSlice"
 import {
     persistStore,
     persistReducer,
@@ -13,7 +14,8 @@ import {
 } from "redux-persist"
 
 const mainReducer = combineReducers({
-    UI: uiSlice
+    UI: uiSlice,
+    searchFilters: searchFiltersSlice
 })
 
 

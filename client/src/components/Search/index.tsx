@@ -86,9 +86,9 @@ const Search = () => {
         }}
       >
         <ModalHeader title='Modal Title' />
-        <motion.aside>
+        <AnimatePresence>
           {showSearchFilter && <SearchFilters />}
-        </motion.aside>
+        </AnimatePresence>
         <ModalBody>
 
           <motion.section

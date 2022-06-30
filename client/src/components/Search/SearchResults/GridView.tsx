@@ -1,7 +1,5 @@
-import React from 'react'
-import { getSearchResultHeight, useAppSelector } from '../../../store'
 import ProductCard from '../../ProductCard'
-import { motion, MotionConfigContext, Variant, Variants } from 'framer-motion'
+import { motion, Variants } from 'framer-motion'
 
 const toggleVariants: Variants = {
     hidden: {

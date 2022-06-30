@@ -23,7 +23,7 @@ const SidenavMenu = () => {
     return (
         <>
             <AnimatePresence>
-                {isSidenavShown && <BackgroundOverlay motionKey='sidenav' zIndex={-1} >
+                {isSidenavShown && <BackgroundOverlay zIndex={-1} >
                     <motion.div
                         ref={sidenavRef}
                         className='!h-[calc(100vh-52px)] bg-ebony-clay z-[45] top-[52px] text-white w-full max-w-[320px] fixed overflow-hidden shadow-xl'

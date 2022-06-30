@@ -3,3 +3,24 @@
     backdrop-filter: blur(5px);
   }
 }
+
+.checkboxHover + div {
+  transition: all 200ms ease-in-out;
+}
+
+.checkboxHover + div div {
+  transition: all 200ms ease-in-out;
+}
+
+.checkboxHover:hover + div {
+  box-shadow: 0 0 5px #000;
+}
+
+.checkboxHover:hover + div div {
+  border-color: rgb(70, 84, 102, 0.8);
+}
+
+.checkboxHover + div svg {
+  transform: translate(-50%, -50%);
+  transition: all 200ms ease-in-out;
+}
