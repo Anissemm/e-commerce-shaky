@@ -18,7 +18,7 @@ const HeaderToolbar = () => {
     }
 
     return (
-        <div className='relative z-[46] min-h-[52px] w-screen bg-ebony-clay shadow-lg
+        <div className='relative z-[46] min-h-[52px] w-full bg-ebony-clay shadow-lg
              flex items-center justify-between px-5'>
             <div className='flex items-center gap-3'>
                 <motion.div className='flex items-end'>

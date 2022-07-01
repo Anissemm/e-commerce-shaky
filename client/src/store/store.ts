@@ -2,6 +2,7 @@ import { combineReducers, configureStore } from "@reduxjs/toolkit"
 import localforage from "localforage"
 import uiSlice from './slices/uiSlice'
 import searchFiltersSlice from "./slices/searchFiltersSlice"
+import SignUpFormSlice from "./slices/SignUpFormSlice"
 import {
     persistStore,
     persistReducer,
@@ -17,7 +18,8 @@ import pageSlice from "./slices/pageSlice"
 const mainReducer = combineReducers({
     UI: uiSlice,
     searchFilters: searchFiltersSlice,
-    page: pageSlice
+    page: pageSlice,
+    signUpForm: SignUpFormSlice
 
 })
 
@@ -25,7 +27,7 @@ const mainReducer = combineReducers({
 const config = {
     key: 'root',
     storage: localforage,
-    blacklist: ['UI']
+    blacklist: ['UI', 'signUpForm.values.password', 'signUpForm.values.passwordRetype']
 }
 
 const store = configureStore({
@@ -34,7 +36,6 @@ const store = configureStore({
         getDefaultMiddleware({
             serializableCheck: {
                 ignoredActions: [FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER, 'UI/setBackgroundMotionValue'],
-                ignoredPaths: ['UI.backgroundMotionValue']
             },
         }),
 })
