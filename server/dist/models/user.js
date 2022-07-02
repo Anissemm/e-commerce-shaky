@@ -1,5 +1,4 @@
-import mongoose from "mongoose"
-
+import mongoose from "mongoose";
 const userSchema = new mongoose.Schema({
     email: {
         type: String,
@@ -21,7 +20,5 @@ const userSchema = new mongoose.Schema({
         type: String,
         default: 'image',
     }
-}, { timestamps: {createdAt: 'created_at', updatedAt: 'updated_at'} })
-
-export default mongoose.model('User', userSchema)
-
+}, { timestamps: { createdAt: 'created_at', updatedAt: 'updated_at' } });
+export default mongoose.model('User', userSchema);

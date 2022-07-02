@@ -1,13 +1,19 @@
 {
   "dependencies": {
+    "@types/ejs": "^3.1.1",
+    "@types/nodemailer": "^6.4.4",
     "bcrypt": "^5.0.1",
     "cookie-parser": "^1.4.6",
     "cors": "^2.8.5",
     "dotenv": "^16.0.1",
+    "ejs": "^3.1.8",
+    "es-dirname": "^0.1.0",
     "express": "^4.18.1",
     "express-async-errors": "^3.1.1",
     "jsonwebtoken": "^8.5.1",
-    "mongoose": "^6.4.0"
+    "mongoose": "^6.4.0",
+    "nodemailer": "^6.7.6",
+    "readable-http-codes": "^1.1.1"
   },
   "devDependencies": {
     "@types/bcrypt": "^5.0.0",
@@ -18,17 +24,18 @@
     "nodemon": "^2.0.18",
     "rimraf": "^3.0.2",
     "ts-node": "^10.8.1",
+    "tsc-watch": "^5.0.3",
     "typescript": "^4.7.4"
   },
-  "type": "commonjs",
-  "typings": "src",
+  "type": "module",
+  "exports": "./dist/index.js",
   "name": "e-commerce-shaky-server",
   "version": "1.0.0",
   "description": "An food supplement e-commerce web server",
-  "main": "index.js",
+  "main": "./dist/index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "start:dev": "nodemon",
+    "dev": "tsc-watch --onSuccess \"npm run watch\"",
+    "watch": "nodemon",
     "build": "rimraf ./build && tsc",
     "start": "npm run build && node build/index.js"
   },
