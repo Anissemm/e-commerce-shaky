@@ -15,9 +15,21 @@ export const transporter = createTransport({
 
 })
 
+interface MessageTemplateParameters {
+    email: string
+    name: string
+    dirname: string
+    providedProps?: {
+        [key: string]: any
+    }
+}
 
-export const getMessageTemplate = async (email: string, name: string, dirname: string, props: { [key: string]: string }) => {
-    const body = await ejs.renderFile(dirname, { ...props })
+interface MessageTemplateType {
+    (props: MessageTemplateParameters): Promise<{ [key: string]: string }>
+}
+
+export const getMessageTemplate: MessageTemplateType = async ({ email, name, dirname, providedProps }) => {
+    const body = await ejs.renderFile(dirname, providedProps ? providedProps : {}) as string
     return {
         from: `Shaky Ecommerce <${process.env.NODEMAILER_EMAIL}>`,
         to: `${name} <${email}>`,

@@ -8,8 +8,8 @@ export const transporter = createTransport({
         pass: process.env.NODEMAILER_PASS
     }
 });
-export const getMessageTemplate = async (email, name, dirname, props) => {
-    const body = await ejs.renderFile(dirname, Object.assign({}, props));
+export const getMessageTemplate = async ({ email, name, dirname, providedProps }) => {
+    const body = await ejs.renderFile(dirname, providedProps ? providedProps : {});
     return {
         from: `Shaky Ecommerce <${process.env.NODEMAILER_EMAIL}>`,
         to: `${name} <${email}>`,

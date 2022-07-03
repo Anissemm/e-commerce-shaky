@@ -1,7 +1,8 @@
 import mongoose from "mongoose"
-import app from ".."
+import app from "../index"
 import 'dotenv/config'
 import 'express-async-errors'
+import getDirname from "../utils/getDirname"
 
 const PORT: string | number = process.env.PORT || 3001
 const MONGO_URI = process.env.MONGO_URI as string

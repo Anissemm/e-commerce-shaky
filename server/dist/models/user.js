@@ -1,13 +1,18 @@
 import mongoose from "mongoose";
+const verifyEmailSchema = new mongoose.Schema({
+    emailVerifKey: String,
+    isVerified: {
+        type: Boolean,
+        required: true,
+        default: false
+    }
+}, { timestamps: { updatedAt: true, createdAt: false } });
 const userSchema = new mongoose.Schema({
     email: {
         type: String,
         required: true
     },
-    emailVerified: {
-        type: Boolean,
-        default: false
-    },
+    emailVerification: verifyEmailSchema,
     password: {
         type: String,
         required: true
@@ -20,5 +25,5 @@ const userSchema = new mongoose.Schema({
         type: String,
         default: 'image',
     }
-}, { timestamps: { createdAt: 'created_at', updatedAt: 'updated_at' } });
+}, { timestamps: true });
 export default mongoose.model('User', userSchema);

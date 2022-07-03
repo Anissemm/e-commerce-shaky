@@ -1,5 +1,5 @@
 import mongoose from "mongoose";
-import app from "..";
+import app from "../index.js";
 import 'dotenv/config';
 import 'express-async-errors';
 const PORT = process.env.PORT || 3001;

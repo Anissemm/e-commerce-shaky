@@ -1,5 +1,7 @@
+import { ApiError } from "./errors.js";
 const errorHandler = (err, req, res, next) => {
-    if (err === null || err === void 0 ? void 0 : err.statusCode) {
+    console.log(err instanceof ApiError);
+    if (err instanceof ApiError) {
         res.status(err.statusCode).json(err.getResponse());
     }
     next(err);
