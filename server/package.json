@@ -1,4 +1,13 @@
 {
+  "name": "e-commerce-shaky-server",
+  "version": "1.0.0",
+  "description": "An food supplement e-commerce web server",
+  "scripts": {
+    "build": "rimraf ./dist && tsc -p . && npm run copy-non-ts",
+    "start": "cross-env MODE=PRODUCTION node --experimental-modules ./dist/index.js",
+    "copy-non-ts": "copyfiles -f \"./src/templates/**.ejs\" ./dist/templates",
+    "dev": "nodemon"
+  },
   "type": "module",
   "main": "./dist/index.js",
   "exports": {
@@ -11,30 +20,20 @@
       ]
     }
   },
-  "name": "e-commerce-shaky-server",
-  "version": "1.0.0",
-  "description": "An food supplement e-commerce web server",
-  "scripts": {
-    "build": "rimraf ./dist && tsc -p . && npm run copy-non-ts",
-    "start": "node --experimental-modules ./dist/index.js",
-    "copy-non-ts": "copyfiles -f \"./src/templates/**.ejs\" ./dist/templates",
-    "dev": "nodemon"
-  },
   "repository": {
     "type": "github",
     "url": "null"
   },
   "keywords": [
     "e-commerce",
-    "food-supplement",
+    "food",
+    "supplement",
     "proteins",
     "backend"
   ],
   "author": "Anis aka \"Anissem\" Dimassi",
   "license": "MIT",
   "dependencies": {
-    "@types/ejs": "^3.1.1",
-    "@types/nodemailer": "^6.4.4",
     "bcrypt": "^5.0.1",
     "cookie-parser": "^1.4.6",
     "cors": "^2.8.5",
@@ -50,12 +49,16 @@
   },
   "devDependencies": {
     "@types/bcrypt": "^5.0.0",
+    "@types/cookie-parser": "^1.4.3",
     "@types/cors": "^2.8.12",
+    "@types/ejs": "^3.1.1",
     "@types/express": "^4.17.13",
     "@types/jsonwebtoken": "^8.5.8",
     "@types/node": "^18.0.0",
+    "@types/nodemailer": "^6.4.4",
     "@zoltu/typescript-transformer-append-js-extension": "^1.0.1",
     "copyfiles": "^2.4.1",
+    "cross-env": "^7.0.3",
     "nodemon": "^2.0.18",
     "rimraf": "^3.0.2",
     "ts-node": "^10.8.1",

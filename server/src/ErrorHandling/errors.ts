@@ -35,6 +35,7 @@ interface ServerErrorResponse {
 
 export class ServerError extends ApiError {
     statusCode: ServerStatusCodes
+
     constructor(statusCode: ServerStatusCodes, message: string) {
         super(statusCode, message)
         this.statusCode = statusCode
@@ -43,15 +44,15 @@ export class ServerError extends ApiError {
     getResponse(): ServerErrorResponse {
         return {
             success: false,
-            message: this.message,
+            message: 'internal server error',
             status: getStatusText(this.statusCode, true),
             statusCode: this.statusCode
         }
     }
 }
 
-type ClientStatusCodes = 400 | 401 | 402 | 403 | 404 | 405 | 406 | 407 | 408 | 409 | 410 | 
-411 | 412 | 413 | 414 | 415 | 416 | 417 | 418 | 421 | 422 | 423 | 424 | 425 | 426 | 428 | 429 | 431 | 451
+type ClientStatusCodes = 400 | 401 | 402 | 403 | 404 | 405 | 406 | 407 | 408 | 409 | 410 |
+    411 | 412 | 413 | 414 | 415 | 416 | 417 | 418 | 421 | 422 | 423 | 424 | 425 | 426 | 428 | 429 | 431 | 451
 
 interface ClientErrorResponse {
     success: boolean

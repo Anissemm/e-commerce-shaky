@@ -1,0 +1,50 @@
+import { Request, Response } from "express"
+import { ClientError } from "../../ErrorHandling/errors"
+import User from "../../models/user"
+import { sendVerificationMail } from "../../utils/mails"
+
+// to implement on front end
+export const resendVerificationMail = async (req: Request, res: Response) => {
+    const { email } = req.body
+    if (!email) {
+        throw new ClientError(400, 'email address is required')
+    }
+
+    await sendVerificationMail({ email, hostUrl: req.baseHostUrl })
+}
+
+// to implement on front end
+export const verifyMail = async (req: Request, res: Response) => {
+    const { verifyKey } = req.body
+
+    if (verifyKey) {
+        const [id, emailVerifKey] = (verifyKey as string).split('.')
+        console.log(verifyKey)
+        const user = await User.findById(id).select('emailVerification')
+
+        if (!user) {
+            throw new ClientError(400, 'no user with such id')
+        }
+
+        if (user.emailVerification.isVerified) {
+            return res.status(200).json({ message: 'email already verified', success: true })
+        }
+
+        const { expiresIn } = user.emailVerification
+        const isKeyOutdated = Date.now() > new Date(expiresIn as Date).getTime()
+        const { emailVerifKey: storedKey } = user.emailVerification
+
+        if (isKeyOutdated || storedKey !== emailVerifKey) {
+            throw new ClientError(400, 'invalid verification key')
+            //Resend key or redirect to other api
+        }
+
+        user.emailVerification.isVerified = true
+        user.emailVerification.emailVerifKey = undefined
+        user.emailVerification.expiresIn = undefined
+        await user.save()
+
+        return res.status(200).json({ message: 'email verified', success: true })
+    }
+
+}

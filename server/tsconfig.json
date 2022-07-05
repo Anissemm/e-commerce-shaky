@@ -1,15 +1,17 @@
 {
   "ts-node": {
+    "transpileOnly": true,
     "esm": true
   },
   "include": [
-    "src"
+    "src",
+    "src/@types"
   ],
   "compilerOptions": {
     /* Visit https://aka.ms/tsconfig to read more about this file */
     "typeRoots": [
-      "./src/@types",
-      "./node_modules/@types",
+      "src/@types",
+      "node_modules/@types",
     ],  
     "target": "es2017",
     "moduleDetection": "auto",
