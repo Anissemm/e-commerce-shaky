@@ -1,7 +1,7 @@
 import { Request, Response } from "express"
 import { ClientError } from "../../ErrorHandling/errors"
 import User from "../../models/user"
-import { sendVerificationMail } from "../../utils/mails"
+import { sendVerificationMail } from "../../utils/utilityMails"
 
 // to implement on front end
 export const resendVerificationMail = async (req: Request, res: Response) => {
@@ -10,7 +10,9 @@ export const resendVerificationMail = async (req: Request, res: Response) => {
         throw new ClientError(400, 'email address is required')
     }
 
-    await sendVerificationMail({ email, hostUrl: req.baseHostUrl })
+    const verifEmailInfo = await sendVerificationMail({ email, hostUrl: req.baseHostUrl })
+    
+    return res.status(200).json({ message: 'your Email has been sent', success: true, info: verifEmailInfo })
 }
 
 // to implement on front end
@@ -19,7 +21,6 @@ export const verifyMail = async (req: Request, res: Response) => {
 
     if (verifyKey) {
         const [id, emailVerifKey] = (verifyKey as string).split('.')
-        console.log(verifyKey)
         const user = await User.findById(id).select('emailVerification')
 
         if (!user) {

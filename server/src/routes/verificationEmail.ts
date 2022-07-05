@@ -3,7 +3,7 @@ import { resendVerificationMail, verifyMail } from "../controllers/api/emailVeri
 
 const verifyMailRouter = Router()
 
-verifyMailRouter.route('/verifyEmail').get(verifyMail)
-verifyMailRouter.route('/verifyEmail/resend').get(resendVerificationMail)
+verifyMailRouter.route('/verifyEmail').post(verifyMail)
+verifyMailRouter.route('/verifyEmail/resend').post(resendVerificationMail)
 
 export default verifyMailRouter

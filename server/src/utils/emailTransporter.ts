@@ -60,13 +60,15 @@ const prodConfig = (): SMTPTransport.Options => {
     }
 }
 
-const transporterConfig = DEVELOPMENT ? devConfig : prodConfig()
+const transporterConfig = !DEVELOPMENT ? devConfig : prodConfig()
 
 export const transporter = createTransport(transporterConfig)
 
 interface MessageTemplateParameters {
     email: string
     name: string
+    senderName: string
+    subject: string
     dirname: string
     providedProps?: {
         [key: string]: any
@@ -77,12 +79,12 @@ interface MessageTemplateType {
     (props: MessageTemplateParameters): Promise<{ [key: string]: string }>
 }
 
-export const getMessageTemplate: MessageTemplateType = async ({ email, name, dirname, providedProps }) => {
-    const body = await ejs.renderFile(dirname, providedProps ? providedProps : {}) as string
+export const getMessageTemplate: MessageTemplateType = async ({ email, name, subject, senderName, dirname, providedProps }) => {
+    const body = await ejs.renderFile(dirname, providedProps ? {company: senderName, ...providedProps} : {}) as string
     return {
-        from: `Shaky Ecommerce <${process.env.NODEMAILER_EMAIL}>`,
+        from: `${senderName} <${process.env.NODEMAILER_EMAIL}>`,
         to: `${name} <${email}>`,
-        subject: `Please verify your email address`,
+        subject: subject,
         html: body
     }
 }

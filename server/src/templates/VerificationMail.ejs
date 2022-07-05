@@ -8,13 +8,13 @@
 
 <body>
   <% if (name) { %>
-  <p>Hi <%= name %>,</p>
-  <% } %>
-  <% if (company && link) { %>
-  <p>We just need to verify your email address before you can access <%= company %>.
-    <a href="<%= link %>">Verify your email address link</a>
-    Thanks! – The <%= company %> team</p>
-  <% } %>
+    <p>Hi <%= name %>,</p>
+    <% } %>
+    <% if (company && link) { %>
+    <p>We just need to verify your email address before you can access <%= company %>.
+      <a href="<%= link %>">Verify your email address link</a>
+      Thanks! – The <%= company %> team</p>
+    <% } %> 
 </body>
 
 </html>

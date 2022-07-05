@@ -13,10 +13,7 @@ interface UserDoc extends mongoose.Document {
     name: string
     accessRight: number
     refreshToken: string
-    passwordReset: {
-        resetKey: string,
-        expiresIn: Date | undefined
-    } | undefined,
+    passwordReset: resetPasswordObj
     get role(): string
     set role(role: string)
     profileImage?: string
@@ -26,11 +23,22 @@ interface UserDoc extends mongoose.Document {
 
 }
 
+interface resetPasswordObj {
+    resetKey: string
+    expiresIn: Date | undefined
+    remove: () => void
+}
+
 interface VerifyEmailObj {
     emailVerifKey: string | undefined
     isVerified: boolean
     expiresIn: Date | undefined
 }
+
+const resetPasswordSchema = new mongoose.Schema({
+    resetKey: String,
+    expiresIn: Date
+}, { _id: false })
 
 const verifyEmailSchema = new mongoose.Schema<VerifyEmailObj>({
     emailVerifKey: String,
@@ -66,11 +74,7 @@ const userSchema = new mongoose.Schema<UserDoc>({
         type: Number,
         default: 3
     },
-    passwordReset: {
-        type: Map,
-        resetKey: String,
-        expiresIn: Date
-    },
+    passwordReset: resetPasswordSchema,
     emailVerification: verifyEmailSchema,
     password: {
         type: String,

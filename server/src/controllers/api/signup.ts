@@ -1,7 +1,7 @@
 import { Request, Response } from "express"
 import { ClientError } from "../../ErrorHandling/errors"
 import User from "../../models/user"
-import { sendVerificationMail } from "../../utils/mails"
+import { sendVerificationMail } from "../../utils/utilityMails"
 
 // to implement on front end
 export const signUp = async (req: Request, res: Response) => {
