@@ -26,11 +26,11 @@ export const sendVerificationMail: VerificationMail = async ({ email, hostUrl })
     const user = await User.findOneAndUpdate({ email }, { emailVerification: { emailVerifKey, expiresIn: new Date(Date.now() + 1000 * 60 * 60) } }, { new: true })
 
     if (!user) {
-        throw new ClientError(404, 'no user with such email address')
+        throw new ClientError(404, 'user-not-found')
     }
 
     // to adapt to real link
-    const verificationLink = `${hostUrl}/account/verifyEmail?verifyCode=${`${user.id}.${randomBytes(20).toString('hex')}`}`
+    const verificationLink = `${hostUrl}/account/emailVerification?verifyCode=${`${user.id}.${randomBytes(20).toString('hex')}`}`
 
     const message = await getMessageTemplate({
         email,
@@ -64,7 +64,7 @@ export const sendResetPasswordMail: PasswordResetMail = async ({ email, hostUrl 
     const user = await User.findOneAndUpdate({ email }, { passwordReset: { resetKey, expiresIn: new Date(Date.now() + 1000 * 60 * 60) } }, { new: true })
     
     if (!user) {
-        throw new ClientError(400, 'no user with such email address')
+        throw new ClientError(400, 'user-not-found')
     }
 
     // to implement the real link

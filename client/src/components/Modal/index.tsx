@@ -1,7 +1,7 @@
 import { forwardRef, memo, PropsWithChildren, SyntheticEvent, useEffect, useRef } from 'react'
 import BackgroundOverlay from '../BackgroundOverlay'
 import { AnimatePresence, motion, Variants } from 'framer-motion'
-import { getModalShow, useAppSelector, useAppDispatch, toggleModal, setShownModalId, getSearchFiltersShow } from '../../store'
+import { getModalShow, useAppSelector, useAppDispatch, toggleModal, getSearchFiltersShow, getModalCurrentId } from '../../store'
 import { createPortal } from 'react-dom'
 
 type AlignType = 'start' | 'center' | 'end'
@@ -40,51 +40,50 @@ const Modal = forwardRef<HTMLDivElement, ModalProps>(({
     children }, ref) => {
 
     const isShown = useAppSelector(getModalShow)
+    const currentModalId = useAppSelector(getModalCurrentId)
     const dispatch = useAppDispatch()
     const modalWrapperRef = useRef<HTMLDivElement | null>(null)
 
     const handleClose = (e: SyntheticEvent<EventTarget>) => {
         if (e.target instanceof HTMLDivElement && e.target.dataset?.modalClose === 'true') {
-            dispatch(toggleModal(false))
+            dispatch(toggleModal({ show: false }))
         }
     }
 
     useEffect(() => {
         if (isShown) {
-            dispatch(setShownModalId(modalId))
             if (!customFocus) {
                 modalWrapperRef?.current?.parentElement?.focus()
             }
         } else {
             modalWrapperRef?.current?.parentElement?.blur()
-            dispatch(setShownModalId(''))
         }
     }, [isShown, customFocus])
 
     useEffect(() => {
-            const handleClose = (e: any) => {
-                if (e.key === 'Escape') {
-                    e.preventDefault()
-                    dispatch(toggleModal(false))
-                }
+        const handleClose = (e: any) => {
+            if (e.key === 'Escape') {
+                e.preventDefault()
+                dispatch(toggleModal({ show: false }))
             }
+        }
 
-            document.addEventListener('keydown', handleClose)
+        document.addEventListener('keydown', handleClose)
 
-            return () => {
-                document.removeEventListener('keydown', handleClose)
-            }
+        return () => {
+            document.removeEventListener('keydown', handleClose)
+        }
     }, [])
 
     return (
         <>
             {createPortal(
                 <AnimatePresence>
-                    {isShown &&
-                        <BackgroundOverlay zIndex={47}>
+                    {isShown && modalId === currentModalId &&
+                        <BackgroundOverlay zIndex={50}>
                             <motion.section
                                 tabIndex={-1}
-                                className='fixed flex items-center justify-center top-0 left-0 w-screen h-screen z-[48]'
+                                className='fixed flex items-center justify-center top-0 left-0 w-screen h-screen z-[51]'
                                 ref={ref}
                                 variants={modalVariants}
                                 initial='hidden'

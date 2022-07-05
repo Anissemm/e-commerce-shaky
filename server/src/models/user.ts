@@ -96,7 +96,7 @@ const userSchema = new mongoose.Schema<UserDoc>({
                 const compared = await bcrypt.compare(password, this.password)
                 return { success: compared }
             } catch (err: any) {
-                throw new ServerError(500, 'something went wrong when comparing passwords')
+                throw new ServerError(500, 'password-compare-problem')
             }
         },
         generateAccessTokensPair: async function () {
@@ -104,7 +104,7 @@ const userSchema = new mongoose.Schema<UserDoc>({
             const refreshSecret = process.env.REFRESH_TOKEN_SECRET as string
 
             if (!accessSecret && !refreshSecret) {
-                throw new ServerError(500, 'missing access secret or refresh secret')
+                throw new ServerError(500, 'missing-token-secret-cipher')
             }
 
             const accessToken: string = jwt.sign({
@@ -125,7 +125,7 @@ const userSchema = new mongoose.Schema<UserDoc>({
                 this.refreshToken = refreshToken
                 await this.save()
             } catch (error) {
-                throw new ServerError(500, 'database on save error')
+                throw new ServerError(500, 'database-save-error')
             }
             return { success: true, message: 'successful', tokens: [accessToken, refreshToken] }
         }
@@ -144,7 +144,7 @@ userSchema.pre('save', async function (this: UserDoc, next) {
 })
 
 userSchema.virtual('role')
-    .get(function () {
+    .get(function (this: UserDoc) {
         switch (this.accessRight) {
             case 1:
                 return 'admin'
@@ -153,7 +153,7 @@ userSchema.virtual('role')
             case 3:
                 return 'client'
         }
-    }).set(function (role) {
+    }).set(function (this: UserDoc, role) {
         switch (role) {
             case 'admin':
                 this.accessRight = 1

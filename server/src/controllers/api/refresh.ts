@@ -15,7 +15,7 @@ const handleRefreshToken = async (req: Request, res: Response) => {
     const user = await User.findOne({ refreshToken })
 
     if (!user) {
-        throw new ClientError(403, 'forbidden')
+        throw new ClientError(403, 'invalid-refresh-token')
     }
 
 
@@ -24,7 +24,7 @@ const handleRefreshToken = async (req: Request, res: Response) => {
 
     jwt.verify(refreshToken, refreshSecret, (err: any, decode: any) => {
         if (err || decode.name !== user.name) {
-            throw new ClientError(403, 'forbidden')
+            throw new ClientError(403, 'invalid-refresh-token')
         }
         const accessToken = jwt.sign({
             sub: decode.id,
@@ -33,7 +33,7 @@ const handleRefreshToken = async (req: Request, res: Response) => {
             role: decode.role
         }, accessSecret, { expiresIn: DEVELOPMENT ? '30s' : '30m' })
 
-        return res.status(200).json({ message: 'token refreshed', accessToken, success: true })
+        return res.status(200).json({ message: 'token-refreshed', accessToken, success: true })
     })
 }
 

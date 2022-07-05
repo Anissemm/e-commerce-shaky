@@ -3,6 +3,6 @@ import { signUp } from "../controllers/api/signup"
 
 const signUpRouter = Router()
 
-signUpRouter.route('/sign-up').post(signUp)
+signUpRouter.route('/signup').post(signUp)
 
 export default signUpRouter

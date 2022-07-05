@@ -1,15 +1,14 @@
 import { AnimatePresence, motion } from 'framer-motion'
-import { setAutoFreeze } from 'immer'
-import React, { MutableRefObject, useEffect, useState } from 'react'
-import SignInForm from '../components/SignInForm'
-import SignUpForm from '../components/SignUpForm'
-import { useClientBox } from '../hooks/useBox'
-import { usePageSetTitle } from '../hooks/usePageSet'
+import { MutableRefObject, useState } from 'react'
+import SignInForm from '../../components/SignInForm'
+import SignUpForm from '../../components/SignUpForm'
+import { useClientBox } from '../../hooks/useBox'
+import { usePageSetTitle } from '../../hooks/usePageSet'
 
 const SignUp = () => {
   usePageSetTitle('My Account', false, false)
 
-  const [activeTab, setaActiveTab] = useState('sign-in')
+  const [activeTab, setaActiveTab] = useState('signin')
   const [shadow, setShadow] = useState(true)
   const [clientRect, formWrapperRef] = useClientBox()
 
@@ -25,9 +24,9 @@ const SignUp = () => {
             if ((e.type.startsWith('pointer') && (e as PointerEvent).pointerType === 'touch')
               || e.type.startsWith('touch')) {
               if (info.offset.x > 70) {
-                setaActiveTab('sign-in')
+                setaActiveTab('signin')
               } else if (info.offset.x < -70) {
-                setaActiveTab('sign-up')
+                setaActiveTab('signup')
               }
             }
           }}
@@ -36,13 +35,13 @@ const SignUp = () => {
           layout
           className='max-w-[530px] mx-auto rounded-xl overflow-hidden bg-ebony-clay touch-none'>
           <motion.div className='grid grid-cols-2'>
-            {['sign-in', 'sign-up'].map(item => {
+            {['signin', 'signup'].map(item => {
               return (
                 <motion.button
                   key={item}
                   style={{
                     boxShadow: activeTab === item && shadow ?
-                      `${item === 'sign-in' ? '' : '-'}2.5px 0 3px #222831` :
+                      `${item === 'signin' ? '' : '-'}2.5px 0 3px #222831` :
                       'none'
                   }}
                   onClick={() => { setaActiveTab(item) }}
@@ -65,10 +64,12 @@ const SignUp = () => {
             })}
 
           </motion.div>
-          {activeTab === 'sign-in' ? <SignInForm key={'sign-in'} /> : <SignUpForm key={'sign-up'} />}
+
+          {activeTab === 'signin' ? <SignInForm key={'signin'} /> : <SignUpForm key={'signup'} />}
         </motion.div>
       </AnimatePresence>
     </div >
+
   )
 }
 

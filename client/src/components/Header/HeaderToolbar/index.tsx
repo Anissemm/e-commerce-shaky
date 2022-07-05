@@ -5,6 +5,7 @@ import { motion } from 'framer-motion'
 import { useAppDispatch, toggleSideNav, useAppSelector, getMenuType, toggleModal } from '../../../store'
 import Search from '../../Search'
 import style from './HeaderToolbar.module.css'
+import CartModal from '../../CartModal'
 
 const HeaderToolbar = () => {
     const navigate = useNavigate()
@@ -41,26 +42,22 @@ const HeaderToolbar = () => {
                     {menuType === 'sidenav' &&
                         <motion.button
                             className={`w-[25px] h-[25px] ${style.svgBackground} ${style.search}`} aria-label='User authentication'
-                            onClick={() => dispatch(toggleModal())}
+                            onClick={() => dispatch(toggleModal({ modalId: 'search-modal' }))}
                         >
-                            {/* <SearchIcon /> */}
                         </motion.button>}
 
                     <button
                         onClick={() => {
-                            if (!user) {
-                                navigate('/my-account')
-                            } else {
-                                navigate('/my-account/dashboard')
-                            }
+                            navigate('/account')
                         }}
                         className={`w-[25px] h-[25px] ${style.svgBackground} ${style.user}`} aria-label='User authentication'>
-                        {/* <UserIcon /> */}
                     </button>
 
-                    <button className={`w-[30px] h-[30px] ${style.svgBackground} ${style.cart}`} aria-label='User authentication'>
-                        {/* <CartIcon /> */}
+                    <button
+                        onClick={() => dispatch(toggleModal({ modalId: 'cart-modal' }))}
+                        className={`w-[30px] h-[30px] ${style.svgBackground} ${style.cart}`} aria-label='User authentication'>
                     </button>
+                    <CartModal />
 
                 </div>
             </div>

@@ -4,7 +4,9 @@ import Input from '../Input'
 import Button from '../Button'
 import * as yup from 'yup'
 import { ReactComponent as Google } from '../../assets/svg/icons/google_icon.svg'
-
+import { useAppDispatch, useAppSelector } from '../../store'
+import { setCredentials, useSignInMutation } from '../../store/slices/userSlice'
+import { useState } from 'react'
 
 const viewVariants: Variants = {
   hidden: {
@@ -28,24 +30,36 @@ const viewVariants: Variants = {
 }
 
 const validationSchema = yup.object({
-  username: yup.string().email('Please enter a valid email address').required('Email is required'),
-  password: yup.string().required('Password is required')
+  email: yup.string().email('Please enter a valid email address').required('Email is required'),
+  password: yup.string().min(8, 'Password must be at least 8 character long').required('Password is required')
 })
 
 const SignInForm = () => {
+  const dispatch = useAppDispatch()
+  const [serverError, setServerError] = useState({ err: null, status: false })
+  const [signIn, { isLoading }] = useSignInMutation()
+
   const signInForm = useFormik({
     initialValues: {
-      username: '',
+      email: '',
       password: ''
     },
     validationSchema,
-    onSubmit: (values, { setSubmitting }) => {
-      console.log(values)
+    onSubmit: async (values) => {
+      try {
+        const payload = await signIn(values).unwrap()
+        dispatch(setCredentials({ token: payload.token, id: '1234151' }))
+        console.log(payload)
+      } catch (err: any) {
+        setServerError({ err, status: true })
+      }
+
     }
   })
-  
+
   return (
     <motion.div
+      layout
       style={{ boxShadow: '2.5px -1.5px 2px #222831' }}
       variants={viewVariants}
       initial='hidden'
@@ -63,7 +77,13 @@ const SignInForm = () => {
             required
             label='Email'
             type='text'
-            id='username'
+            name='email'
+            id='email'
+            error={signInForm.touched.email && typeof signInForm.errors.email === 'string' && signInForm.errors.email}
+            onChange={signInForm.handleChange}
+            onBlur={signInForm.handleBlur}
+            value={signInForm.values.email}
+
             placeholder='exemple@mail.com' />
         </motion.div>
         <motion.div className={`pb-5`}>
@@ -71,6 +91,11 @@ const SignInForm = () => {
             required
             label='Password'
             type='password'
+            onChange={signInForm.handleChange}
+            onBlur={signInForm.handleBlur}
+            value={signInForm.values.password}
+            error={signInForm.touched.password && typeof signInForm.errors.password === 'string' && signInForm.errors.password}
+            name='password'
             id='password'
             placeholder='*************' />
         </motion.div>
@@ -80,7 +105,7 @@ const SignInForm = () => {
           </motion.button>
         </motion.div>
         <motion.div className={`pb-2`}>
-          <Button color='yellow'>
+          <Button type='submit' color='yellow'>
             Sign in
           </Button>
         </motion.div>

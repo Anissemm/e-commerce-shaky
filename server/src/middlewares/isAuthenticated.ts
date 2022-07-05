@@ -18,8 +18,8 @@ const isAuthenticated = (req: Request, res: Response, next: NextFunction) => {
 
     if (token && accessSecret) {
         jwt.verify(token, accessSecret, (err, decoded) => {
-            if (err) {
-                throw new ClientError(403, 'forbidden')
+            if (err || !decoded) {
+                throw new ClientError(403, 'invalid-access-token')
             }
 
             if (decoded) {

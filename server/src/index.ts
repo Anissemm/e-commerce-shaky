@@ -1,4 +1,4 @@
-import express from 'express'
+import express, { NextFunction, Request, Response } from 'express'
 import { startServer } from './config/connect'
 import cors from 'cors'
 import 'dotenv/config'
@@ -12,10 +12,14 @@ import isAuthenticated from './middlewares/isAuthenticated'
 import refreshTokenRouter from './routes/refresh'
 import verifyMailRouter from './routes/verificationEmail'
 import passwordResetRouter from './routes/resetPassword'
+import corsConfig from './config/corsConfig'
+import credentials from './middlewares/credentials'
 
 const app = express()
 
-app.use(cors())
+app.use(credentials)
+app.use(cors(corsConfig))
+
 app.use(express.urlencoded({ extended: true }))
 app.use(express.json())
 app.use(cookieParser())
@@ -29,7 +33,6 @@ app.use('/api/v1', refreshTokenRouter)
 
 app.use(isAuthenticated)
 /* authenticated routes */
-
 app.get('/api/v1/protected', (req, res) => {
     res.json('Hello app!')
 })

@@ -97,7 +97,7 @@ const Search = () => {
               onChange={handleChange}
               onFocus={() => {
                 setInputFocused(true)
-                dispatch(toggleModal())
+                dispatch(toggleModal({modalId: 'search-modal'}))
               }}
               onBlur={() => setInputFocused(false)}
               placeholder={inputFocused ? '' : 'Search Something'} />

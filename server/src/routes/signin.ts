@@ -3,6 +3,6 @@ import { signIn } from "../controllers/api/signin"
 
 const signInRouter = Router()
 
-signInRouter.route('/sign-in').post(signIn)
+signInRouter.route('/signin').post(signIn)
 
 export default signInRouter

@@ -47,90 +47,85 @@ const Input = forwardRef<{ focus: () => void } | null, InputProps>((
         }
     }))
 
-    const handleEndSelect = () => {
-        const end = inputRef.current?.value.length
-        console.log(end)
-        if (end) {
-            inputRef.current?.setSelectionRange(end, end)
-        }
-    }
-
     return (
-        <AnimatePresence>
-            <motion.div layout>
-                <motion.div
-                    tabIndex={-1}
-                    onFocus={(e: any) => {
-                        setClicked(true)
-                        setFocucsed(true)
-                        inputRef.current?.focus()
-                        setClicked(false)
-                    }}
-                    className={`relative -z[2] font-["Roboto_Condensed"] px-3 bg-melony-clay 
+
+        <motion.div layout transition={{ ease: 'linear' }}>
+            <motion.div
+                layout
+                tabIndex={-1}
+                onFocus={(e: any) => {
+                    setClicked(true)
+                    setFocucsed(true)
+                    inputRef.current?.focus()
+                    setClicked(false)
+                }}
+                className={`relative -z[2] font-["Roboto_Condensed"] px-3 bg-melony-clay 
                                 items-center justify-center rounded-2xl pb-1.5 transition duration-200 
                                 focus-within:shadow-[0_0_5px_#000] ${error ? style.error : style.inputWrapper}`}>
-                    {(type === 'password' || showPassword) &&
-                        <button
-                            type='button'
-                            onClick={() => {
-                                if (inputRef.current?.type) {
-                                    flushSync(setShowPassword(prev => !prev) as any)
-                                    inputRef.current.blur()
-                                    inputRef.current.focus()
-                                }
-                            }}
-                            aria-label={showPassword ? 'Hide password' : 'Show password'}
-                            className={`bg-transparent rounded-lg border-none absolute z-[1] right-3 w-6 h-6 top-1/2 
-                                -translate-y-1/2 flex items-center justify-center ${style.showButton}`}>
-                            <Eye className='w-5 pointer-events-none' />
-                        </button>}
-                    <motion.label
-                        className={`${focused || clicked ? 'text-[14px]' : 'text-[12px]'} font-bold top-1 leading-none text-sandy-brown transiton duration-300
-                     relative  z-[0]`}
-                        htmlFor={id}>{`${required ? '*' : ''}${label}`}
-                    </motion.label>
-                    <input
-                        autoComplete="new-password"
-                        name={name}
-                        value={value}
-                        onChange={onChange}
-                        ref={inputRef}
-                        placeholder={!focused ? placeholder : ''}
-                        className={`${style.input} font-[Roboto] text-[12px] pr-8 leading-none bg-transparent w-full border-white border-2text-gray-300 
-                z-[0] text-gray-400 outline-none ${className}`}
-                        type={showPassword ? 'text' : type}
-                        aria-labelledby={id}
-                        onBlur={(e: any) => {
-                            if (typeof onBlur === 'function') {
-                                onBlur(e)
+                {(type === 'password' || showPassword) &&
+                    <button
+                        type='button'
+                        onClick={() => {
+                            if (inputRef.current?.type) {
+                                flushSync(setShowPassword(prev => !prev) as any)
+                                inputRef.current.blur()
+                                inputRef.current.focus()
                             }
-                            setFocucsed(false)
                         }}
-                        onFocus={(e: any) => {
-                            if (typeof onFocus === 'function') {
-                                onFocus(e)
-                            }
-                            if (e.target.type !== 'email') {
-                                const length = e.target.value.length
-                                e.target.setSelectionRange(length, length)
-                            }
+                        aria-label={showPassword ? 'Hide password' : 'Show password'}
+                        className={`bg-transparent rounded-lg border-none absolute z-[1] right-3 w-6 h-6 top-1/2 
+                                -translate-y-1/2 flex items-center justify-center ${style.showButton}`}>
+                        <Eye className='w-5 pointer-events-none' />
+                    </button>}
+                <motion.label
+                    className={`${focused || clicked ? 'text-[14px]' : 'text-[12px]'} font-bold top-1 leading-none text-sandy-brown transiton duration-300
+                     relative  z-[0]`}
+                    htmlFor={id}>{`${required ? '*' : ''}${label}`}
+                </motion.label>
+                <input
+                    autoComplete="new-password"
+                    name={name}
+                    value={value}
+                    onChange={onChange}
+                    ref={inputRef}
+                    placeholder={!focused ? placeholder : ''}
+                    className={`${style.input} font-[Roboto] text-[12px] pr-8 leading-none bg-transparent w-full border-white border-2text-gray-300 
+                z-[0] text-gray-400 outline-none ${className}`}
+                    type={showPassword ? 'text' : type}
+                    aria-labelledby={id}
+                    onBlur={(e: any) => {
+                        if (typeof onBlur === 'function') {
+                            onBlur(e)
                         }
+                        setFocucsed(false)
+                    }}
+                    onFocus={(e: any) => {
+                        if (typeof onFocus === 'function') {
+                            onFocus(e)
                         }
-                        id={id}
-                        required={false}
-                        {...props}
-                    />
-                </motion.div>
+                        if (e.target.type !== 'email') {
+                            const length = e.target.value.length
+                            e.target.setSelectionRange(length, length)
+                        }
+                    }
+                    }
+                    id={id}
+                    required={false}
+                    {...props}
+                />
+            </motion.div>
+            <AnimatePresence>
                 {typeof error === 'string' &&
                     <motion.span
+                        transition={{ ease: 'linear' }}
                         aria-errormessage='error'
                         className='pl-2 italic text-[12px] text-red-400 font-["Roboto_Condensed"] leading-none'
                         initial={{ opacity: 0 }}
                         animate={{ opacity: 1 }}
                         exit={{ opacity: 0 }}
                     >{error}</motion.span>}
-            </motion.div>
-        </AnimatePresence>
+            </AnimatePresence>
+        </motion.div>
     )
 })
 

@@ -38,7 +38,7 @@ const ModalHeader: React.FC<ModalHeaderProps> = ({ title }) => {
             >
                 <span className='px-3 py-2 uppercase bg-sandy-brown text-ebony-clay font-medium text-xl'>{title}</span>
             </motion.h3>
-            <button className={`w-[20px] h-[20px] mr-8 ${style.closeBtn}`} aria-label='close' onClick={() => dispatch(toggleModal(false))} />
+            <button className={`w-[20px] h-[20px] mr-8 ${style.closeBtn}`} aria-label='close' onClick={() => dispatch(toggleModal({ show: false }))} />
         </motion.header >
     )
 }

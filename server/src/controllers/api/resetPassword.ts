@@ -8,11 +8,11 @@ export const sendResetPasswordToken = async (req: Request, res: Response) => {
     const { email } = req.body
 
     if (!email) {
-        throw new ClientError(400, 'email address is required')
+        throw new ClientError(400, 'missing-email')
     }
 
     const passwordResetMailInfo = await sendResetPasswordMail({ email, hostUrl: req.baseHostUrl })
-    return res.status(200).json({ message: 'your Email has been sent', success: true, info: passwordResetMailInfo })
+    return res.status(200).json({ message: 'reset-mail-sent', success: true, info: passwordResetMailInfo })
 }
 
 // to implement on front end
@@ -21,11 +21,9 @@ export const verifyTokenAndResetPassword = async (req: Request, res: Response) =
 
     if (resetToken) {
         const [id, resetKey] = (resetToken as string).split('.')
-        console.log(resetToken)
         const user = await User.findById(id).select('passwordReset')
-        console.log(user)
         if (!user) {
-            throw new ClientError(400, 'no user with such id')
+            throw new ClientError(400, 'invalid-reset-token')
         }
 
         const { expiresIn } = user.passwordReset
@@ -34,7 +32,7 @@ export const verifyTokenAndResetPassword = async (req: Request, res: Response) =
         const { resetKey: storedKey } = user.passwordReset!
 
         if (isKeyOutdated || storedKey !== resetKey) {
-            throw new ClientError(400, 'invalid or outdated reset token')
+            throw new ClientError(400, 'invalid-reset-token')
             //Resend key or redirect to other api
         }
 
@@ -42,7 +40,7 @@ export const verifyTokenAndResetPassword = async (req: Request, res: Response) =
         user.passwordReset = undefined!
         await user.save()
 
-        return res.status(201).json({ message: 'password reset successful', success: true })
+        return res.status(201).json({ message: 'password-reset-successful', success: true })
     }
 }
 

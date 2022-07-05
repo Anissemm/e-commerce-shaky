@@ -9,13 +9,13 @@ export const signIn = async (req: Request, res: Response) => {
     const { email, password } = req.body
 
     if (!email || !password) {
-        throw new ClientError(400, 'email and password are required')
+        throw new ClientError(400, 'missing-credentials')
     }
 
     const user = await User.findOne({ email })
 
     if (!user) {
-        throw new ClientError(401, 'no user with such email address')
+        throw new ClientError(401, 'wrong-credentials')
     }
 
     const { success: isPwdsMatch } = await user.comparePasswords(password)
@@ -36,5 +36,5 @@ export const signIn = async (req: Request, res: Response) => {
 
         return res.status(200).json({ accessToken })
     }
-    throw new ClientError(401, 'unauthorized')
+    throw new ClientError(401, 'wrong-credentials')
 }
