@@ -1,5 +1,5 @@
 import { Router } from "express"
-import { resendVerificationMail, verifyMail } from "../controllers/api/EmailVerification"
+import { resendVerificationMail, verifyMail } from "../controllers/api/emailVerification"
 
 const verifyMailRouter = Router()
 

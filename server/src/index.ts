@@ -10,7 +10,7 @@ import HostBaseUrlMiddleware from './middlewares/HostBaseUrlMiddleware'
 import cookieParser from 'cookie-parser'
 import isAuthenticated from './middlewares/isAuthenticated'
 import refreshTokenRouter from './routes/refresh'
-import verifyMailRouter from './routes/verificationEmail'
+import verifyMailRouter from './routes/emailVerification'
 import passwordResetRouter from './routes/resetPassword'
 import corsConfig from './config/corsConfig'
 import credentials from './middlewares/credentials'
@@ -36,7 +36,9 @@ app.use(isAuthenticated)
 app.get('/api/v1/protected', (req, res) => {
     res.json('Hello app!')
 })
-
+app.use((req: Request, res: Response) => {
+    res.status(404).json({ msg: 'page-not-found', success: false })
+})
 app.use(errorHandler)
 
 startServer()

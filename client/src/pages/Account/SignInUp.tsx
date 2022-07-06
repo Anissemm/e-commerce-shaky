@@ -23,9 +23,9 @@ const SignUp = () => {
           onPanEnd={(e, info) => {
             if ((e.type.startsWith('pointer') && (e as PointerEvent).pointerType === 'touch')
               || e.type.startsWith('touch')) {
-              if (info.offset.x > 70) {
+              if (info.offset.x < -70) {
                 setaActiveTab('signin')
-              } else if (info.offset.x < -70) {
+              } else if (info.offset.x > 70) {
                 setaActiveTab('signup')
               }
             }
@@ -34,7 +34,7 @@ const SignUp = () => {
           ref={formWrapperRef as MutableRefObject<HTMLDivElement>}
           layout
           className='max-w-[530px] mx-auto rounded-xl overflow-hidden bg-ebony-clay touch-none'>
-          <motion.div className='grid grid-cols-2'>
+          <motion.div className='grid grid-cols-2 bg-sandy-brown'>
             {['signin', 'signup'].map(item => {
               return (
                 <motion.button
@@ -49,14 +49,14 @@ const SignUp = () => {
                   aria-disabled={activeTab === item}
                   className={`flex items-center justify-center uppercase py-3 
                   transition duration-200
-                  relative font-medium text-[24px] bg-transparent text-sandy-brown
+                  relative font-medium text-[24px] bg-transparent
                   ${activeTab !== item ? 'z-[0]' : `z-[1] `}`}
                 >
-                  <span className={`relative z-[2] ${activeTab !== item ? 'text-ebony-clay' : ''}`}>{item === 'sign-in' ? 'Sign In' : 'Sign Up'}</span>
-                  {activeTab !== item && <motion.span
-                    onLayoutAnimationStart={() => { setShadow(false) }}
-                    onLayoutAnimationComplete={() => { setShadow(true) }}
-                    className={`bg-sandy-brown z-[1] text-ebony-clay absolute top-0 left-0 h-full w-full`}
+                  <span className={`relative z-[2] ${activeTab === item ? 'text-sandy-brown' : 'text-ebony-clay'}`}>{item === 'signin' ? 'Sign In' : 'Sign Up'}</span>
+                  {activeTab === item && <motion.span
+                    // onLayoutAnimationStart={() => { setShadow(false) }}
+                    // onLayoutAnimationComplete={() => { setShadow(true) }}
+                    className={`text-sandy-brown z-[1] bg-ebony-clay absolute top-0 left-0 h-full w-full`}
                     layoutId='tab-background' />}
                 </motion.button>
 

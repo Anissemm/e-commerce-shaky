@@ -30,7 +30,7 @@ export const sendVerificationMail: VerificationMail = async ({ email, hostUrl })
     }
 
     // to adapt to real link
-    const verificationLink = `${hostUrl}/account/emailVerification?verifyCode=${`${user.id}.${randomBytes(20).toString('hex')}`}`
+    const verificationLink = `${hostUrl}/account/email-verification?verifyCode=${`${user.id}.${emailVerifKey}`}`
 
     const message = await getMessageTemplate({
         email,
@@ -68,7 +68,7 @@ export const sendResetPasswordMail: PasswordResetMail = async ({ email, hostUrl 
     }
 
     // to implement the real link
-    const resetPasswordLink = `${hostUrl}/account/resetPassword?resetKey=${`${user.id}.${resetKey}}`}`
+    const resetPasswordLink = `${hostUrl}/account/reset-password?resetKey=${`${user.id}.${resetKey}}`}`
 
 
     const message = await getMessageTemplate({

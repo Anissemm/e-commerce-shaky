@@ -39,8 +39,16 @@ const userAuthSlice = apiSlice.injectEndpoints({
                 method: 'POST',
                 body: { ...credentials }
             })
+        }),
+        verifyEmail: builder.mutation({
+            query: (verifyKey: string) => ({
+                url: 'v1/verifyEmail',
+                method: 'POST',
+                body: { verifyKey }
+            })
+
         })
-})
+    })
 })
 
 const userSlice = createSlice({
@@ -64,4 +72,4 @@ export const { setCredentials, signOut } = userSlice.actions
 
 export const getUserId = (state: RootState) => state.user.id
 export const getUserToken = (state: RootState) => state.user.token
-export const { useSignInMutation, useSignUpMutation } = userAuthSlice
+export const { useSignInMutation, useSignUpMutation, useVerifyEmailMutation } = userAuthSlice

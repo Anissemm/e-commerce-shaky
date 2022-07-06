@@ -1,9 +1,9 @@
 import { useFormik } from 'formik'
-import { AnimatePresence, motion, MotionConfigContext, Variants } from 'framer-motion'
+import { AnimatePresence, motion, Variants } from 'framer-motion'
 import Input from '../Input'
 import * as yup from 'yup'
 import Button from '../Button'
-import { Link, Navigate } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import { useEffect, useState } from 'react'
 import { getSignUpFormValues, setFormValues, useAppDispatch, useAppSelector } from '../../store'
 import { useSignUpMutation } from '../../store/slices/userSlice'
@@ -39,6 +39,7 @@ const validationSchema = yup.object({
 })
 
 const SignUpForm = () => {
+  const navigate = useNavigate()
   const [signUp, { isLoading }] = useSignUpMutation()
   const dispatch = useAppDispatch()
   const [requestError, setRequestError] = useState<string | null>(null)
@@ -67,7 +68,7 @@ const SignUpForm = () => {
       setRequestError(null)
       try {
         const { email, name, password } = values
-        const data = await signUp({ email, name, password }).unwrap()
+        await signUp({ email, name, password }).unwrap()
         setUserCreated(true)
       } catch (err: any) {
         handleRequestError(err)
@@ -78,9 +79,11 @@ const SignUpForm = () => {
     dispatch(setFormValues({ email: signUpForm.values.email, name: signUpForm.values.name }))
   }, [signUpForm.values])
 
-  if (userCreated) {
-    return <Navigate to='emailVerification' />
-  }
+  useEffect(() => {
+    if (userCreated) {
+      navigate('email-verification', { state: { msg: 'user-created', email: signUpForm.values.email} })
+    }
+  }, [userCreated])
 
   return (
     <motion.div
@@ -94,7 +97,7 @@ const SignUpForm = () => {
       className='px-8 relative'>
 
       <AnimatePresence>
-        {isLoading ? <motion.div initial={{opacity: 0}} animate={{opacity: 0}} exit={{opacity: 0}} className='top-0 left-0 z-[2] absolute min-w-full min-h-full bg-raven bg-opacity-40 flex items-center justify-center'>
+        {isLoading ? <motion.div initial={{ opacity: 0 }} animate={{ opacity: 0 }} exit={{ opacity: 0 }} className='top-0 left-0 z-[2] absolute min-w-full min-h-full bg-raven bg-opacity-40 flex items-center justify-center'>
           <Loader className='bg-opacity-100' width={60} height={60} />
         </motion.div> : null}
       </AnimatePresence>
@@ -167,7 +170,7 @@ const SignUpForm = () => {
             placeholder='*************' />
         </motion.div>
         <motion.div className={`pb-2`}>
-          <Button color='yellow'>
+          <Button type='submit' color='yellow'>
             Sign Up
           </Button>
         </motion.div>

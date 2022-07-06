@@ -1,5 +1,5 @@
 import { AnimatePresence, motion } from 'framer-motion'
-import { ChangeEvent, forwardRef, PropsWithChildren, useImperativeHandle, useRef, useState } from 'react'
+import { ChangeEvent, forwardRef, PropsWithChildren, useEffect, useImperativeHandle, useRef, useState } from 'react'
 import { flushSync } from 'react-dom'
 import { ReactComponent as Eye } from '../../assets/svg/icons/eye_icon.svg'
 import style from './Input.module.css'
@@ -39,6 +39,7 @@ const Input = forwardRef<{ focus: () => void } | null, InputProps>((
     const [focused, setFocucsed] = useState(false)
     const [showPassword, setShowPassword] = useState(false)
     const [clicked, setClicked] = useState(false)
+    const [inputValue, setInputValue] = useState<string | undefined>('')
     const inputRef = useRef<null | HTMLInputElement>(null)
 
     useImperativeHandle(ref, () => ({
@@ -46,6 +47,15 @@ const Input = forwardRef<{ focus: () => void } | null, InputProps>((
             inputRef.current?.focus();
         }
     }))
+
+    useEffect(() => {
+        if (value) {
+            setInputValue(value)
+        } else {
+            setInputValue('')
+        }
+
+    }, [value])
 
     return (
 
@@ -85,7 +95,7 @@ const Input = forwardRef<{ focus: () => void } | null, InputProps>((
                 <input
                     autoComplete="new-password"
                     name={name}
-                    value={value}
+                    value={inputValue}
                     onChange={onChange}
                     ref={inputRef}
                     placeholder={!focused ? placeholder : ''}

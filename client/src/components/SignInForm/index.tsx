@@ -4,9 +4,10 @@ import Input from '../Input'
 import Button from '../Button'
 import * as yup from 'yup'
 import { ReactComponent as Google } from '../../assets/svg/icons/google_icon.svg'
-import { useAppDispatch, useAppSelector } from '../../store'
+import { toggleModal, useAppDispatch, useAppSelector } from '../../store'
 import { setCredentials, useSignInMutation } from '../../store/slices/userSlice'
 import { useState } from 'react'
+import ForgotPasswordModal from '../ForgotPassword'
 
 const viewVariants: Variants = {
   hidden: {
@@ -100,7 +101,10 @@ const SignInForm = () => {
             placeholder='*************' />
         </motion.div>
         <motion.div>
-          <motion.button className='hover:text-sandy-brown font-[Roboto] text-[14px] text-gray-500 flex items-center pb-5 justify-end w-full'>
+          <motion.button
+            type='button'
+            onClick={() => { dispatch(toggleModal({ modalId: 'forgot-password-modal', show: true })) }}
+            className='hover:text-sandy-brown font-[Roboto] text-[14px] text-gray-500 flex items-center pb-5 justify-end w-full'>
             Forgot your password?
           </motion.button>
         </motion.div>
@@ -110,7 +114,7 @@ const SignInForm = () => {
           </Button>
         </motion.div>
         <motion.div className={`pb-5`}>
-          <Button color='softBlue'>
+          <Button type="button" color='softBlue'>
             <span className='flex items-center justify-center gap-2'>
               Sign in with
               <Google />
@@ -120,12 +124,13 @@ const SignInForm = () => {
         <motion.div className={`pb-5 pt-2`}>
           <motion.p className='mx-auto text-center max-w-[240px] text-gray-500 font-["Roboto_Condensed"] font-light text-[14px]'>
             Don’t have an account? Swipe right
-            to <motion.button className='text-sandy-brown hover:bg-opacity-80'>
+            to <motion.button type="button" className='text-sandy-brown hover:bg-opacity-80'>
               <span> create a new account.</span>
             </motion.button>
           </motion.p>
         </motion.div>
       </form>
+      <ForgotPasswordModal />
     </motion.div>
   )
 }
