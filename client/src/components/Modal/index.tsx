@@ -7,7 +7,8 @@ import { createPortal } from 'react-dom'
 type AlignType = 'start' | 'center' | 'end'
 
 interface ModalProps extends PropsWithChildren {
-    width?: number,
+    width?: number | string
+    height?: number | string
     align?: AlignType
     modalId?: string
     customFocus?: boolean
@@ -34,6 +35,7 @@ const modalVariants: Variants = {
 
 const Modal = forwardRef<HTMLDivElement, ModalProps>(({
     width = 1050,
+    height = 'auto',
     align = 'center',
     modalId = '',
     customFocus = false,
@@ -82,6 +84,7 @@ const Modal = forwardRef<HTMLDivElement, ModalProps>(({
                     {isShown && modalId === currentModalId &&
                         <BackgroundOverlay zIndex={50}>
                             <motion.section
+                                role='dialog'
                                 tabIndex={-1}
                                 className='fixed flex items-center justify-center top-0 left-0 w-screen h-screen z-[51]'
                                 ref={ref}
@@ -98,7 +101,7 @@ const Modal = forwardRef<HTMLDivElement, ModalProps>(({
                                     onClick={handleClose}
                                 >
                                     <motion.div
-                                        style={{ maxWidth: width }}
+                                        style={{ maxWidth: width, maxHeight: height }}
                                         className={`w-full h-full bg-ebony-clay overflow-hidden
                                                   text-white shadow-[0_0_10px_5px_rgba(0,0,0,.5)] 
                                                   [@supports(backdrop-filter:blur(16px))]:backdrop-blur-lg

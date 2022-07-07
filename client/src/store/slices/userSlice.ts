@@ -24,6 +24,11 @@ type SignUpCredentials = {
     name: string
 }
 
+type NewPasswordWithToken = {
+    newPassword: string,
+    resetToken: string
+}
+
 const userAuthSlice = apiSlice.injectEndpoints({
     endpoints: builder => ({
         signIn: builder.mutation({
@@ -47,6 +52,27 @@ const userAuthSlice = apiSlice.injectEndpoints({
                 body: { verifyKey }
             })
 
+        }),
+        sendResetEmail: builder.mutation({
+            query: (email: string) => ({
+                url: 'v1/resetPassword/send',
+                method: 'POST',
+                body: { email }
+            })
+        }),
+        verifyResetToken: builder.mutation({
+            query: (token: string) => ({
+                url: 'v1/resetPassword/verifyToken',
+                method: 'POST',
+                body: { resetToken: token }
+            })
+        }),
+        resetPassword: builder.mutation({
+            query: (resetCredentials: NewPasswordWithToken) => ({
+                url: 'v1/resetPassword/reset',
+                method: 'POST',
+                body: { ...resetCredentials }
+            })
         })
     })
 })
@@ -72,4 +98,10 @@ export const { setCredentials, signOut } = userSlice.actions
 
 export const getUserId = (state: RootState) => state.user.id
 export const getUserToken = (state: RootState) => state.user.token
-export const { useSignInMutation, useSignUpMutation, useVerifyEmailMutation } = userAuthSlice
+export const {
+    useSignInMutation,
+    useSignUpMutation,
+    useVerifyEmailMutation,
+    useVerifyResetTokenMutation,
+    useResetPasswordMutation,
+    useSendResetEmailMutation } = userAuthSlice

@@ -2,9 +2,11 @@ import { combineReducers, configureStore } from "@reduxjs/toolkit"
 import localforage from "localforage"
 import uiSlice from './slices/uiSlice'
 import searchFiltersSlice from "./slices/searchFiltersSlice"
-import SignUpFormSlice from "./slices/SignUpFormSlice"
+import SignUpFormSlice from "./slices/signUpFormSlice"
 import apiSlice from "./api/apiSlice"
 import userSlice from "./slices/userSlice"
+import pageSlice from "./slices/pageSlice"
+import SignInformSlice from "./slices/signInFormSlice"
 
 import {
     persistStore,
@@ -16,7 +18,6 @@ import {
     PURGE,
     REGISTER,
 } from "redux-persist"
-import pageSlice from "./slices/pageSlice"
 
 const mainReducer = combineReducers({
     [apiSlice.reducerPath]: apiSlice.reducer,
@@ -24,7 +25,8 @@ const mainReducer = combineReducers({
     UI: uiSlice,
     searchFilters: searchFiltersSlice,
     page: pageSlice,
-    signUpForm: SignUpFormSlice
+    signUpForm: SignUpFormSlice,
+    signInForm: SignInformSlice
 
 })
 

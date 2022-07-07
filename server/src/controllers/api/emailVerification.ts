@@ -15,7 +15,6 @@ export const resendVerificationMail = async (req: Request, res: Response) => {
     return res.status(200).json({ message: 'verification-email-sent', success: true, info: verifEmailInfo })
 }
 
-// to implement on front end
 export const verifyMail = async (req: Request, res: Response) => {
     const { verifyKey } = req.body
 
@@ -43,13 +42,8 @@ export const verifyMail = async (req: Request, res: Response) => {
         const isKeyOutdated = Date.now() > new Date(expiresIn as Date).getTime()
         const { emailVerifKey: storedKey } = user.emailVerification
 
-        console.log('matches: ', storedKey !== emailVerifKey)
-        console.log('verify: ', emailVerifKey)
-        console.log('stored: ', storedKey)
-
         if (isKeyOutdated || storedKey !== emailVerifKey) {
             throw new ClientError(400, 'invalid-verification-key')
-            //Resend key or redirect to other api
         }
 
         user.emailVerification.isVerified = true

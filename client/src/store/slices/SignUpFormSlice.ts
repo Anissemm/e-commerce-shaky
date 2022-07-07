@@ -17,13 +17,16 @@ const signUpFormSlice = createSlice({
     name: 'signUpForm',
     initialState,
     reducers: {
-        setFormValues(state, action: PayloadAction<FormType>) {
+        setSignUpFormValues(state, action: PayloadAction<FormType>) {
             state.values = action.payload
+        },
+        clearSignUpFormValues(state) {
+            state.values = {}
         }
     }
 })
 
-export const { setFormValues } = signUpFormSlice.actions
+export const { setSignUpFormValues, clearSignUpFormValues } = signUpFormSlice.actions
 export default signUpFormSlice.reducer
 
 export const getSignUpFormValues = (state: RootState) => state.signUpForm.values

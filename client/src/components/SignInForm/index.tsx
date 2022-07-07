@@ -4,10 +4,11 @@ import Input from '../Input'
 import Button from '../Button'
 import * as yup from 'yup'
 import { ReactComponent as Google } from '../../assets/svg/icons/google_icon.svg'
-import { toggleModal, useAppDispatch, useAppSelector } from '../../store'
+import { getSignInFormValues, toggleModal, useAppDispatch, useAppSelector } from '../../store'
 import { setCredentials, useSignInMutation } from '../../store/slices/userSlice'
-import { useState } from 'react'
-import ForgotPasswordModal from '../ForgotPassword'
+import { useEffect, useState } from 'react'
+import ForgotPasswordModal from '../ForgotPasswordModal'
+import { setSignInFormValues } from '../../store'
 
 const viewVariants: Variants = {
   hidden: {
@@ -37,15 +38,17 @@ const validationSchema = yup.object({
 
 const SignInForm = () => {
   const dispatch = useAppDispatch()
+  const { email: initialEmailValue } = useAppSelector(getSignInFormValues)
   const [serverError, setServerError] = useState({ err: null, status: false })
   const [signIn, { isLoading }] = useSignInMutation()
 
   const signInForm = useFormik({
     initialValues: {
-      email: '',
+      email: initialEmailValue,
       password: ''
     },
     validationSchema,
+    validateOnChange: true,
     onSubmit: async (values) => {
       try {
         const payload = await signIn(values).unwrap()
@@ -57,6 +60,13 @@ const SignInForm = () => {
 
     }
   })
+
+  useEffect(() => {
+    const { email } = signInForm.values
+    if (!signInForm.errors.email && email.length > 1) {
+      dispatch(setSignInFormValues({ email: email }))
+    }
+  }, [signInForm.values])
 
   return (
     <motion.div
@@ -100,11 +110,11 @@ const SignInForm = () => {
             id='password'
             placeholder='*************' />
         </motion.div>
-        <motion.div>
+        <motion.div className='flex items-center pb-5 justify-end'>
           <motion.button
             type='button'
             onClick={() => { dispatch(toggleModal({ modalId: 'forgot-password-modal', show: true })) }}
-            className='hover:text-sandy-brown font-[Roboto] text-[14px] text-gray-500 flex items-center pb-5 justify-end w-full'>
+            className='hover:text-sandy-brown font-[Roboto] text-[14px] text-gray-500'>
             Forgot your password?
           </motion.button>
         </motion.div>

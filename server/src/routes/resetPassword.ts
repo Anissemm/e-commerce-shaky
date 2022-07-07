@@ -1,10 +1,11 @@
 import { Router } from "express"
-import { sendResetPasswordToken, verifyTokenAndResetPassword } from "../controllers/api/resetPassword"
+import { resetPassword, sendResetPasswordToken, verifyResetPasswordToken } from "../controllers/api/resetPassword"
 
 
 const passwordResetRouter = Router()
 
 passwordResetRouter.route('/resetPassword/send').post(sendResetPasswordToken)
-passwordResetRouter.route('/resetPassword/reset').post(verifyTokenAndResetPassword)
+passwordResetRouter.route('/resetPassword/verifyToken').post(verifyResetPasswordToken)
+passwordResetRouter.route('/resetPassword/reset').post(resetPassword)
 
 export default passwordResetRouter

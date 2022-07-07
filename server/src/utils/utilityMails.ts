@@ -59,16 +59,15 @@ interface PasswordResetMail {
 
 export const sendResetPasswordMail: PasswordResetMail = async ({ email, hostUrl }) => {
     hostUrl = DEVELOPMENT ? 'http://localhost:3000' : hostUrl
-    
     const resetKey = randomBytes(20).toString('hex')
     const user = await User.findOneAndUpdate({ email }, { passwordReset: { resetKey, expiresIn: new Date(Date.now() + 1000 * 60 * 60) } }, { new: true })
     
     if (!user) {
-        throw new ClientError(400, 'user-not-found')
+        throw new ClientError(404, 'user-not-found')
     }
 
     // to implement the real link
-    const resetPasswordLink = `${hostUrl}/account/reset-password?resetKey=${`${user.id}.${resetKey}}`}`
+    const resetPasswordLink = `${hostUrl}/account/reset-password?resetKey=${`${user.id}.${resetKey}`}`
 
 
     const message = await getMessageTemplate({

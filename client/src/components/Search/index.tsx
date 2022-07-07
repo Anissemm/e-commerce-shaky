@@ -37,7 +37,7 @@ const Search = () => {
   const searchFiltersRef = useRef<HTMLDivElement | null>(null)
   const modalRef = useRef<HTMLDivElement | null>(null)
 
-  const results = true /* Hard code */
+  const results = false /* Hard code */
 
   useEffect(() => {
     if (entry?.borderBoxSize) {

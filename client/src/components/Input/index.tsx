@@ -69,6 +69,7 @@ const Input = forwardRef<{ focus: () => void } | null, InputProps>((
                     inputRef.current?.focus()
                     setClicked(false)
                 }}
+                aria-label={label}
                 className={`relative -z[2] font-["Roboto_Condensed"] px-3 bg-melony-clay 
                                 items-center justify-center rounded-2xl pb-1.5 transition duration-200 
                                 focus-within:shadow-[0_0_5px_#000] ${error ? style.error : style.inputWrapper}`}>

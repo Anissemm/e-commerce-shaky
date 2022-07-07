@@ -54,12 +54,12 @@ const EmailVerification = () => {
   }, [state])
 
   const handleVerifyEmail = async (search: string) => {
-    if (/^\?verifyCode=\w+\.\w+$/.test(search)) {
+    if (/^\?verifyCode=/.test(search)) {
       const code = search.split('=')[1]
       if (code) {
         try {
           const data = await verifyEmail(code).unwrap()
-          setVerifiedUser(data.user)
+          setVerifiedUser(data.user.name)
 
           if (data.message === 'already-verified') {
             setMessageType('already-verified')
@@ -82,15 +82,12 @@ const EmailVerification = () => {
 
   return (
     <div className='font-[Oswald]'>
-      <Helmet>
-        <title>Verification Email</title>
-      </Helmet>
       <h1 className='inline-block my-6 text-xl xs:text-[24px] text-ebony-clay px-4 py-[10px] bg-sandy-brown uppercase font-[Oswald]  
       font-medium'>
         Email verification
       </h1>
-      <motion.div className='my-5 px-2'>
-        {messageType === 'user-created' &&
+      <motion.div className='my-5 px-2'><>
+        {messageType === 'user-created' && state &&
           <motion.div {...variants} className='max-w-[530px] min-h-[300px] px-3 xs:px-5 rounded-md w-full mx-auto bg-ebony-clay flex flex-col items-center justify-center py-4'>
             <Letter className='w-16 xs:w-20' fillColor='melony-clay' fillOpacity={50} strokeColor='sandy-brown' />
             <motion.p className='uppercase py-2 text-sandy-brown text-center text-xl font-semibold px'>You are nearly there!</motion.p>
@@ -109,12 +106,12 @@ const EmailVerification = () => {
             </motion.p>
           </motion.div>
         }
-        {messageType === 'email-verified' &&
+        {messageType === 'email-verified' && 
           <motion.div {...variants} className='max-w-[530px] min-h-[300px] px-3 xs:px-5 rounded-md w-full mx-auto bg-ebony-clay flex flex-col items-center justify-center py-4'>
             <motion.p className='uppercase py-2 text-sandy-brown text-center text-xl font-semibold'>Your account has been verified!</motion.p>
             <motion.p className='py-2 text-sandy-brown text-center font-["Roboto_Condensed"] text-base xs:text-xl font-normal'>
               <span className='float-left'>
-                <>Hey {verifiedUser?.name ? verifiedUser : 'Client'},</>
+               <>Hey {verifiedUser ? verifiedUser : 'Client'},</>
               </span>
               <br /> Thanks for confirming that this is your account.
             </motion.p>
@@ -137,12 +134,12 @@ const EmailVerification = () => {
             </motion.p>
           </motion.div>
         }
-        {messageType === 'already-verified' &&
+        {messageType === 'already-verified' && 
           <motion.div {...variants} className='max-w-[530px] min-h-[300px] px-3 xs:px-5 rounded-md w-full mx-auto bg-ebony-clay flex flex-col items-center justify-center py-4'>
             <motion.p className='uppercase py-2 text-sandy-brown text-center text-xl font-semibold'>Your account has been verified!</motion.p>
             <motion.p className='py-2 pb-7 text-sandy-brown text-center font-["Roboto_Condensed"] text-base xs:text-xl font-normal'>
               <span className='float-left'>
-                <>Hey {verifiedUser?.name ? verifiedUser?.name : 'Client'},</>
+              <>Hey {verifiedUser ? verifiedUser : 'Client'},</>
               </span>
               <br /> Your account is already verirfied.
             </motion.p>
@@ -165,7 +162,7 @@ const EmailVerification = () => {
             </motion.p>
           </motion.div>
         }
-
+      </>
       </motion.div>
     </div>
   )

@@ -15,14 +15,14 @@ const App: React.FC = () => {
     const location = useLocation()
 
     return (
-        <AnimatePresence exitBeforeEnter>
+        <AnimatePresence initial={false} exitBeforeEnter>
             <Routes location={location} key={location.pathname}>
                 <Route path='/' element={<MainLayout />}>
                     <Route index element={<Home />} />
                     <Route path='account' element={<UserAuthLayout />}>
                         <Route index element={<SignInUp />} />
                         <Route path='email-verification' element={<EmailVerification />} />
-                        <Route path='password-reset' element={<PasswordReset />} />
+                        <Route path='reset-password' element={<PasswordReset />} />
                         <Route path='dashboard' element={
                             <IsAuthenticated>
                                 <Dashboard />

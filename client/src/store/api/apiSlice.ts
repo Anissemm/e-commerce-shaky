@@ -17,7 +17,6 @@ const baseQuery = fetchBaseQuery({
 
 const baseQueryReauth: BaseQueryFn<string | FetchArgs, unknown, FetchBaseQueryError> = async (args, api, extraOptions ) => {
     const result = await baseQuery(args, api, extraOptions)
-    console.log(result)
     return result
 }
 

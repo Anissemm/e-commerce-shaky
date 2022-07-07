@@ -123,10 +123,10 @@ const SearchFilters = forwardRef<HTMLDivElement, PropsWithChildren>((props, ref)
                         style={{ boxShadow, height }}
                         className={`absolute font-[Oswald] right-0 bottom-0 max-h-[640px] px-5 h-full w-[287px] 
                     bg-ebony-clay z-[49] bg-opacity-80 ${style.backdropBlur} shadow-[0_0_5px_#000]`}>
-                        {/* <AnimatePresence> */}
                         <motion.header layout className='flex items-center justify-between pt-5 pb-10' >
                             <motion.button
                                 className='pr-2'
+                                title="Go back"
                                 onClick={() => {
                                     if (shownFilter !== '') {
                                         setShownFilter('')
@@ -142,12 +142,11 @@ const SearchFilters = forwardRef<HTMLDivElement, PropsWithChildren>((props, ref)
                                 <motion.h4 className='text-gray-500 uppercase text-[18px]'>Refine by</motion.h4>
                                 <motion.button
                                     onClick={() => { dispatch(resetFilters()) }}
-                                    className='text-sandy-brown uppercase text-[18px] hover:text-opacity-80 transition duration-300'>
+                                    className='text-sandy-brown uppercase text-[18px] hover:text-opacity-80 transition duration-150'>
                                     Clear
                                 </motion.button>
                             </motion.div>
                         </motion.header>
-                        {/* </AnimatePresence> */}
                         {shownFilter === '' && <motion.div
                             style={{ maxHeight: filterValuesHeight }}
                             className=' overflow-y-auto hover:scrollbar-thumb-raven scrollbar-thin scrollbar-thumb-fiorid'
@@ -155,13 +154,12 @@ const SearchFilters = forwardRef<HTMLDivElement, PropsWithChildren>((props, ref)
                             {filterFromServer.map(filter => {
                                 return (
                                     <motion.div
-
                                         key={filter.filterName} >
                                         <motion.button
                                             type='button'
                                             title={getFilterBtnTitleAttr(filter.filterName)}
                                             onClick={() => setShownFilter(filter.filterName)}
-                                            className='w-full flex justify-between items-center hover:text-sandy-brown'>
+                                            className='w-full flex justify-between items-center hover:text-sandy-brown transition duration-200'>
                                             <motion.span
                                                 className='grow text-left'
                                             >{filter.filterName}</motion.span>
@@ -193,11 +191,11 @@ const SearchFilters = forwardRef<HTMLDivElement, PropsWithChildren>((props, ref)
                             {filterFromServer.map(filter => {
                                 return (shownFilter === filter.filterName &&
                                     <motion.div
+                                        key={filter.filterName}
                                         style={{ maxHeight: filterValuesHeight }}
                                         className='relative'
                                     >
                                         <motion.div
-                                            key={filter.filterName}
                                             variants={FilterElementVariants}
                                             initial='hidden'
                                             animate='visible'
@@ -241,11 +239,10 @@ const FilterElement: React.FC<FilterElementProps> = ({ value, filterName }) => {
 
     return (
         <motion.div
-
             className='flex items-center justify-between mb-1'>
             <motion.label
                 className={`${checked ? 'text-sandy-brown' : ''} hover:text-sandy-brown 
-                hover:text-opacity-80 transition duration-200 cursor-pointer`}
+                hover:text-opacity-80 transition duration-150 cursor-pointer`}
                 htmlFor={`${filterName}-${value}`}
             >
                 {value}
@@ -267,8 +264,8 @@ const FilterElement: React.FC<FilterElementProps> = ({ value, filterName }) => {
                 <motion.div className='absolute flex items-center justify-center z-[3] top-0 left-0 w-full h-full bg-raven p-[1px]'>
                     <motion.div className='relative z-[2] w-full h-full border-fiorid border-4 border-solid' />
                     <Tick
-                        className='absolute top-1/2 left-1/2 z-[4] w-4 h-4'
-                        style={{ opacity: checked ? 1 : 0 }} />
+                        className='absolute top-1/2 left-1/2 z-[4] w-4 h-4 transition duration-150'
+                        style={{ opacity: checked ? 1 : 0 }}  />
                 </motion.div>
             </motion.div>
         </motion.div>

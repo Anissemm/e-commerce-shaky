@@ -3,7 +3,6 @@ import { ClientError } from "../../ErrorHandling/errors"
 import User from "../../models/user"
 import { sendResetPasswordMail } from "../../utils/utilityMails"
 
-// to implement on front end
 export const sendResetPasswordToken = async (req: Request, res: Response) => {
     const { email } = req.body
 
@@ -15,47 +14,46 @@ export const sendResetPasswordToken = async (req: Request, res: Response) => {
     return res.status(200).json({ message: 'reset-mail-sent', success: true, info: passwordResetMailInfo })
 }
 
-// to implement on front end
-export const verifyTokenAndResetPassword = async (req: Request, res: Response) => {
-    const { resetToken, newPassword } = req.body
+
+export const verifyResetPasswordToken = async (req: Request, res: Response) => {
+    const { resetToken } = req.body
 
     if (resetToken) {
         const [id, resetKey] = (resetToken as string).split('.')
         const user = await User.findById(id).select('passwordReset')
+
         if (!user) {
             throw new ClientError(400, 'invalid-reset-token')
         }
 
         const { expiresIn } = user.passwordReset
-        console.log(expiresIn)
         const isKeyOutdated = Date.now() > new Date(expiresIn as Date).getTime()
         const { resetKey: storedKey } = user.passwordReset!
 
         if (isKeyOutdated || storedKey !== resetKey) {
             throw new ClientError(400, 'invalid-reset-token')
-            //Resend key or redirect to other api
         }
 
-        user.password = newPassword
-        user.passwordReset = undefined!
-        await user.save()
-
-        return res.status(201).json({ message: 'password-reset-successful', success: true })
+        return res.status(200).json({ message: 'valid-reset-token', success: true, resetToken })
     }
 }
 
-// export const resetPassword = async (req: Request, res: Response) => {
-//     const { newPassword, resetToken } = req.body
+export const resetPassword = async (req: Request, res: Response) => {
+    const { newPassword, resetToken } = req.body
+    console.log(resetToken)
+    if (resetToken) {
+        const [id, _resetKey] = (resetToken as string).split('.')
+        const user = await User.findById(id)
 
-//     const user = await User.findOne({ passwordReset: { resetKey: resetToken } })
+        console.log(user)
+        if (!user) {
+            throw new ClientError(400, 'invalid-reset-token')
+        }
 
-//     if (!user) {
-//         throw new ClientError(404, 'no user found')
-//     }
+        user.password = newPassword
+        user.passwordReset.remove()
+        await user.save()
 
-//     user.password = newPassword
-//     user.passwordReset.remove()
-//     await user.save()
-
-//     return res.status(200).json({ message: 'password successfully reset', success: true })
-// }
+        return res.status(200).json({ message: 'passsword-reset-success', success: true })
+    }
+}
