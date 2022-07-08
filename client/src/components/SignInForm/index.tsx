@@ -9,6 +9,7 @@ import { setCredentials, useSignInMutation } from '../../store/slices/userSlice'
 import { useEffect, useState } from 'react'
 import ForgotPasswordModal from '../ForgotPasswordModal'
 import { setSignInFormValues } from '../../store'
+import decodeAccessToken from '../../utils/decodeAccessToken'
 
 const viewVariants: Variants = {
   hidden: {
@@ -39,7 +40,7 @@ const validationSchema = yup.object({
 const SignInForm = () => {
   const dispatch = useAppDispatch()
   const { email: initialEmailValue } = useAppSelector(getSignInFormValues)
-  const [serverError, setServerError] = useState({ err: null, status: false })
+  const [serverError, setServerError] = useState('')
   const [signIn, { isLoading }] = useSignInMutation()
 
   const signInForm = useFormik({
@@ -52,12 +53,10 @@ const SignInForm = () => {
     onSubmit: async (values) => {
       try {
         const payload = await signIn(values).unwrap()
-        dispatch(setCredentials({ token: payload.token, id: '1234151' }))
-        console.log(payload)
+          dispatch(setCredentials(payload?.accessToken))
       } catch (err: any) {
-        setServerError({ err, status: true })
+        setServerError('server-error')
       }
-
     }
   })
 
@@ -78,67 +77,71 @@ const SignInForm = () => {
       exit='hidden'
       transition={{ ease: 'linear' }}
       className='px-8'>
-      <motion.small
+      <small
         className='flex py-4 item-center h-full justify-end w-full text-sandy-brown font["Roboto_Condensed"]'>
         *Required
-      </motion.small>
-      <form autoComplete='off' onSubmit={signInForm.handleSubmit}>
-        <motion.div className={`pb-5`}>
-          <Input
-            required
-            label='Email'
-            type='text'
-            name='email'
-            id='email'
-            error={signInForm.touched.email && typeof signInForm.errors.email === 'string' && signInForm.errors.email}
-            onChange={signInForm.handleChange}
-            onBlur={signInForm.handleBlur}
-            value={signInForm.values.email}
+      </small>
+      <form autoComplete='off' className="flex flex-col justify-center items-center" onSubmit={signInForm.handleSubmit}>
+        <div className='w-full'>
+          <div className={`pb-5`}>
+            <Input
+              required
+              label='Email'
+              type='text'
+              name='email'
+              id='email'
+              error={signInForm.touched.email && typeof signInForm.errors.email === 'string' && signInForm.errors.email}
+              onChange={signInForm.handleChange}
+              onBlur={signInForm.handleBlur}
+              value={signInForm.values.email}
 
-            placeholder='exemple@mail.com' />
-        </motion.div>
-        <motion.div className={`pb-5`}>
-          <Input
-            required
-            label='Password'
-            type='password'
-            onChange={signInForm.handleChange}
-            onBlur={signInForm.handleBlur}
-            value={signInForm.values.password}
-            error={signInForm.touched.password && typeof signInForm.errors.password === 'string' && signInForm.errors.password}
-            name='password'
-            id='password'
-            placeholder='*************' />
-        </motion.div>
-        <motion.div className='flex items-center pb-5 justify-end'>
-          <motion.button
-            type='button'
-            onClick={() => { dispatch(toggleModal({ modalId: 'forgot-password-modal', show: true })) }}
-            className='hover:text-sandy-brown font-[Roboto] text-[14px] text-gray-500'>
-            Forgot your password?
-          </motion.button>
-        </motion.div>
-        <motion.div className={`pb-2`}>
-          <Button type='submit' color='yellow'>
-            Sign in
-          </Button>
-        </motion.div>
-        <motion.div className={`pb-5`}>
-          <Button type="button" color='softBlue'>
-            <span className='flex items-center justify-center gap-2'>
-              Sign in with
-              <Google />
-            </span>
-          </Button>
-        </motion.div>
-        <motion.div className={`pb-5 pt-2`}>
-          <motion.p className='mx-auto text-center max-w-[240px] text-gray-500 font-["Roboto_Condensed"] font-light text-[14px]'>
-            Don’t have an account? Swipe right
-            to <motion.button type="button" className='text-sandy-brown hover:bg-opacity-80'>
-              <span> create a new account.</span>
-            </motion.button>
-          </motion.p>
-        </motion.div>
+              placeholder='exemple@mail.com' />
+          </div>
+          <div className={`pb-5`}>
+            <Input
+              required
+              label='Password'
+              type='password'
+              onChange={signInForm.handleChange}
+              onBlur={signInForm.handleBlur}
+              value={signInForm.values.password}
+              error={signInForm.touched.password && typeof signInForm.errors.password === 'string' && signInForm.errors.password}
+              name='password'
+              id='password'
+              placeholder='*************' />
+          </div>
+          <div className='flex items-center pb-5 justify-end'>
+            <button
+              type='button'
+              onClick={() => { dispatch(toggleModal({ modalId: 'forgot-password-modal', show: true })) }}
+              className='hover:text-sandy-brown font-[Roboto] text-[14px] text-gray-500'>
+              Forgot your password?
+            </button>
+          </div>
+        </div>
+        <div className='w-full pt-5'>
+          <div className={`pb-2`}>
+            <Button type='submit' color='yellow'>
+              Sign in
+            </Button>
+          </div>
+          <div className={`pb-5`}>
+            <Button type="button" color='softBlue'>
+              <span className='flex items-center justify-center gap-2'>
+                Sign in with
+                <Google />
+              </span>
+            </Button>
+          </div>
+          <div className={`pb-5 pt-2`}>
+            <p className='mx-auto text-center max-w-[240px] text-gray-500 font-["Roboto_Condensed"] font-light text-[14px]'>
+              Don’t have an account? Swipe right
+              to <button type="button" className='text-sandy-brown hover:bg-opacity-80'>
+                <span> create a new account.</span>
+              </button>
+            </p>
+          </div>
+        </div>
       </form>
       <ForgotPasswordModal />
     </motion.div>

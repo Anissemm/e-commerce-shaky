@@ -31,14 +31,17 @@ app.use('/api/v1', passwordResetRouter)
 app.use('/api/v1', signInRouter)
 app.use('/api/v1', refreshTokenRouter)
 
-app.use(isAuthenticated)
+
 /* authenticated routes */
-app.get('/api/v1/protected', (req, res) => {
-    res.json('Hello app!')
+app.get('/api/v1/protected', isAuthenticated, (req, res) => {
+    res.json('protected')
 })
+
+/* 404 */
 app.use((req: Request, res: Response) => {
     res.status(404).json({ msg: 'page-not-found', success: false })
 })
+
 app.use(errorHandler)
 
 startServer()

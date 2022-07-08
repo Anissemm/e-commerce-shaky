@@ -61,6 +61,4 @@ export const verifyMail = async (req: Request, res: Response) => {
             success: true
         })
     }
-
-
 }

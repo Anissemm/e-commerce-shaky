@@ -36,8 +36,6 @@ const config = {
     storage: localforage,
     blacklist: [
         'UI',
-        'signUpForm.values.password',
-        'signUpForm.values.passwordRetype',
         apiSlice.reducerPath
     ]
 }

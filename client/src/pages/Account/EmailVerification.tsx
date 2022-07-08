@@ -40,7 +40,7 @@ const variants: Variants = {
 const EmailVerification = () => {
   usePageSetTitle('Verification Email', false, false)
   const navigate = useNavigate()
-  const [verifiedUser, setVerifiedUser] = useState<null | User>(null)
+  const [verifiedUser, setVerifiedUser] = useState<null | string>(null)
 
   const [verifyEmail, { isLoading }] = useVerifyEmailMutation()
   const [requestError, setRequestError] = useState('')

@@ -112,14 +112,14 @@ const userSchema = new mongoose.Schema<UserDoc>({
                 name: this.name,
                 email: this.email,
                 admin: this.role === 'admin'
-            }, accessSecret, { expiresIn: DEVELOPMENT ? '30s' : '30m' })
+            }, accessSecret, { expiresIn: DEVELOPMENT ? '5s' : '30m' })
 
             const refreshToken: string = jwt.sign({
                 sub: this._id,
                 name: this.name,
                 email: this.email,
                 admin: this.role === 'admin'
-            }, refreshSecret, { expiresIn: DEVELOPMENT ? '1m' : '12h' })
+            }, refreshSecret, { expiresIn: DEVELOPMENT ? '15s' : '12h' })
 
             try {
                 this.refreshToken = refreshToken
@@ -137,7 +137,7 @@ userSchema.pre('save', async function (this: UserDoc, next) {
         if (!this.isModified('password')) next()
         const hashedPassword = await bcrypt.hash(this.password, 10)
         this.password = hashedPassword
-        next
+        next()
     } catch (err: any) {
         next(err)
     }

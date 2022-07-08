@@ -34,7 +34,7 @@ export const signIn = async (req: Request, res: Response) => {
             maxAge: 1000 * 60 * 60 * 24
         })
 
-        return res.status(200).json({ accessToken })
+        return res.status(200).json({ message: 'authenticated', success: true, accessToken })
     }
     throw new ClientError(401, 'wrong-credentials')
 }

@@ -1,16 +1,22 @@
-import { forwardRef, memo, PropsWithChildren, SyntheticEvent, useEffect, useRef } from 'react'
+import { forwardRef, memo, PropsWithChildren, SyntheticEvent, useEffect, useImperativeHandle, useRef, useState } from 'react'
 import BackgroundOverlay from '../BackgroundOverlay'
 import { AnimatePresence, motion, Variants } from 'framer-motion'
 import { getModalShow, useAppSelector, useAppDispatch, toggleModal, getSearchFiltersShow, getModalCurrentId } from '../../store'
 import { createPortal } from 'react-dom'
+import { useResizeObserver } from '../../hooks/useResizeObserver'
 
 type AlignType = 'start' | 'center' | 'end'
 
 interface ModalProps extends PropsWithChildren {
     width?: number | string
     height?: number | string
+    justify?: AlignType
     align?: AlignType
     modalId?: string
+    top?: 'auto' | number
+    right?: 'auto' | number    
+    bottom?: 'auto' | number
+    left?: 'auto' | number
     customFocus?: boolean
 }
 
@@ -33,10 +39,22 @@ const modalVariants: Variants = {
     }
 }
 
+type Padding = {
+    right: string | number
+    top: string | number
+    left: string | number
+    bottom: string | number
+}
+
 const Modal = forwardRef<HTMLDivElement, ModalProps>(({
     width = 1050,
     height = 'auto',
     align = 'center',
+    justify = 'center',
+    top = 'auto',
+    right = 'auto',
+    left = 'auto',
+    bottom = 'auto',
     modalId = '',
     customFocus = false,
     children }, ref) => {
@@ -45,12 +63,26 @@ const Modal = forwardRef<HTMLDivElement, ModalProps>(({
     const currentModalId = useAppSelector(getModalCurrentId)
     const dispatch = useAppDispatch()
     const modalWrapperRef = useRef<HTMLDivElement | null>(null)
+    const [padding, setPadding] = useState<Padding>({} as Padding)
 
     const handleClose = (e: SyntheticEvent<EventTarget>) => {
         if (e.target instanceof HTMLDivElement && e.target.dataset?.modalClose === 'true') {
             dispatch(toggleModal({ show: false }))
         }
     }
+
+    const [setTargetRef, entry] = useResizeObserver()
+
+    useEffect(() => {
+        if (entry) {
+            const { inlineSize } = entry.borderBoxSize[0]
+            if (inlineSize < 768) {
+                setPadding({ top: 10, right: 10, left: 10, bottom: 10 })
+            } else {
+                setPadding({ top, right, left, bottom })
+            }
+        }
+    }, [entry?.borderBoxSize[0]])
 
     useEffect(() => {
         if (isShown) {
@@ -95,14 +127,26 @@ const Modal = forwardRef<HTMLDivElement, ModalProps>(({
                             >
                                 <motion.div
                                     data-modal-close
-                                    style={{ justifyContent: align }}
-                                    ref={modalWrapperRef}
-                                    className={`w-full h-full p-[10px] flex items-center`}
+                                    style={{ 
+                                        justifyContent: justify, 
+                                        alignItems: align, 
+                                        paddingRight: padding?.right, 
+                                        paddingTop: padding?.top,
+                                        paddingLeft: padding?.left,
+                                        paddingBottom: padding?.bottom
+                                    }}
+                                    ref={ref => {
+                                        modalWrapperRef.current = ref
+                                        if (typeof setTargetRef === 'function') {
+                                            setTargetRef(ref)
+                                        }
+                                    }}
+                                    className={`relative w-full h-full p-[10px] flex items-center`}
                                     onClick={handleClose}
                                 >
                                     <motion.div
                                         style={{ maxWidth: width, maxHeight: height }}
-                                        className={`w-full h-full bg-ebony-clay overflow-hidden
+                                        className={`w-full h-full relative bg-ebony-clay overflow-hidden
                                                   text-white shadow-[0_0_10px_5px_rgba(0,0,0,.5)] 
                                                   [@supports(backdrop-filter:blur(16px))]:backdrop-blur-lg
                                                   [@supports(backdrop-filter:blur(16px))]:bg-opacity-50`}

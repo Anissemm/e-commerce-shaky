@@ -5,7 +5,7 @@ import ModalHeader from '../Modal/ModalHeader'
 
 const CartModal = () => {
   return (
-    <Modal modalId='cart-modal'>
+    <Modal justify='end' align='start' top={20} right={20} width={590} height={690} modalId='cart-modal'>
         <ModalHeader title='Cart' />
         <ModalBody>
             <div>

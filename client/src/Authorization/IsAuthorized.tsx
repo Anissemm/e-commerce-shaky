@@ -1,11 +1,12 @@
 import React, { PropsWithChildren, ReactElement } from 'react'
 import { useNavigate, Navigate } from 'react-router-dom'
+import { getUser, useAppSelector } from '../store'
 
 const IsAuthenticated: React.FC<PropsWithChildren> = ({ children }): ReactElement | null => {
-    const user = null
+    const user = useAppSelector(getUser)
 
     if (!user) {
-        return <Navigate to='/my-account' replace={true} />
+        return <Navigate to='/account' replace={true} />
     }
 
     return (

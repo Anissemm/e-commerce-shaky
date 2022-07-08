@@ -77,8 +77,9 @@ const SignUpForm = () => {
     }
   })
   useEffect(() => {
-    if (!signUpForm.errors.email && signUpForm.values.email.length > 1)
-    dispatch(setSignUpFormValues({ email: signUpForm.values.email, name: signUpForm.values.name }))
+    const { email, name } = signUpForm.values
+    if (!signUpForm.errors.email && email && email.length > 1)
+      dispatch(setSignUpFormValues({ email, name }))
   }, [signUpForm.values])
 
   useEffect(() => {
@@ -106,82 +107,82 @@ const SignUpForm = () => {
         </motion.div> : null}
       </AnimatePresence>
 
-        <small
-          className='flex py-4 item-center h-full justify-end w-full text-sandy-brown font["Roboto_Condensed"]'>
-          *Required
-        </small>
-        <AnimatePresence>
-          {requestError ?
-            <Alert key='sign-up-alert' className='mt-2 mb-5 '>
-              {requestError}
-            </Alert> :
-            null}
-        </AnimatePresence>
-        <form autoComplete='off' onSubmit={signUpForm.handleSubmit}>
-          <div className={`pb-5`}>
-            <Input
-              required
-              label='Email'
-              type='email'
-              id='email'
-              name='email'
-              onChange={signUpForm.handleChange}
-              onBlur={signUpForm.handleBlur}
-              value={signUpForm.values.email}
-              error={signUpForm.touched.email && typeof signUpForm.errors.email === 'string' && signUpForm.errors.email}
-              placeholder='exemple@mail.com' />
-          </div>
-          <div className={`pb-5`}>
-            <Input
-              required
-              label='Name'
-              type='text'
-              id='name'
-              name='name'
-              onChange={signUpForm.handleChange}
-              onBlur={signUpForm.handleBlur}
-              value={signUpForm.values.name}
-              error={signUpForm.touched.name && typeof signUpForm.errors.name === 'string' && signUpForm.errors.name}
-              placeholder='Jhon Doe' />
-          </div>
-          <div className={`pb-5`}>
-            <Input
-              required
-              label='Password'
-              type='password'
-              id='password'
-              onChange={signUpForm.handleChange}
-              onBlur={signUpForm.handleBlur}
-              value={signUpForm.values.password}
-              error={signUpForm.touched.password && typeof signUpForm.errors.password === 'string' && signUpForm.errors.password}
-              placeholder='*************' />
-          </div>
-          <div className={`pb-5`}>
-            <Input
-              required
-              label='Confirm password'
-              type='password'
-              id='passwordRetype'
-              onChange={signUpForm.handleChange}
-              onBlur={signUpForm.handleBlur}
-              value={signUpForm.values.passwordRetype}
-              error={signUpForm.touched.passwordRetype && typeof signUpForm.errors.passwordRetype === 'string' && signUpForm.errors.passwordRetype}
-              placeholder='*************' />
-          </div>
-          <div className={`pb-2`}>
-            <Button type='submit' color='yellow'>
-              Sign Up
-            </Button>
-          </div>
-          <div className={`pb-5 pt-2`}>
-            <p className='mx-auto text-center max-w-[240px] text-gray-500 font-["Roboto_Condensed"] font-light text-[14px]'>
-              By creating an account, you agree to
-              our <Link to='/terms-of-service' className='text-sandy-brown hover:bg-opacity-80'>
-                <span>Terms of Service</span>
-              </Link> and <Link className='text-sandy-brown hover:bg-opacity-80' to='/privacy-policy' >Privacy Policy</Link>.
-            </p>
-          </div>
-        </form>
+      <small
+        className='flex py-4 item-center h-full justify-end w-full text-sandy-brown font["Roboto_Condensed"]'>
+        *Required
+      </small>
+      <AnimatePresence>
+        {requestError ?
+          <Alert key='sign-up-alert' className='mt-2 mb-5 '>
+            {requestError}
+          </Alert> :
+          null}
+      </AnimatePresence>
+      <form autoComplete='off' onSubmit={signUpForm.handleSubmit}>
+        <div className={`pb-5`}>
+          <Input
+            required
+            label='Email'
+            type='email'
+            id='email'
+            name='email'
+            onChange={signUpForm.handleChange}
+            onBlur={signUpForm.handleBlur}
+            value={signUpForm.values.email}
+            error={signUpForm.touched.email && typeof signUpForm.errors.email === 'string' && signUpForm.errors.email}
+            placeholder='exemple@mail.com' />
+        </div>
+        <div className={`pb-5`}>
+          <Input
+            required
+            label='Name'
+            type='text'
+            id='name'
+            name='name'
+            onChange={signUpForm.handleChange}
+            onBlur={signUpForm.handleBlur}
+            value={signUpForm.values.name}
+            error={signUpForm.touched.name && typeof signUpForm.errors.name === 'string' && signUpForm.errors.name}
+            placeholder='Jhon Doe' />
+        </div>
+        <div className={`pb-5`}>
+          <Input
+            required
+            label='Password'
+            type='password'
+            id='password'
+            onChange={signUpForm.handleChange}
+            onBlur={signUpForm.handleBlur}
+            value={signUpForm.values.password}
+            error={signUpForm.touched.password && typeof signUpForm.errors.password === 'string' && signUpForm.errors.password}
+            placeholder='*************' />
+        </div>
+        <div className={`pb-5`}>
+          <Input
+            required
+            label='Confirm password'
+            type='password'
+            id='passwordRetype'
+            onChange={signUpForm.handleChange}
+            onBlur={signUpForm.handleBlur}
+            value={signUpForm.values.passwordRetype}
+            error={signUpForm.touched.passwordRetype && typeof signUpForm.errors.passwordRetype === 'string' && signUpForm.errors.passwordRetype}
+            placeholder='*************' />
+        </div>
+        <div className={`pb-2`}>
+          <Button type='submit' color='yellow'>
+            Sign Up
+          </Button>
+        </div>
+        <div className={`pb-5 pt-2`}>
+          <p className='mx-auto text-center max-w-[240px] text-gray-500 font-["Roboto_Condensed"] font-light text-[14px]'>
+            By creating an account, you agree to
+            our <Link to='/terms-of-service' className='text-sandy-brown hover:bg-opacity-80'>
+              <span>Terms of Service</span>
+            </Link> and <Link className='text-sandy-brown hover:bg-opacity-80' to='/privacy-policy' >Privacy Policy</Link>.
+          </p>
+        </div>
+      </form>
     </motion.div>
   )
 }

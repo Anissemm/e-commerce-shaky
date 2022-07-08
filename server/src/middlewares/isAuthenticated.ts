@@ -10,7 +10,6 @@ declare module 'express-serve-static-core' {
 
 const isAuthenticated = (req: Request, res: Response, next: NextFunction) => {
     const authHeader = req.headers.authorization || req.headers.Authorization
-
     if (!authHeader) res.status(401).json({ message: 'unauthorized', success: false })
 
     const token = typeof authHeader === 'string' && authHeader.split(' ')[1]

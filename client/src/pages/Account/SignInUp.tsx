@@ -1,16 +1,27 @@
 import { AnimatePresence, motion } from 'framer-motion'
-import { MutableRefObject, useState } from 'react'
+import { MutableRefObject, useEffect, useState } from 'react'
+import { useNavigate } from 'react-router-dom'
 import SignInForm from '../../components/SignInForm'
 import SignUpForm from '../../components/SignUpForm'
 import { useClientBox } from '../../hooks/useBox'
 import { usePageSetTitle } from '../../hooks/usePageSet'
+import { getUser, useAppSelector } from '../../store'
 
 const SignUp = () => {
   usePageSetTitle('My Account', false, false)
+  const navigate = useNavigate()
+
+  const userId = useAppSelector(getUser)
 
   const [activeTab, setaActiveTab] = useState('signin')
   const [shadow, setShadow] = useState(true)
   const [clientRect, formWrapperRef] = useClientBox()
+
+  useEffect(() => {
+    if (userId) {
+      navigate('/')
+    }
+  }, [userId])
 
   return (
     <div className='font-[Oswald]'>

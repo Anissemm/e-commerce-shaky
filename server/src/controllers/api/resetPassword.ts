@@ -10,8 +10,8 @@ export const sendResetPasswordToken = async (req: Request, res: Response) => {
         throw new ClientError(400, 'missing-email')
     }
 
-    const passwordResetMailInfo = await sendResetPasswordMail({ email, hostUrl: req.baseHostUrl })
-    return res.status(200).json({ message: 'reset-mail-sent', success: true, info: passwordResetMailInfo })
+    await sendResetPasswordMail({ email, hostUrl: req.baseHostUrl })
+    return res.status(200).json({ message: 'reset-mail-sent', success: true })
 }
 
 
@@ -40,12 +40,10 @@ export const verifyResetPasswordToken = async (req: Request, res: Response) => {
 
 export const resetPassword = async (req: Request, res: Response) => {
     const { newPassword, resetToken } = req.body
-    console.log(resetToken)
     if (resetToken) {
         const [id, _resetKey] = (resetToken as string).split('.')
         const user = await User.findById(id)
 
-        console.log(user)
         if (!user) {
             throw new ClientError(400, 'invalid-reset-token')
         }

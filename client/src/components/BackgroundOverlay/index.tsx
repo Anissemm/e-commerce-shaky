@@ -17,7 +17,7 @@ const backgroundOverlayVariants = {
         backgroundColor: 'rgba(0,0,0,0)'
     },
     visible: {
-        backgroundColor: 'rgba(0,0,0,0.9)'
+        backgroundColor: 'rgba(0,0,0,0.7)'
     }
 }
 
