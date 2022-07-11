@@ -1,6 +1,8 @@
-import React, { PropsWithChildren, ReactElement } from 'react'
+import { AnimatePresence } from 'framer-motion'
+import React, { PropsWithChildren, ReactElement, useEffect } from 'react'
 import { useNavigate, Navigate } from 'react-router-dom'
 import { getUser, useAppSelector } from '../store'
+import PersistAuth from './PersistAuth'
 
 const IsAuthenticated: React.FC<PropsWithChildren> = ({ children }): ReactElement | null => {
     const user = useAppSelector(getUser)
@@ -10,7 +12,9 @@ const IsAuthenticated: React.FC<PropsWithChildren> = ({ children }): ReactElemen
     }
 
     return (
-        <>{children}</>
+        <PersistAuth>
+            {children}
+        </PersistAuth>
     )
 }
 

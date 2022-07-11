@@ -2,7 +2,7 @@ import { MouseEventHandler } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { ReactComponent as Logo } from '../../../assets/svg/logo.svg'
 import { motion } from 'framer-motion'
-import { useAppDispatch, toggleSideNav, useAppSelector, getMenuType, toggleModal } from '../../../store'
+import { useAppDispatch, toggleSideNav, useAppSelector, getMenuType, toggleModal, getUserId } from '../../../store'
 import Search from '../../Search'
 import style from './HeaderToolbar.module.css'
 import CartModal from '../../CartModal'
@@ -13,13 +13,11 @@ const HeaderToolbar = () => {
     const dispatch = useAppDispatch()
     const menuType = useAppSelector(getMenuType)
 
-    const user = true //hard coded
+    const userId = useAppSelector(getUserId)
 
     const handleSidenavToggle: MouseEventHandler<HTMLButtonElement> = () => {
         dispatch(toggleSideNav())
     }
-
-    
 
     return (
         <div className='relative z-[46] min-h-[52px] w-full bg-ebony-clay shadow-lg px-5 flex items-center justify-between'>
@@ -52,7 +50,7 @@ const HeaderToolbar = () => {
                         <div className='flex items-center justify-center'>
                             <button
                                 onClick={() => {
-                                    if (!user) {
+                                    if (!userId) {
                                         navigate('/account')
                                     } else {
                                         dispatch(toggleModal({ modalId: 'account-modal', show: true }))

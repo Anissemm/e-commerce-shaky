@@ -1,12 +1,12 @@
 import { BaseQueryFn, createApi, FetchArgs, fetchBaseQuery, FetchBaseQueryError, FetchBaseQueryMeta } from '@reduxjs/toolkit/query/react'
-import { signOut, setCredentials } from '..'
+import { signOut, setUser, deleteToken, setToken } from '..'
 import { RootState } from '../store'
 
 const baseQuery = fetchBaseQuery({
     baseUrl: 'http://localhost:3001/api/',
     credentials: 'include',
     prepareHeaders: (headers, { getState }) => {
-        const token = (getState() as RootState).user.token
+        const token = (getState() as RootState).accessToken.token
         if (token) {
             headers.set('authorization', `Bearer ${token}`)
         }
@@ -40,9 +40,12 @@ const baseQueryReauth: BaseQueryFn<string | FetchArgs, unknown, FetchBaseQueryEr
         console.log(error)
         const refreshed = await baseQuery('/v1/refresh', api, extraOptions)
         const data = refreshed?.data as RefreshResponse
+        console.log(data)
         if (data?.accessToken) {
-            api.dispatch(setCredentials(data?.accessToken))
+            api.dispatch(setToken(data?.accessToken))
+            api.dispatch(setUser(data?.accessToken))
         } else {
+            api.dispatch(deleteToken())
             api.dispatch(signOut())
         }
     }

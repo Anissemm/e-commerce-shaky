@@ -7,6 +7,7 @@ import apiSlice from "./api/apiSlice"
 import userSlice from "./slices/userSlice"
 import pageSlice from "./slices/pageSlice"
 import SignInformSlice from "./slices/signInFormSlice"
+import accessTokenSlice from "./slices/accessTokenSlice"
 
 import {
     persistStore,
@@ -26,8 +27,8 @@ const mainReducer = combineReducers({
     searchFilters: searchFiltersSlice,
     page: pageSlice,
     signUpForm: SignUpFormSlice,
-    signInForm: SignInformSlice
-
+    signInForm: SignInformSlice,
+    accessToken: accessTokenSlice
 })
 
 
@@ -36,6 +37,7 @@ const config = {
     storage: localforage,
     blacklist: [
         'UI',
+        'accessToken',
         apiSlice.reducerPath
     ]
 }

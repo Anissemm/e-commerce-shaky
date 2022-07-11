@@ -1,6 +1,7 @@
 interface DecodedAccessToken {
     admin: boolean
     email: string
+    avatar: string
     exp: number
     iat: number
     name: string

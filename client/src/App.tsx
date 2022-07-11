@@ -1,7 +1,7 @@
 import { AnimatePresence } from "framer-motion"
-import React from "react"
+import React, { useEffect } from "react"
 import { Routes, Route, useLocation } from 'react-router-dom'
-import IsAuthenticated from "./Authorization/IsAuthorized"
+import IsAuthenticated from "./authorization/IsAuthorized"
 import MainLayout from "./Layouts/MainLayout"
 import Dashboard from "./pages/Dashboard"
 import Error from "./pages/Error"

@@ -1,6 +1,6 @@
 import { Request, Response } from "express"
 import { ClientError } from "../../ErrorHandling/errors"
-import User from "../../models/user"
+import User from "../../models/user/user"
 import { sendVerificationMail } from "../../utils/utilityMails"
 
 // to implement on front end

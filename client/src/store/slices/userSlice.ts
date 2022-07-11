@@ -2,26 +2,23 @@ import { createSlice, PayloadAction } from "@reduxjs/toolkit"
 import { RootState } from "../store"
 import apiSlice from '../api/apiSlice'
 import decodeAccessToken from "../../utils/decodeAccessToken"
+import { isEmpty } from 'lodash'
 
-interface userSliceType {
-    token: null | string
-    email: null | string
-    id: null | string
-    name: null | string
+type UserSlice = {
+    email?: null | string
+    id?: null | string
+    name?: null | string
+    avatarUrl?: null | string
 }
 
 type User = {
     email: string
     id: string
     name: string
+    avatarUrl: string
 }
 
-const initialState: userSliceType = {
-    token: null,
-    email: null,
-    id: null,
-    name: null
-}
+const initialState: UserSlice = {}
 
 type SignInCredentials = {
     email: string,
@@ -44,7 +41,7 @@ type ResponseType = {
     success: boolean
 }
 
-const userAuthSlice = apiSlice.injectEndpoints({
+const userApiSlice = apiSlice.injectEndpoints({
     endpoints: builder => ({
         signIn: builder.mutation<ResponseType & { accessToken: string }, SignInCredentials>({
             query: (credentials) => ({
@@ -60,9 +57,16 @@ const userAuthSlice = apiSlice.injectEndpoints({
                 body: { ...credentials }
             })
         }),
+        signOut: builder.mutation<ResponseType, string>({
+            query: (id) => ({
+                url: 'v1/signout',
+                method: 'PATCH',
+                body: { id }
+            })
+        }),
         // not implemented yet
         //resend verifyEmail
-        verifyEmail: builder.mutation<ResponseType & { user: User }, string>({
+        verifyEmail: builder.mutation<ResponseType & { user: Omit<User, 'avatarUrl'> }, string>({
             query: (verifyKey) => ({
                 url: 'v1/verifyEmail',
                 method: 'POST',
@@ -94,6 +98,7 @@ const userAuthSlice = apiSlice.injectEndpoints({
         mockProtected: builder.query<any, void>({
             query: () => 'v1/protected'
         })
+
     })
 })
 
@@ -101,38 +106,36 @@ const userSlice = createSlice({
     name: 'user',
     initialState,
     reducers: {
-        setCredentials(state, action: PayloadAction<string>) {
+        setUser(state, action: PayloadAction<string>) {
             const decodedPayload = decodeAccessToken(action.payload)
+            console.log(decodedPayload)
             if (decodedPayload) {
-                const { sub: id, name, email } = decodedPayload
+                const { sub: id, name, email, avatar } = decodedPayload
                 state.id = id
-                state.email = email
                 state.name = name
+                state.email = email
+                state.avatarUrl = avatar
             }
-            state.token = action.payload
         },
-        signOut(state) {
-            state.id = null
-            state.email = null
-            state.name = null
-            state.token = null
+        signOut() {
+            return initialState
         }
     }
 })
 
 export default userSlice.reducer
 
-export const { setCredentials, signOut } = userSlice.actions
+export const { setUser, signOut } = userSlice.actions
 
-export const getUserId = (state: RootState) => {
-    if (state.user.token) {
+export const getUserId = (state: RootState): string | null => {
+    if (state.user?.id) {
         return state.user.id
     }
     return null
 }
 
-export const getUser = (state: RootState) => {
-    if (state.user.token) {
+export const getUser = (state: RootState): User | null => {
+    if (!isEmpty(state.user)) {
         return state.user
     }
     return null
@@ -145,4 +148,5 @@ export const {
     useVerifyResetTokenMutation,
     useResetPasswordMutation,
     useSendResetEmailMutation,
-    useLazyMockProtectedQuery } = userAuthSlice
+    useLazyMockProtectedQuery,
+    useSignOutMutation } = userApiSlice

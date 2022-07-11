@@ -5,23 +5,22 @@ import SignInForm from '../../components/SignInForm'
 import SignUpForm from '../../components/SignUpForm'
 import { useClientBox } from '../../hooks/useBox'
 import { usePageSetTitle } from '../../hooks/usePageSet'
-import { getUser, useAppSelector } from '../../store'
+import { getUser, getUserId, useAppSelector } from '../../store'
 
 const SignUp = () => {
   usePageSetTitle('My Account', false, false)
   const navigate = useNavigate()
 
-  const userId = useAppSelector(getUser)
+  const user = useAppSelector(getUser)
 
   const [activeTab, setaActiveTab] = useState('signin')
-  const [shadow, setShadow] = useState(true)
   const [clientRect, formWrapperRef] = useClientBox()
 
   useEffect(() => {
-    if (userId) {
+    if (user) {
       navigate('/')
     }
-  }, [userId])
+  }, [user])
 
   return (
     <div className='font-[Oswald]'>
@@ -51,7 +50,7 @@ const SignUp = () => {
                 <motion.button
                   key={item}
                   style={{
-                    boxShadow: activeTab === item && shadow ?
+                    boxShadow: activeTab === item ?
                       `${item === 'signin' ? '' : '-'}2.5px 0 3px #222831` :
                       'none'
                   }}

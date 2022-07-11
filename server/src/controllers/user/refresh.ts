@@ -1,7 +1,7 @@
 import { Request, Response } from 'express'
 import jwt from 'jsonwebtoken'
 import { ClientError } from '../../ErrorHandling/errors'
-import User from '../../models/user'
+import User from '../../models/user/user'
 
 const DEVELOPMENT = process.env.MODE === 'DEVELOPMENT'
 
@@ -31,7 +31,7 @@ const handleRefreshToken = async (req: Request, res: Response) => {
             name: decode.name,
             email: decode.email,
             role: decode.role
-        }, accessSecret, { expiresIn: DEVELOPMENT ? '30s' : '30m' })
+        }, accessSecret, { expiresIn: DEVELOPMENT ? '5s' : '30m' })
 
         return res.status(200).json({ message: 'token-refreshed', accessToken, success: true })
     })

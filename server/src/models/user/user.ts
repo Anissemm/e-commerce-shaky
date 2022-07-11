@@ -1,12 +1,13 @@
-import mongoose from "mongoose"
+import mongoose, {type Document} from "mongoose"
 import bcrypt from "bcrypt"
 import jwt from 'jsonwebtoken'
-import { ServerError } from "../ErrorHandling/errors"
-import { randomBytes } from "crypto"
+import { ServerError } from "../../ErrorHandling/errors"
+
+const { Schema, model } = mongoose
 
 const DEVELOPMENT = process.env.MODE === 'DEVELOPMENT' && true
 
-interface UserDoc extends mongoose.Document {
+export interface UserDoc extends Document {
     email: string
     emailVerification: VerifyEmailObj
     password: string
@@ -35,12 +36,12 @@ interface VerifyEmailObj {
     expiresIn: Date | undefined
 }
 
-const resetPasswordSchema = new mongoose.Schema({
+const resetPasswordSchema = new Schema({
     resetKey: String,
     expiresIn: Date
 }, { _id: false })
 
-const verifyEmailSchema = new mongoose.Schema<VerifyEmailObj>({
+const verifyEmailSchema = new Schema<VerifyEmailObj>({
     emailVerifKey: String,
     isVerified: {
         type: Boolean,
@@ -64,10 +65,11 @@ interface GenerateTokensResponse {
     tokens: [accessToken, refreshToken] | []
 }
 
-const userSchema = new mongoose.Schema<UserDoc>({
+const userSchema = new Schema<UserDoc>({
     email: {
         type: String,
-        required: true
+        required: true,
+        trim: true
     },
     refreshToken: String,
     accessRight: {
@@ -82,11 +84,12 @@ const userSchema = new mongoose.Schema<UserDoc>({
     },
     name: {
         type: String,
+        trim: true,
         required: true
     },
     profileImage: {
         type: String,
-        default: 'image',
+        default: 'https://i.ibb.co/JKjLHVW/mock-user-image.png',
     }
 }, {
     timestamps: true,
@@ -109,6 +112,7 @@ const userSchema = new mongoose.Schema<UserDoc>({
 
             const accessToken: string = jwt.sign({
                 sub: this._id,
+                avatar: this.profileImage,
                 name: this.name,
                 email: this.email,
                 admin: this.role === 'admin'
@@ -116,9 +120,6 @@ const userSchema = new mongoose.Schema<UserDoc>({
 
             const refreshToken: string = jwt.sign({
                 sub: this._id,
-                name: this.name,
-                email: this.email,
-                admin: this.role === 'admin'
             }, refreshSecret, { expiresIn: DEVELOPMENT ? '15s' : '12h' })
 
             try {
@@ -166,6 +167,6 @@ userSchema.virtual('role')
         }
     })
 
-const User = mongoose.model<UserDoc>('User', userSchema)
+const User = model<UserDoc>('User', userSchema)
 
 export default User

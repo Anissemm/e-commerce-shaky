@@ -1,15 +1,15 @@
 import { useFormik } from 'formik'
-import { motion, Variants } from 'framer-motion'
+import { AnimatePresence, motion, Variants } from 'framer-motion'
 import Input from '../Input'
 import Button from '../Button'
 import * as yup from 'yup'
 import { ReactComponent as Google } from '../../assets/svg/icons/google_icon.svg'
 import { getSignInFormValues, toggleModal, useAppDispatch, useAppSelector } from '../../store'
-import { setCredentials, useSignInMutation } from '../../store/slices/userSlice'
 import { useEffect, useState } from 'react'
 import ForgotPasswordModal from '../ForgotPasswordModal'
 import { setSignInFormValues } from '../../store'
-import decodeAccessToken from '../../utils/decodeAccessToken'
+import useSignIn from '../../hooks/useSignIn'
+import Alert from '../Alert'
 
 const viewVariants: Variants = {
   hidden: {
@@ -40,8 +40,8 @@ const validationSchema = yup.object({
 const SignInForm = () => {
   const dispatch = useAppDispatch()
   const { email: initialEmailValue } = useAppSelector(getSignInFormValues)
-  const [serverError, setServerError] = useState('')
-  const [signIn, { isLoading }] = useSignInMutation()
+  const [serverError, setServerError] = useState<null | string>(null)
+  const signIn = useSignIn()
 
   const signInForm = useFormik({
     initialValues: {
@@ -51,11 +51,12 @@ const SignInForm = () => {
     validationSchema,
     validateOnChange: true,
     onSubmit: async (values) => {
+      setServerError(null)
       try {
-        const payload = await signIn(values).unwrap()
-          dispatch(setCredentials(payload?.accessToken))
+        await signIn(values)
+        setServerError(null)
       } catch (err: any) {
-        setServerError('server-error')
+        setServerError(err.data?.message)
       }
     }
   })
@@ -81,6 +82,15 @@ const SignInForm = () => {
         className='flex py-4 item-center h-full justify-end w-full text-sandy-brown font["Roboto_Condensed"]'>
         *Required
       </small>
+      <AnimatePresence>
+        {serverError &&
+          <Alert className='mb-3'>
+            {
+              serverError === 'wrong-credentials' ? 'Incorrect email address or password' :
+                'Sorry, but something went wrong on the server. Please, try later.'
+            }
+          </Alert>}
+      </AnimatePresence>
       <form autoComplete='off' className="flex flex-col justify-center items-center" onSubmit={signInForm.handleSubmit}>
         <div className='w-full'>
           <div className={`pb-5`}>
@@ -135,7 +145,7 @@ const SignInForm = () => {
           </div>
           <div className={`pb-5 pt-2`}>
             <p className='mx-auto text-center max-w-[240px] text-gray-500 font-["Roboto_Condensed"] font-light text-[14px]'>
-              Don’t have an account? Swipe right
+              Don't have an account? Swipe right
               to <button type="button" className='text-sandy-brown hover:bg-opacity-80'>
                 <span> create a new account.</span>
               </button>

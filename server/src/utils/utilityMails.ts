@@ -3,7 +3,7 @@ import { Types } from "mongoose"
 import { SentMessageInfo } from "nodemailer"
 import { resolve } from "path"
 import { ClientError } from "../ErrorHandling/errors"
-import User from "../models/user"
+import User from "../models/user/user"
 import { getMessageTemplate, transporter } from "./emailTransporter"
 import getAbsoluteDirname from "./getDirname"
 

@@ -1,19 +1,16 @@
-import express, { NextFunction, Request, Response } from 'express'
+import express, { Request, Response } from 'express'
 import { startServer } from './config/connect'
 import cors from 'cors'
 import 'dotenv/config'
 import 'express-async-errors'
 import errorHandler from './ErrorHandling/errorHandler'
-import signInRouter from './routes/signin'
-import signUpRouter from './routes/signup'
 import HostBaseUrlMiddleware from './middlewares/HostBaseUrlMiddleware'
 import cookieParser from 'cookie-parser'
 import isAuthenticated from './middlewares/isAuthenticated'
-import refreshTokenRouter from './routes/refresh'
-import verifyMailRouter from './routes/emailVerification'
-import passwordResetRouter from './routes/resetPassword'
 import corsConfig from './config/corsConfig'
 import credentials from './middlewares/credentials'
+import productRouter from './routes/product'
+import userRouter from './routes/user'
 
 const app = express()
 
@@ -25,12 +22,8 @@ app.use(express.json())
 app.use(cookieParser())
 app.use(HostBaseUrlMiddleware)
 
-app.use('/api/v1', signUpRouter)
-app.use('/api/v1', verifyMailRouter)
-app.use('/api/v1', passwordResetRouter)
-app.use('/api/v1', signInRouter)
-app.use('/api/v1', refreshTokenRouter)
-
+app.use('/api/v1', userRouter)
+app.use('/api/v1', productRouter)
 
 /* authenticated routes */
 app.get('/api/v1/protected', isAuthenticated, (req, res) => {

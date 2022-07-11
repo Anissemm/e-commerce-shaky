@@ -1,6 +1,6 @@
 import { Request, Response } from 'express'
 import { ClientError, ServerError } from '../../ErrorHandling/errors'
-import User from '../../models/user'
+import User from '../../models/user/user'
 
 const DEVELOPMENT = process.env.MODE === 'DEVELOPMENT' && true
 
@@ -35,6 +35,7 @@ export const signIn = async (req: Request, res: Response) => {
         })
 
         return res.status(200).json({ message: 'authenticated', success: true, accessToken })
+    } else {
+        throw new ClientError(401, 'wrong-credentials')
     }
-    throw new ClientError(401, 'wrong-credentials')
 }
