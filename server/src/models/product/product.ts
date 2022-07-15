@@ -1,40 +1,57 @@
-import mongoose, {type Document, Types, PopulatedDoc} from 'mongoose'
-import { UserDoc } from '../user/user'
-import { ProductRate, productRateSchema } from './rate'
-import { ProductReview, productReviewSchema } from './reviews'
+import mongoose, { type Document, Types, PopulatedDoc } from 'mongoose'
+import { UserDoc } from '../user'
+import { ProductOffers, productOffersSchema } from './offer'
+import { ProductRate } from './rate'
+import { ProductReview } from './review'
+import { CategoryDoc } from '../category'
+import { ServerError } from '../../ErrorHandling/errors'
+import Tag from './tags'
 
 const { Schema, model } = mongoose
 
-type VariantsFeatures = [
+type Variants = [
     {
         variant: string
         price: number
+        currency: string,
+        flavours: string[]
         description?: string
     }
 ]
 
-export interface Product extends Document {
+export interface Product {
     name: string
     brand: string
-    slug: string
+    slug?: string
     description: string
-    productPictures: string[]
-    rate: Types.DocumentArray<PopulatedDoc<ProductRate>>,
-    reviews: Types.DocumentArray<PopulatedDoc<ProductReview>>
-    offer: {
-        offerType: string
-        description: string
+    productPictures?: string[]
+    categories?: Array<string | CategoryDoc>
+    tags?: string[]
+    rate?: {
+        values: Types.Array<PopulatedDoc<ProductRate>>,
+        amount: number
+        count: number
+    },
+    reviews?: Types.DocumentArray<PopulatedDoc<ProductReview>>
+    offers?: Types.DocumentArray<ProductOffers>
+    variants: Variants
+    priceRange?: {
+        min: number,
+        max: Number
     }
-    variantFeatures?: VariantsFeatures
-    price: {
-        variantPrice: boolean
-        value: number
-        currency: string
-    }
+    currency?: string
     createdBy: PopulatedDoc<UserDoc>
 }
 
-const productSchema = new Schema<Product>({
+export interface ProductDoc extends Omit<Product, 'categories' | 'slug'>, Document {
+    categories: {
+        docs: Array<PopulatedDoc<CategoryDoc>>,
+        values: string[]
+    },
+    slug: string
+}
+
+const productSchema = new Schema<ProductDoc>({
     name: {
         type: String,
         trim: true,
@@ -54,38 +71,110 @@ const productSchema = new Schema<Product>({
         trim: true,
         required: true
     },
-    productPictures: [String],
-    rate: [productRateSchema], // to implement
-    reviews: [productReviewSchema],
-    offer: {
-        type: Object,
-        offerType: String,
-        description: String,
+    categories: {
+        values: [String],
+        docs: [{ type: Schema.Types.ObjectId, ref: 'Category' }]
     },
-    variantFeatures: [
+    tags: {
+        type: [String],
+        default: []
+    },
+    productPictures: {
+        type: [String],
+        default: []
+    },
+    rate: {
+        values: [{ type: Schema.Types.ObjectId, ref: 'Product_rate' }],
+        amount: {
+            type: Number,
+            default: 5,
+            max: 5,
+            min: 0
+        },
+        count: {
+            type: Number,
+            min: 0,
+            integer: true,
+            default: 0
+        }
+    },
+    reviews: [{ type: Schema.Types.ObjectId, ref: 'Product_review' }],
+    offers: [productOffersSchema],
+    variants: [
         {
             variant: String,
+            value: String,
             price: {
                 type: Number,
                 default: 0.00
             },
+            currency: String,
+            flavours: [String],
             description: String
         }
     ],
-    price: {
-        variantPrice: {
-            type: Boolean,
-            default: false
-        },
-        value: {
-            type: Number,
-            default: 0
-        },
-        currency: String
+    priceRange: {
+        min: Number,
+        max: Number
     },
-    createdBy: { type: Schema.Types.ObjectId, ref: 'User'}
-}, {timestamps: true})
+    createdBy: { type: Schema.Types.ObjectId, ref: 'User' }
+}, { timestamps: true })
 
-const Product = model<Product>('Product', productSchema)
+const setTags = async (product: ProductDoc) => {
+    if (product.isModified('tags')) {
+        const tags = product.tags ? product.tags : []
+        await Tag.bulkWrite(tags.map((tag: string) => (
+            {
+                updateOne: {
+                    filter: { value: tag },
+                    update: { $set: { value: tag } },
+                    upsert: true
+                }
+            })
+        ))
+    }
+}
+
+const setDefaultStartingPrice = async (product: ProductDoc) => {
+    if (!product.isModified('startingPrice')) {
+        const prices = product.variants.map(variant => variant.price)
+        product.priceRange = {
+            min: Math.min(...prices),
+            max: Math.max(...prices)
+        }
+    }
+}
+
+// calc rate count and amount(rates average)
+const calcRateAndCount = async (product: ProductDoc) => {
+    if (product.isModified('rate.values')) {
+        const populated = await product.populate('rate.values')
+        const rates = populated.rate!.values
+        populated.rate!.count = rates.length
+
+        const amount = rates.reduce((accum, item) => {
+            if (item.rate) {
+                accum += item.rate
+            }
+            return accum
+        }, 0)
+
+        const average = amount === 0 ? 0 : parseFloat((amount / rates.length).toFixed(1))
+        populated.rate!.amount = average
+    }
+}
+
+productSchema.pre('save', async function (this: ProductDoc, next) {
+    try {
+        await setDefaultStartingPrice(this)
+        await setTags(this)
+        await calcRateAndCount(this)
+        next()
+    } catch (error: any) {
+        throw new ServerError(500, error.message)
+    }
+})
+
+const Product = model<ProductDoc>('Product', productSchema)
 
 export default Product

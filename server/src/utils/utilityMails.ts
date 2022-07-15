@@ -1,11 +1,13 @@
 import { randomBytes } from "crypto"
-import { Types } from "mongoose"
 import { SentMessageInfo } from "nodemailer"
 import { resolve } from "path"
 import { ClientError } from "../ErrorHandling/errors"
-import User from "../models/user/user"
+import User from "../models/user"
 import { getMessageTemplate, transporter } from "./emailTransporter"
 import getAbsoluteDirname from "./getDirname"
+import dotenv from 'dotenv'
+
+dotenv.config()
 
 interface verificationMailParams {
     email: string

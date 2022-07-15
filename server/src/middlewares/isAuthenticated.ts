@@ -1,6 +1,9 @@
 import { NextFunction, Request, Response } from 'express'
 import jwt from 'jsonwebtoken'
 import { ClientError } from '../ErrorHandling/errors'
+import dotenv from 'dotenv'
+
+dotenv.config()
 
 declare module 'express-serve-static-core' {
     interface Request {

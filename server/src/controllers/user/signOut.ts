@@ -1,6 +1,6 @@
-import { Request, Response } from "express";
-import { ClientError } from "../../ErrorHandling/errors";
-import User from "../../models/user/user";
+import { Request, Response } from "express"
+import { ClientError } from "../../ErrorHandling/errors"
+import User from "../../models/user"
 
 const SignOut = async (req: Request, res: Response) => {
     const { id } = req.body

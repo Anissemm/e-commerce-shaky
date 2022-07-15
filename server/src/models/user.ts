@@ -1,7 +1,10 @@
 import mongoose, {type Document} from "mongoose"
 import bcrypt from "bcrypt"
 import jwt from 'jsonwebtoken'
-import { ServerError } from "../../ErrorHandling/errors"
+import { ServerError } from "../ErrorHandling/errors"
+import dotenv from 'dotenv'
+
+dotenv.config()
 
 const { Schema, model } = mongoose
 

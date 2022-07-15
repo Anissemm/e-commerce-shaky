@@ -1,7 +1,7 @@
 import express, { Request, Response } from 'express'
-import { startServer } from './config/connect'
+import { startServer } from './config/startServer'
 import cors from 'cors'
-import 'dotenv/config'
+// import 'dotenv/config'
 import 'express-async-errors'
 import errorHandler from './ErrorHandling/errorHandler'
 import HostBaseUrlMiddleware from './middlewares/HostBaseUrlMiddleware'
@@ -9,8 +9,11 @@ import cookieParser from 'cookie-parser'
 import isAuthenticated from './middlewares/isAuthenticated'
 import corsConfig from './config/corsConfig'
 import credentials from './middlewares/credentials'
-import productRouter from './routes/product'
-import userRouter from './routes/user'
+import productRouter from './routes/product/product'
+import userRouter from './routes/user/user'
+import dotenv from 'dotenv'
+
+dotenv.config()
 
 const app = express()
 

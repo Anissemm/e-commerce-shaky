@@ -1,0 +1,46 @@
+[
+    {
+        "name": "Whey Protein",
+        "brand": "Shaky",
+        "slug": "shaky-whey-protein",
+        "description": "<ul><li>Muscle Size, Strength & Performance</li>\n<li>5 Grams of Pure Creatine Monohydrate per Serving</li>\n<li>Helps Support ATP Recycling & Explosive Movements</li>\n<li>Zero Calories & Zero Carbohydrates</li>\n</ul>",
+        "productPictures": [
+            "https://i.ibb.co/6sZ51ry/Creatine-no-back-2x.png",
+            "https://i.ibb.co/6sZ51ry/Creatine-no-back-2x.png",
+            "https://i.ibb.co/6sZ51ry/Creatine-no-back-2x.png",
+            "https://i.ibb.co/6sZ51ry/Creatine-no-back-2x.png",
+            "https://i.ibb.co/6sZ51ry/Creatine-no-back-2x.png"
+        ],
+        "offers": [
+            {
+                "offerType": "new-member-discount",
+                "value": "-15%",
+                "description": "Become a member and get a discount of 15%"
+            },
+            {
+                "offerType": "shipping-discount",
+                "value": "free-shipping",
+                "description": "Free shipping for orders over $50%"
+            }
+        ],
+        "variants": [
+            {
+                "variant": "size",
+                "value": "2.2kg",
+                "price": 29.99,
+                "currency": "dollar",
+                "flavours": ["Double Chocolate", "Vanilla", "Banana"],
+                "description": "2.2 kilogramms"
+            },
+            {
+                "variant": "size",
+                "value": "1kg",
+                "price": 16.99,
+                "currency": "dollar",
+                "flavours": ["Double Chocolate", "Vanilla", "Banana"],
+                "description": "1 kilogramm"
+            }
+        ],
+        "createdBy": "62c8308fd7d65d758fa7cc2d"
+    }
+]

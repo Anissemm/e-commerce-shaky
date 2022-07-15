@@ -1,7 +1,7 @@
 import mongoose, {type Document, Types, PopulatedDoc} from "mongoose"
-import { UserDoc } from "../user/user"
+import { UserDoc } from "../user"
 
-const { Schema } = mongoose
+const { Schema, model } = mongoose
 
 export interface ProductReview extends Types.Subdocument {
     user: PopulatedDoc<UserDoc>
@@ -9,10 +9,15 @@ export interface ProductReview extends Types.Subdocument {
     id: () => ProductReview | null | undefined
 }
 
-export const productReviewSchema = new Schema({
+export const productReviewSchema = new Schema<ProductReview>({
     user: {type: Schema.Types.ObjectId, ref: 'User'},
     content: {
-        Type: String,
+        type: String,
+        trim: true,
         default: ''
     }
 })
+
+const Review = model('Product_review', productReviewSchema)
+
+export default Review

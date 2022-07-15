@@ -1,6 +1,6 @@
 import { Request, Response } from "express"
 import { ClientError } from "../../ErrorHandling/errors"
-import User from "../../models/user/user"
+import User from "../../models/user"
 import { sendResetPasswordMail } from "../../utils/utilityMails"
 
 export const sendResetPasswordToken = async (req: Request, res: Response) => {

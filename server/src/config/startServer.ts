@@ -1,16 +1,15 @@
-import mongoose from "mongoose"
 import app from "../index"
-import 'dotenv/config'
+import connectDB from "./connectDB"
 import 'express-async-errors'
-import getDirname from "../utils/getDirname"
+import dotenv from "dotenv"
+
+dotenv.config()
 
 const PORT: string | number = process.env.PORT || 3001
-const MONGO_URI = process.env.MONGO_URI as string
 
 const startServer = async () => {
     try {
-        await mongoose.connect(MONGO_URI)
-        console.log('DB connection success!')
+        await connectDB()
         app.listen(PORT, () => { console.log(`Server listening on port ${PORT}`) })
     } catch (error) {
         console.log(error)

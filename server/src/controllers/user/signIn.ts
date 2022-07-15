@@ -1,6 +1,9 @@
 import { Request, Response } from 'express'
 import { ClientError, ServerError } from '../../ErrorHandling/errors'
-import User from '../../models/user/user'
+import User from '../../models/user'
+import dotenv from 'dotenv'
+
+dotenv.config()
 
 const DEVELOPMENT = process.env.MODE === 'DEVELOPMENT' && true
 

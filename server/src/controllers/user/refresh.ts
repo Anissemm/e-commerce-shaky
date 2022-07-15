@@ -1,7 +1,10 @@
 import { Request, Response } from 'express'
 import jwt from 'jsonwebtoken'
 import { ClientError } from '../../ErrorHandling/errors'
-import User from '../../models/user/user'
+import User from '../../models/user'
+import dotenv from 'dotenv'
+
+dotenv.config()
 
 const DEVELOPMENT = process.env.MODE === 'DEVELOPMENT'
 
