@@ -6,7 +6,7 @@ const data = {
         name: "Header Menu",
         children: [
             {
-                value: { value: 'endurance', parent: '62d450667b5cf0f27b30545e'},
+                value: { category: 'endurance', parent: '62d5901b27d127c1b74189a1' },
                 itemType: "Category"
             },
             {
@@ -14,7 +14,7 @@ const data = {
                 itemType: "Tag",
                 children: [
                     {
-                        value: "vita",
+                        value: { category: "vita" },
                         itemType: "Category"
                     },
                     {

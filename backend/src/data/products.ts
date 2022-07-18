@@ -10,7 +10,7 @@ const products = [
             <li>Helps Support ATP Recycling & Explosive Movements</li>
             <li>Zero Calories & Zero Carbohydrates</li>
         </ul>`,
-        categories: ['performance', 'force', 'vitality'],
+        categories: ['performance', {category: 'force', parent: '62d593c17b5cf0f27b30a750'}, 'vitality'],
         tags: ['endurance', 'strength'],
         productPictures: [
             'https://i.ibb.co/6sZ51ry/Creatine-no-back-2x.png',

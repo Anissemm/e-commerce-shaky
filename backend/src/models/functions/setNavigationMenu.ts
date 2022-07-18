@@ -4,10 +4,16 @@ import { MenuItem } from '../menu'
 import Tag from '../product/tags'
 import { setCategory } from './setCategoriesOnNewDoc'
 
+type ItemType = {
+    itemType: "Category" | "Tag" | "Custom_Link",
+    value: { category: string, parent: string | null },
+    parent?: null | string
+}
+
 const saveMenuItemToDb = async (menuItem: any, menuSlug: string) => {
-    const { itemType, value } = menuItem
-    const item = await new MenuItem()
-    
+    const { itemType, value, parent }: ItemType = menuItem
+    const item = new MenuItem()
+
     item.itemType = itemType
     item.menuSlug = menuSlug
 
