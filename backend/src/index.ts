@@ -1,7 +1,7 @@
 import express, { Request, Response } from 'express'
 import { startServer } from './config/startServer'
 import cors from 'cors'
-// import 'dotenv/config'
+import dotenv from 'dotenv'
 import 'express-async-errors'
 import errorHandler from './ErrorHandling/errorHandler'
 import HostBaseUrlMiddleware from './middlewares/HostBaseUrlMiddleware'
@@ -11,9 +11,9 @@ import corsConfig from './config/corsConfig'
 import credentials from './middlewares/credentials'
 import productRouter from './routes/product/product'
 import userRouter from './routes/user/user'
-import dotenv from 'dotenv'
 import menuCreatorRouter from './routes/menu/menu'
 import categoryRouter from './routes/category/category'
+import tagRouter from './routes/tags/tags'
 
 dotenv.config()
 
@@ -31,6 +31,7 @@ app.use('/api/v1', userRouter)
 app.use('/api/v1', productRouter)
 app.use('/api/v1', menuCreatorRouter)
 app.use('/api/v1', categoryRouter)
+app.use('/api/v1', tagRouter)
 
 /* authenticated routes */
 app.get('/api/v1/protected', isAuthenticated, (req, res) => {

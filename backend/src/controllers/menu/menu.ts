@@ -1,7 +1,7 @@
 import { Request, Response } from "express"
 import setNavigationMenu from "../../models/functions/setNavigationMenu"
 import data from "../../data/menu"
-import Menu, { MenuItem } from "../../models/menu"
+import Menu, { MenuItem } from "../../models/menu/menu"
 import slugify from "slugify"
 
 export const createOrUpdateMenu = async (req: Request, res: Response) => {

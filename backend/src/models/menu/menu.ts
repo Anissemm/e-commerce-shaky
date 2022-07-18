@@ -1,6 +1,6 @@
 import mongoose, { PopulatedDoc, type Document } from 'mongoose'
-import { CategoryDoc } from './category'
-import { TagType } from './product/tags'
+import { CategoryDoc } from '../category'
+import { TagType } from '../tags'
 import autopopulate from 'mongoose-autopopulate'
 import slugify from 'slugify'
 
@@ -9,6 +9,7 @@ const { Schema, model } = mongoose
 export interface CustomLinkType {
     url: string
     name: string
+    owner: PopulatedDoc<MenuDoc>
 }
 
 interface CustomLinkDoc extends CustomLinkType, Document { }
@@ -21,7 +22,8 @@ const customLinkSchema = new Schema<CustomLinkDoc>({
     name: {
         type: String,
         default: 'Link'
-    }
+    },
+    owner: { type: Schema.Types.ObjectId, ref: 'Menu' }
 })
 
 export interface MenuItemType {

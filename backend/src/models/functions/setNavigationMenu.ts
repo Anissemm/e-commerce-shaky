@@ -1,7 +1,7 @@
 import flatten from 'flat'
 import { ServerError } from '../../ErrorHandling/errors'
-import { MenuItem } from '../menu'
-import Tag from '../product/tags'
+import { MenuItem } from '../menu/menu'
+import Tag from '../tags'
 import { setCategory } from './setCategoriesOnNewDoc'
 
 type ItemType = {

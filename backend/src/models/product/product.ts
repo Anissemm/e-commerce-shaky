@@ -5,7 +5,7 @@ import { ProductRate } from './rate'
 import { ProductReview } from './review'
 import { CategoryDoc } from '../category'
 import { ServerError } from '../../ErrorHandling/errors'
-import Tag from './tags'
+import Tag from '../tags'
 
 const { Schema, model } = mongoose
 
