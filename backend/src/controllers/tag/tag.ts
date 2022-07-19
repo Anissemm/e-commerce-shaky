@@ -1,4 +1,5 @@
 import { Request, Response } from "express"
+import slugify from "slugify"
 import { ClientError } from "../../ErrorHandling/errors"
 import Tag from "../../models/tags"
 
@@ -15,7 +16,9 @@ export const addTag = async (req: Request, res: Response) => {
         throw new ClientError(400, 'missing-value')
     }
 
-    const tag = await Tag.findOneAndUpdate({ value }, { value }, { upsert: true, new: true })
+    const slug = slugify(value, { lower: true, replacement: '_' })
+
+    const tag = await Tag.findOneAndUpdate({ value }, { value, slug }, { upsert: true, new: true })
 
     return res.status(201).json({ message: 'tag-created', success: true, data: tag })
 }

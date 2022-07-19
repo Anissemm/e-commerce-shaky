@@ -1,11 +1,12 @@
 import { Router } from 'express'
-import { createOrUpdateMenu } from '../../controllers/menu/menu'
-import { addMenuCustomLink, deleteMenuCustomLink, getMenuCustomLinks, updateMenuCustomLink } from '../../models/menu/customLink'
+import { createOrUpdateMenu, getMenu } from '../../controllers/menu/menu'
+import { addMenuCustomLink, deleteMenuCustomLink, getMenuCustomLinks, updateMenuCustomLink } from '../../controllers/menu/customLink'
 
-const menuCreatorRouter = Router()
+const menuRouter = Router()
 
-menuCreatorRouter.route('/menu/set').put(createOrUpdateMenu)
-menuCreatorRouter.route('/menu/:menuId/links').get(getMenuCustomLinks).post(addMenuCustomLink)
-menuCreatorRouter.route('/menu/link/:id').delete(deleteMenuCustomLink).patch(updateMenuCustomLink)
+menuRouter.route('/menu/set').put(createOrUpdateMenu)
+menuRouter.route('/menu/:menuSlug').get(getMenu)
+menuRouter.route('/menu/:menuSlug/links').get(getMenuCustomLinks).post(addMenuCustomLink)
+menuRouter.route('/menu/link/:id').delete(deleteMenuCustomLink).patch(updateMenuCustomLink)
 
-export default menuCreatorRouter
+export default menuRouter

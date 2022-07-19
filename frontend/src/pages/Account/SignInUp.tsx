@@ -64,9 +64,7 @@ const SignUp = () => {
                 >
                   <span className={`relative z-[2] ${activeTab === item ? 'text-sandy-brown' : 'text-ebony-clay'}`}>{item === 'signin' ? 'Sign In' : 'Sign Up'}</span>
                   {activeTab === item && <motion.span
-                    // onLayoutAnimationStart={() => { setShadow(false) }}
-                    // onLayoutAnimationComplete={() => { setShadow(true) }}
-                    className={`text-sandy-brown z-[1] bg-ebony-clay absolute top-0 left-0 h-full w-full`}
+                    className={`text-sandy-brown z-[1] bg-ebony-clay absolute top-0 left-0 h-[70px] w-full`}
                     layoutId='tab-background' />}
                 </motion.button>
 

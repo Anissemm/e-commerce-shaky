@@ -1,6 +1,6 @@
 import { Request } from "express"
-import Product from "../product/product"
-import rateCountAndAmount from "../product/aggregations/productRateAmountAggregation"
+import Product from "../models/product/product"
+import rateCountAndAmount from "../models/product/aggregations/productRateAmountAggregation"
 
 const getProductsFromDB = async (req: Request) => {
     const { categories, name, tags, priceRange, brand } = req.query

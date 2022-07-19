@@ -1,28 +1,28 @@
 import { Response, Request } from "express"
 import { ClientError } from "../../ErrorHandling/errors"
-import { CustomLink } from "./menu"
+import { CustomLink } from "../../models/menu/menu"
 
 export const addMenuCustomLink = async (req: Request, res: Response) => {
-    const { menuId } = req.params
+    const { menuSlug } = req.params
     const { url, name } = req.body
-    console.log(menuId, url, name)
-    if (!url || !name || !menuId) {
-        throw new ClientError(400, 'missing-url-or-menuId-or-value')
+
+    if (!url || !name || !menuSlug) {
+        throw new ClientError(400, 'missing-url-or-menu-slug-or-value')
     }
 
-    const link = await CustomLink.create({ url, name, owner: menuId })
+    const link = await CustomLink.create({ url, name, owner: menuSlug })
 
     return res.status(201).json({ message: 'link-created', success: true, data: link })
 }
 
 export const getMenuCustomLinks = async (req: Request, res: Response) => {
-    const { menuId } = req.params
+    const { menuSlug } = req.params
 
-    if (!menuId) {
+    if (!menuSlug) {
         throw new ClientError(400, 'missing-menuId')
     }
 
-    const links = await CustomLink.find({ owner: menuId })
+    const links = await CustomLink.find({ owner: menuSlug })
 
     return res.status(200).json({ message: 'successful', success: true, data: links })
 }

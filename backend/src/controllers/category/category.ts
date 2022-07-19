@@ -2,7 +2,7 @@ import { Request, Response } from "express"
 import { AnyBulkWriteOperation, PullOperator } from "mongodb"
 import { ClientError } from "../../ErrorHandling/errors"
 import Category, { CategoryDoc } from "../../models/category"
-import { setCategory } from "../../models/functions/setCategoriesOnNewDoc"
+import { setCategory } from "../../functions/setCategoriesOnNewDoc"
 import categoryRouter from "../../routes/category/category"
 
 export const getCategories = async (req: Request, res: Response) => {

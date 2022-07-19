@@ -1,7 +1,7 @@
 import dotenv from 'dotenv'
 import connectDB from './config/connectDB'
-import products from './data/products'
-import setCategories from './models/functions/setCategoriesOnNewDoc'
+import products from './config/data/products'
+import setCategories from './functions/setCategoriesOnNewDoc'
 import Product from './models/product/product'
 dotenv.config()
 

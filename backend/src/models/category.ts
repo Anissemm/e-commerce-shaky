@@ -5,6 +5,7 @@ const { Schema, model } = mongoose
 export interface CategoryDoc extends Document {
     children: Types.Array<PopulatedDoc<CategoryDoc>>
     parent: PopulatedDoc<CategoryDoc>
+    slug: string
     category: string
 }
 
@@ -14,6 +15,10 @@ const categorySchema = new Schema<CategoryDoc>({
         default: []
     },
     parent: { type: Schema.Types.ObjectId, ref: 'Category' },
+    slug: {
+        type: String,
+        trim: true
+    },
     category: {
         type: String,
         required: true,

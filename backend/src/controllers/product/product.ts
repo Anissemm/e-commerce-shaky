@@ -1,7 +1,7 @@
 import { Request, Response } from "express"
 import { ClientError, ServerError } from "../../ErrorHandling/errors"
-import getProductsFromDB from "../../models/functions/getProductsFromDB"
-import setCategories from "../../models/functions/setCategoriesOnNewDoc"
+import getProductsFromDB from "../../functions/getProductsFromDB"
+import setCategories from "../../functions/setCategoriesOnNewDoc"
 import Product from "../../models/product/product"
 
 export const getProducts = async (req: Request, res: Response) => {

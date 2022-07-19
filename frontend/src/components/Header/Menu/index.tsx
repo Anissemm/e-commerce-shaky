@@ -1,8 +1,8 @@
 import BarMenu from './BarMenu'
 import SidenavMenu from './SidenavMenu'
-import { getMenuType, getModalShow, getSidenavShow, useAppSelector } from '../../../store'
+import { getMenuType, useAppSelector } from '../../../store'
 import { AnimatePresence, motion } from 'framer-motion'
-import { useCallback, useMemo } from 'react'
+import { useMemo } from 'react'
 
 const Menu = () => {
   const menuType: 'sidenav' | 'bar' = useAppSelector(getMenuType)
@@ -11,7 +11,7 @@ const Menu = () => {
     return menuType === 'sidenav' ?
       <SidenavMenu /> :
       menuType === 'bar' ? <BarMenu /> :
-      null
+        null
   }, [menuType])
 
   return (

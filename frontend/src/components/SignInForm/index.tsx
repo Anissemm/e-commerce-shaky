@@ -71,7 +71,7 @@ const SignInForm = () => {
   return (
     <motion.div
       layout
-      style={{ boxShadow: '2.5px -1.5px 2px #222831' }}
+      // style={{ boxShadow: '2.5px -1.5px 2px #222831' }}
       variants={viewVariants}
       initial='hidden'
       animate='visible'

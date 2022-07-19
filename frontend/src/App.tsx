@@ -23,11 +23,11 @@ const App: React.FC = () => {
                         <Route index element={<SignInUp />} />
                         <Route path='email-verification' element={<EmailVerification />} />
                         <Route path='reset-password' element={<PasswordReset />} />
-                        <Route path='dashboard' element={
-                            <IsAuthenticated>
-                                <Dashboard />
-                            </IsAuthenticated>}
-                        />
+
+                        {/* Authenticated */}
+                        <Route element={<IsAuthenticated />} >
+                            <Route path='dashboard' element={<Dashboard />} />
+                        </Route>
                     </Route>
                     <Route path='*' element={<Error />} />
                 </Route>

@@ -11,7 +11,7 @@ import corsConfig from './config/corsConfig'
 import credentials from './middlewares/credentials'
 import productRouter from './routes/product/product'
 import userRouter from './routes/user/user'
-import menuCreatorRouter from './routes/menu/menu'
+import menuRouter from './routes/menu/menu'
 import categoryRouter from './routes/category/category'
 import tagRouter from './routes/tags/tags'
 
@@ -29,7 +29,7 @@ app.use(HostBaseUrlMiddleware)
 
 app.use('/api/v1', userRouter)
 app.use('/api/v1', productRouter)
-app.use('/api/v1', menuCreatorRouter)
+app.use('/api/v1', menuRouter)
 app.use('/api/v1', categoryRouter)
 app.use('/api/v1', tagRouter)
 

@@ -93,7 +93,6 @@ const SignUpForm = () => {
     <motion.div
       key="signup-form"
       layout
-      style={{ boxShadow: '2.5px -1.5px 2px #222831' }}
       variants={viewVariants}
       initial='hidden'
       animate='visible'
