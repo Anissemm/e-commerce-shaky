@@ -3,7 +3,7 @@ import { useDetectClickOutside } from 'react-detect-click-outside'
 import { useAppDispatch, toggleSideNav, getSidenavShow, useAppSelector, getModalShow } from '../../../store'
 import { menuMotionVariants } from './menuMotionVariants'
 import BackgroundOverlay from '../../BackgroundOverlay'
-import { PropsWithChildren } from 'react'
+import { MouseEventHandler, PropsWithChildren, useEffect } from 'react'
 import { Link } from 'react-router-dom'
 import { useGetHeaderMenuQuery } from '../../../store/slices/menuSlice'
 
@@ -29,31 +29,23 @@ const SidenavMenu = () => {
         triggerKeys: ['Escape']
     })
 
-    const closeSideNav = () => {
-        dispatch(toggleSideNav(false))
-    }
-
     const mountMenu = (data: any) => {
         const dataItems = data?.children
         if (dataItems?.length > 0) {
             const items: any[] = dataItems.map((item: any) => {
-                const productLink = item.itemType === 'category' ? `/products/categories/${item.itemSlug}` :
-                                    item.itemType === 'Tag' ? `/products/tags/${item.itemSlug}` :
-                                    `${item?.reference?.url}` // to verfiy later
+
+                const productLink = item.itemType === 'Category' ? `/products/categories/${item.itemSlug}` :
+                    `/products/tags/${item.itemSlug}` // to verfiy later
 
                 const link = item.postsType === 'page' ? `/${item.itemSlug}` :
                     item.postsType === 'blog' ? `/blog/${item.itemSlug}` :
-                        productLink
+                        item.postsType === 'external' ? `${item?.url}` :
+                            productLink
 
                 if (item.children?.length > 0) {
                     return (
                         <li key={item._id}>
-                            <span><a onClick={(e: any) => {
-                                e.preventDefault()
-                            }}
-                                href={link}>
-                                {item.value}
-                            </a></span>
+                            <SideNavLink to={link} preventDefault>{item.value}</SideNavLink>
                             <ul>
                                 {mountMenu(item)}
                             </ul>
@@ -64,19 +56,14 @@ const SidenavMenu = () => {
                 if (item.itemType === 'Custom_Link') {
                     return (
                         <li key={item._id}>
-                            <a href={item?.reference?.url}>{item.value}</a>
+                            <SideNavLink to={item?.url} external >{item.value}</SideNavLink>
                         </li>
                     )
                 }
 
                 return (
                     <li key={item._id}>
-                        <Link
-                            onClick={(e: any) => {
-                                closeSideNav()
-                            }}
-                            to='https://www.google.com'>
-                            {item.value}</Link>
+                        <SideNavLink to={link} closeSideNavOnClick >{item.value}</SideNavLink>
                     </li>
                 )
             })
@@ -107,6 +94,75 @@ const SidenavMenu = () => {
                 </BackgroundOverlay>}
             </AnimatePresence>
         </>
+    )
+}
+
+interface SideNavLinkProps extends React.HTMLAttributes<HTMLAnchorElement> {
+    external?: boolean
+    to: string
+    preventDefault?: boolean
+    closeSideNavOnClick?: boolean
+}
+
+const linkDefaultProps = {
+    external: false,
+    to: '#',
+    preventDefault: false,
+    closeSideNavOnClick: false,
+}
+
+const SideNavLink: React.FC<SideNavLinkProps> = (props) => {
+    const dispatch = useAppDispatch()
+
+    const {
+        external,
+        to,
+        preventDefault,
+        closeSideNavOnClick,
+        children,
+        onClick
+    } = { ...linkDefaultProps, ...props }
+
+    useEffect(() => {
+        if (closeSideNavOnClick) {
+        }
+    }, [closeSideNavOnClick])
+
+    return (
+        external || preventDefault ?
+            <a
+                href={to}
+                onClick={(e: any) => {
+                    if (preventDefault) {
+                        e.preventDefault()
+                    }
+
+                    if (onClick) {
+                        onClick(e)
+                    }
+
+                    if (closeSideNavOnClick) {
+                        dispatch(toggleSideNav(false))
+                    }
+
+                }}
+            >
+                {children}
+            </a> :
+            <Link
+                to={to}
+                onClick={(e: any) => {
+                    if (onClick) {
+                        onClick(e)
+                    }
+
+                    if (closeSideNavOnClick) {
+                        dispatch(toggleSideNav(false))
+                    }
+
+                }}
+            >
+                {children}</Link>
     )
 }
 
