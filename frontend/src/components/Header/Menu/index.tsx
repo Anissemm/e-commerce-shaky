@@ -1,5 +1,5 @@
 import BarMenu from './BarMenu'
-import SidenavMenu from './SidenavMenu'
+import SidenavMenu from './SidenavMenu/SidenavMenu'
 import { getMenuType, useAppSelector } from '../../../store'
 import { AnimatePresence, motion } from 'framer-motion'
 import { useMemo } from 'react'
