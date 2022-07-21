@@ -3,16 +3,13 @@ import { useDetectClickOutside } from 'react-detect-click-outside'
 import { useAppDispatch, toggleSideNav, getSidenavShow, useAppSelector, getModalShow } from '../../../../store'
 import { menuMotionVariants } from '../menuMotionVariants'
 import BackgroundOverlay from '../../../BackgroundOverlay'
-import { MouseEventHandler, PropsWithChildren, useEffect, useState } from 'react'
+import { PropsWithChildren, useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { useGetHeaderMenuQuery } from '../../../../store/slices/menuSlice'
 import './sidenavMenu.css'
 import Chevron from '../../../../assets/svg/icons/arrow_cross_animated'
 import { useResizeObserver } from '../../../../hooks/useResizeObserver'
-
-interface SideNavProps extends PropsWithChildren {
-    data: any
-}
+import pluralize from 'pluralize'
 
 const SidenavMenu = () => {
     const { data } = useGetHeaderMenuQuery()
@@ -43,7 +40,7 @@ const SidenavMenu = () => {
         }
     }, [sidenavDimensions])
 
-    const show = (prev: string[], item: any): string[] => {
+    const showSubMenu = (prev: string[], item: any): string[] => {
         const copy = prev.slice()
 
         if (copy[copy.length - 1] === item.itemSlug) {
@@ -55,13 +52,13 @@ const SidenavMenu = () => {
         return copy
     }
 
-    const hide = (prev: string[]): string[] => {
+    const hideSubMenu = (prev: string[]): string[] => {
         const copy = prev.slice()
         copy.pop()
         return copy
     }
 
-    const mountMenuItems = (data: any) => {
+    const mountSideNavMenuItems = (data: any) => {
         const dataItems = data?.children
         if (dataItems?.length > 0) {
             const items: any[] = dataItems.map((item: any) => {
@@ -76,16 +73,18 @@ const SidenavMenu = () => {
                 if (item.children?.length > 0) {
 
                     return (
-                        <li className="sidenav-item" key={item._id}>
+                        <li className="sidenav-item flex items-center justify-between" key={item._id}>
                             <SideNavLink
                                 to={link}
+                                title={item.value}
                                 preventDefault
                                 onClick={(e) => {
-                                    setShowList((prev) => { return show(prev, item) })
+                                    setShowList((prev) => { return showSubMenu(prev, item) })
                                 }}
                             >
                                 {item.value}
                             </SideNavLink>
+                            <Chevron cross={false} className="rotate-180 w-3 transition-all duration-300" />
                             <LayoutGroup id={item.itemSlug}>
                                 <AnimatePresence>
                                     {showList.length > 0 && showList[item.depth] === item.itemSlug &&
@@ -95,10 +94,16 @@ const SidenavMenu = () => {
                                             animate={{ opacity: 1, x: 0 }}
                                             exit={{ opacity: 0, x: -100 }}
                                             transition={{ duration: 0.3 }}
-                                            className='sub-list'>
-                                            <ul>
-                                                {mountMenuItems(item)}
+                                            className={`sidenav-sub-list z-[${item.depth + 1}] ${showList[item.depth] === item.itemSlug && !showList[item.depth + 1] ? 'overflow-y-auto' : ''}`}>
+                                            <ul className={`mb-auto scrollbar-thin mt-0 pb-6 z-[${item.depth + 1}] ${showList[item.depth] === item.itemSlug && !showList[item.depth + 1] ? 'overflow-y-auto' : ''}`}>
+                                                {mountSideNavMenuItems(item)}
                                             </ul>
+                                            <div className='sticky flex items-center justify-end bottom-0 px-3 left-0 w-full bg-ebony-clay shadow-[0_0_5px_#000]'>
+                                                <a href={link} className='sidenav-link hover:-translate-x-2'>
+                                                    All {pluralize(item.value)}
+                                                </a>
+                                                <Chevron className='rotate-180 h-3 transtion-all duration-300' double />
+                                            </div>
                                         </motion.div>}
                                 </AnimatePresence>
                             </LayoutGroup>
@@ -109,14 +114,16 @@ const SidenavMenu = () => {
                 if (item.itemType === 'Custom_Link') {
                     return (
                         <li className="sidenav-item" key={item._id}>
-                            <SideNavLink to={item?.url} external >{item.value}</SideNavLink>
+                            <SideNavLink to={item?.url} title={item.value} external >{item.value}</SideNavLink>
                         </li>
                     )
                 }
 
                 return (
                     <li className="sidenav-item" key={item._id}>
-                        <SideNavLink to={link} closeSideNavOnClick >{item.value}</SideNavLink>
+                        <SideNavLink to={link} title={item.value} closeSideNavOnClick >
+                            {item.value}
+                        </SideNavLink>
                     </li>
                 )
             })
@@ -146,24 +153,24 @@ const SidenavMenu = () => {
                         exit='hidden'
                     >
                         <motion.div
-                            className='px-6 pt-5 pb-1 relative min-h-[50px] duration-[1500ms]'>
+                            className='sidenav-button flex items-center px-6 mt-2 mb-3 relative min-h-[50px] duration-[1500ms]'>
                             <motion.button
                                 className='absolute transition-all duration-500'
                                 style={{
                                     left: showList.length === 0 ? sidenavWidth - 49 : 16
                                 }}
                                 onClick={(e: any) => {
-                                    setShowList(hide)
+                                    setShowList(hideSubMenu)
                                     if (showList.length === 0) {
                                         dispatch(toggleSideNav(false))
                                     }
                                     e.stopPropagation()
                                 }}>
-                                <Chevron cross={showList.length === 0} />
+                                <Chevron className='h-5' cross={showList.length === 0} />
                             </motion.button>
                         </motion.div>
-                        <ul className='relative min-h-[calc(100vh-104px)]'>
-                            {mountMenuItems(data.menu)}
+                        <ul className={`relative scrollbar-thin pb-6 h-full mb-auto max-h-[calc(100vh-122px)] z-0 ${showList.length === 0 ? 'overflow-y-auto' : ''}`}>
+                            {mountSideNavMenuItems(data.menu)}
                         </ul>
                     </motion.div>
                 </BackgroundOverlay>}
@@ -177,6 +184,7 @@ interface SideNavLinkProps extends React.HTMLAttributes<HTMLAnchorElement> {
     to: string
     preventDefault?: boolean
     closeSideNavOnClick?: boolean
+    title?: string
 }
 
 const linkDefaultProps = {
@@ -192,6 +200,7 @@ const SideNavLink: React.FC<SideNavLinkProps> = (props) => {
     const {
         external,
         to,
+        title,
         preventDefault,
         closeSideNavOnClick,
         children,
@@ -206,6 +215,7 @@ const SideNavLink: React.FC<SideNavLinkProps> = (props) => {
     return (
         external || preventDefault ?
             <a className='sidenav-link'
+                title={title}
                 href={to}
                 onClick={(e: any) => {
                     if (preventDefault) {
@@ -226,6 +236,7 @@ const SideNavLink: React.FC<SideNavLinkProps> = (props) => {
             </a> :
             <Link
                 className='sidenav-link'
+                title={title}
                 to={to}
                 onClick={(e: any) => {
                     if (onClick) {
