@@ -1,5 +1,6 @@
+import { useEffect } from 'react'
 import { useMenuResponsive } from '../../hooks/useMenuResponsive'
-import { useAppSelector } from '../../store'
+import { getHeaderZIndex, useAppSelector } from '../../store'
 import { getCurrentPageTitle } from '../../store/slices/pageSlice'
 import HeaderToolbar from './HeaderToolbar'
 import Menu from './Menu'
@@ -9,7 +10,7 @@ const Header = () => {
     const pageTitle = useAppSelector(getCurrentPageTitle)
 
     return (
-        <header className='sticky z-[49] top-0'
+        <header className={`fixed w-full z-[49] top-0`}
             ref={ref => {
                 if (typeof setTargetRef === 'function') {
                     setTargetRef(ref)

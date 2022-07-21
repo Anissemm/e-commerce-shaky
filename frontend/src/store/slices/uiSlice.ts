@@ -12,6 +12,7 @@ interface uiSliceState {
     backgroundMotionValue: number
     isSearchFiltersShown: boolean
     currentModalId: string | undefined | null
+    headerZIndex: number
 }
 
 const initialState: uiSliceState = {
@@ -24,6 +25,7 @@ const initialState: uiSliceState = {
     currentShownModalId: '',
     searchResultHeight: undefined,
     backgroundMotionValue: 0,
+    headerZIndex: 49
 }
 
 const uiSlice = createSlice({
@@ -40,7 +42,7 @@ const uiSlice = createSlice({
                 state.isSidenavShown = !state.isSidenavShown
             }
         },
-        toggleModal(state, action: PayloadAction<{show?: boolean | undefined, modalId?: string | undefined | null} | undefined>) {
+        toggleModal(state, action: PayloadAction<{ show?: boolean | undefined, modalId?: string | undefined | null } | undefined>) {
             if (action?.payload?.modalId) {
                 state.currentModalId = action.payload.modalId
             }
@@ -68,20 +70,23 @@ const uiSlice = createSlice({
                 state.isSearchFiltersShown = !state.isSearchFiltersShown
             }
         },
-
+        setHeaderZIndex(state, action: PayloadAction<number>) {
+            state.headerZIndex = action.payload
+        }
     }
 
 })
 
 export default uiSlice.reducer
 export const {
-    setMenuType, 
-    toggleSideNav, 
+    setMenuType,
+    toggleSideNav,
     toggleModal,
-    toggleSearchFilters, 
-    setSearchResultheight, 
-    setShownModalId, 
-    setBackgroundMotionValue } = uiSlice.actions
+    toggleSearchFilters,
+    setSearchResultheight,
+    setShownModalId,
+    setBackgroundMotionValue,
+    setHeaderZIndex } = uiSlice.actions
 
 export const getMenuType = (state: RootState) => state.UI.menuType
 export const getSidenavShow = (state: RootState) => state.UI.isSidenavShown
@@ -91,3 +96,4 @@ export const getSearchFiltersShow = (state: RootState) => state.UI.isSearchFilte
 export const getSearchResultHeight = (state: RootState) => state.UI.searchResultHeight
 export const getCurrentShownModalId = (state: RootState) => state.UI.currentShownModalId
 export const getBackgroundMotionValue = (state: RootState) => state.UI.backgroundMotionValue
+export const getHeaderZIndex = (state: RootState) => state.UI.headerZIndex

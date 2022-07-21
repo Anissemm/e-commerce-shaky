@@ -3,7 +3,7 @@ import { signOut, setUser, deleteToken, setToken } from '..'
 import { RootState } from '../store'
 
 const baseQuery = fetchBaseQuery({
-    baseUrl: 'http://localhost:3001/api/',
+    baseUrl: 'http://localhost:4000/api/',
     credentials: 'include',
     prepareHeaders: (headers, { getState }) => {
         const token = (getState() as RootState).accessToken.token

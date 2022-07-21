@@ -12,7 +12,7 @@
   }
 
   .sidenav-sub-list {
-    @apply absolute flex flex-col scrollbar-thin top-0 left-0 bg-ebony-clay h-full max-h-[calc(100vh-122px)] w-full;
+    @apply absolute flex flex-col scrollbar-thin bg-ebony-clay top-0 left-0 h-full max-h-[calc(100vh-122px)] w-full;
   }
 
   .sidenav-button {
@@ -23,8 +23,9 @@
     @apply fixed bg-melony-clay shadow-xl max-w-[1440px] mx-auto w-full
   }
 
+
   .menubar-item {
-    @apply relative font-[Oswald] uppercase text-sandy-brown transition-all duration-300
+    @apply relative font-[Oswald] uppercase text-sandy-brown transition-all duration-300 
   }
 
 }
