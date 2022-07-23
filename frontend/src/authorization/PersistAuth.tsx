@@ -1,28 +1,9 @@
-import React, { PropsWithChildren, useEffect } from 'react'
-import { getAccessToken, setToken, useAppDispatch, useAppSelector } from '../store'
-import useRefreshToken from '../hooks/useRefreshToken'
+import React, { PropsWithChildren } from 'react'
+import usePersistAuth from './usePersistAuth'
 
 const PersistAuth: React.FC<PropsWithChildren> = ({ children }) => {
-    const accessToken = useAppSelector(getAccessToken)
-    const [refresh] = useRefreshToken()
-
-    useEffect(() => {
-        const handleRefresh = async () => {
-            try {
-                await refresh()
-            } catch (error) {
-                console.log(error)
-            }
-        }
-
-        if (!accessToken) {
-            handleRefresh()
-        }
-    }, [])
-
-    return (
-        <>{children}</>
-    )
+    usePersistAuth()
+    return <>{children}</>
 }
 
 export default PersistAuth

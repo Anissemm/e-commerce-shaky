@@ -1,6 +1,42 @@
+.arrow,
+.arrow::before {
+  position: absolute;
+  width: 8px;
+  height: 8px;
+  background: inherit;
+  z-index: -1;
+}
+
 .arrow {
-  width: 0px;
-  height: 0px;
-  border-width: 6px 6px 0px;
-  border-color: #2C3540 transparent transparent;
+  visibility: hidden;
+}
+
+.arrow::before {
+  visibility: visible;
+  content: '';
+  transform: rotate(45deg);
+}
+
+.tooltip[data-popper-placement^='top-end'] > .arrow {
+  left: 8px !important; 
+}
+
+.tooltip[data-popper-placement^='top-start'] > .arrow {
+  left: -8px !important; 
+}
+
+.tooltip[data-popper-placement^='top'] > .arrow {
+  bottom: -4px;
+}
+
+.tooltip[data-popper-placement^='bottom'] > .arrow {
+  top: -4px;
+}
+
+.tooltip[data-popper-placement^='left'] > .arrow {
+  right: -4px;
+}
+
+.tooltip[data-popper-placement^='right'] > .arrow {
+  left: -4px;
 }

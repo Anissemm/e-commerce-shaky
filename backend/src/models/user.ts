@@ -123,7 +123,7 @@ const userSchema = new Schema<UserDoc>({
 
             const refreshToken: string = jwt.sign({
                 sub: this._id,
-            }, refreshSecret, { expiresIn: DEVELOPMENT ? '15s' : '12h' })
+            }, refreshSecret, { expiresIn: DEVELOPMENT ? '30s' : '12h' })
 
             try {
                 this.refreshToken = refreshToken

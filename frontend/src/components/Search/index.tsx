@@ -29,6 +29,7 @@ const Search = () => {
   const [inputFocused, setInputFocused] = useState<boolean>(false)
   const showSearchFilter = useAppSelector(getSearchFiltersShow)
   const [setResizeRef, entry] = useResizeObserver()
+  const [modalWidth, setModalWidth] = useState(0)
 
   const isModalShown = useAppSelector(getModalShow)
   const currentId = useAppSelector(getCurrentShownModalId)
@@ -41,7 +42,9 @@ const Search = () => {
 
   useEffect(() => {
     if (entry?.borderBoxSize) {
-      const { blockSize } = entry.borderBoxSize[0]
+      const { blockSize, inlineSize } = entry.borderBoxSize[0]
+      console.log(inlineSize)
+      setModalWidth(inlineSize)
       dispatch(setSearchResultheight(blockSize))
     }
   }, [entry])
@@ -97,7 +100,7 @@ const Search = () => {
               onChange={handleChange}
               onFocus={() => {
                 setInputFocused(true)
-                dispatch(toggleModal({modalId: 'search-modal'}))
+                dispatch(toggleModal({ modalId: 'search-modal' }))
               }}
               onBlur={() => setInputFocused(false)}
               placeholder={inputFocused ? '' : 'Search Something'} />
@@ -112,6 +115,8 @@ const Search = () => {
 
       <Modal
         modalId='search-modal'
+        top={modalWidth > 1000 ? 30 : 'auto'}
+        bottom={modalWidth > 1000 ? 30 : 'auto'}
         ref={ref => {
           modalRef.current = ref
           if (typeof setResizeRef === 'function') {

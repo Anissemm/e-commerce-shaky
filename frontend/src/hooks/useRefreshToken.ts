@@ -1,5 +1,5 @@
 import { useDispatch } from "react-redux"
-import { setToken, setUser, useLazyRefreshTokenQuery } from "../store"
+import { setToken, setUser, signOut, useLazyRefreshTokenQuery } from "../store"
 
 type useRefreshTokenReturn = [
     () => Promise<void>,
@@ -13,6 +13,7 @@ const useRefreshToken = (): useRefreshTokenReturn => {
     const refresh = async () => {
         const payload = await refreshHandler().unwrap()
         dispatch(setToken(payload?.accessToken))
+        console.log(payload?.accessToken)
         dispatch(setUser(payload?.accessToken))
     }
 

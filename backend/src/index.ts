@@ -38,9 +38,12 @@ app.get('/api/v1/protected', isAuthenticated, (req, res) => {
     res.json('protected')
 })
 
-/* 404 */
+/* anything else */
 app.use((req: Request, res: Response) => {
-    res.status(404).json({ msg: 'page-not-found', success: false })
+    if (req.method !== 'GET') {
+       return res.status(404).json({ msg: 'the querried url doesn\'t exist', success: false })
+    }
+    return res.sendStatus(200)
 })
 
 app.use(errorHandler)

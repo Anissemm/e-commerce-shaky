@@ -3,15 +3,26 @@ import { createPortal } from 'react-dom'
 import { usePopper } from 'react-popper'
 import type { Placement } from '@popperjs/core'
 import style from './Tooltip.module.css'
+import { Variants, motion } from 'framer-motion'
+
+const tooltipVariants: Variants = {
+    hidden: {
+        opacity: 0
+    },
+    visible: {
+        opacity: 1
+    }
+}
 
 interface TooltipProps extends PropsWithChildren {
     referenceElement: HTMLElement | null | undefined
     strategy?: 'fixed' | 'absolute'
     placement?: Placement
+    shadow?: string
 }
 
 const Tooltip: React.FC<TooltipProps> =
-    ({ referenceElement, strategy = 'fixed', placement = 'auto-start', children }) => {
+    ({ referenceElement, strategy = 'absolute', placement = 'top-end', children, shadow = '#000' }) => {
         const [popperElement, setPopperElement] = useState<HTMLElement | null>(null);
         const [arrowElement, setArrowElement] = useState<HTMLElement | null>(null);
         const { styles, attributes } = usePopper(referenceElement, popperElement, {
@@ -25,33 +36,29 @@ const Tooltip: React.FC<TooltipProps> =
                 {
                     name: 'offset',
                     options: {
-                        offset: [0, 5],
+                        offset: [0, 10],
                     },
-                },
-                {
-                    name: 'preventOverflow',
-                    options: {
-                        mainAxis: false, // true by default
-                    },
-                },
+                }
             ],
         });
 
         return (
-            <>
-                {strategy === 'fixed' &&
-                    createPortal(
-                        <div ref={setPopperElement}
-                            className="z-50 font-[Oswald] text-sm font-light
-                                     bg-melony-clay rounded-lg shadow-[0_0_5px_#000] text-white"
-                            style={styles.popper}
-                            {...attributes.popper}
-                        >
-                            {children}
-                            <div ref={setArrowElement} className={`shadow ${style.arrow}`} style={styles.arrow} />
-                        </div>, document.getElementById('root')!)}
-            </>
-        );
+            <motion.div
+                variants={tooltipVariants}
+                initial='hidden'
+                animate='visible'
+                exit='hidden'
+                ref={setPopperElement}
+                className={`z-50 font-[Oswald] font-light rounded-md ${style.tooltip} shadow-[0_0_4px_${shadow}]`}
+                style={styles.popper}
+                {...attributes.popper}
+            >
+                <div className={`relative text-white bg-melony-clay rounded-md `}>
+                    {children}
+                </div>
+                <div ref={setArrowElement} className={`${style.arrow} bg-melony-clay before:shadow-[0_0_5px] text-red-500`} style={styles.arrow} />
+            </motion.div>
+        )
     }
 
 export default Tooltip

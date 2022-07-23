@@ -10,7 +10,7 @@ const Header = () => {
     const pageTitle = useAppSelector(getCurrentPageTitle)
 
     return (
-        <header className={`fixed w-full z-[49] top-0`}
+        <header className={`sticky w-full z-[49] top-0`}
             ref={ref => {
                 if (typeof setTargetRef === 'function') {
                     setTargetRef(ref)

@@ -9,6 +9,7 @@ type UserSlice = {
     id?: null | string
     name?: null | string
     avatarUrl?: null | string
+    remembered?: boolean
 }
 
 type User = {
@@ -64,8 +65,6 @@ const userApiSlice = apiSlice.injectEndpoints({
                 body: { id }
             })
         }),
-        // not implemented yet
-        //resend verifyEmail
         verifyEmail: builder.mutation<ResponseType & { user: Omit<User, 'avatarUrl'> }, string>({
             query: (verifyKey) => ({
                 url: 'v1/verifyEmail',
@@ -115,17 +114,20 @@ const userSlice = createSlice({
                 state.name = name
                 state.email = email
                 state.avatarUrl = avatar
-            }
+            } 
         },
-        signOut() {
-            return initialState
+        signOut(state) {
+            return { remembered: state.remembered, ...initialState }
+        },
+        setRemembered: (state, action: PayloadAction<boolean>) => {
+            state.remembered = action.payload
         }
     }
 })
 
 export default userSlice.reducer
 
-export const { setUser, signOut } = userSlice.actions
+export const { setUser, signOut, setRemembered } = userSlice.actions
 
 export const getUserId = (state: RootState): string | null => {
     if (state.user?.id) {
@@ -135,11 +137,13 @@ export const getUserId = (state: RootState): string | null => {
 }
 
 export const getUser = (state: RootState): User | null => {
-    if (!isEmpty(state.user)) {
+    if (state.user?.id) {
         return state.user
     }
     return null
 }
+
+export const getRemembered = (state: RootState) => state.user.remembered
 
 export const {
     useSignInMutation,

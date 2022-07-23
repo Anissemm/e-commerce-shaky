@@ -137,7 +137,7 @@ const SidenavMenu = () => {
     return (
         <>
             <AnimatePresence>
-                {isSidenavShown && <BackgroundOverlay zIndex={-1} >
+                {isSidenavShown && <BackgroundOverlay toggleBackgroundBlur={isSidenavShown} zIndex={-1} >
                     <motion.div
                         ref={(ref) => {
                             sidenavRef.current = ref

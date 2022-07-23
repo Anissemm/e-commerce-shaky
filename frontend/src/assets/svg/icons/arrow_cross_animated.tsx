@@ -23,7 +23,7 @@ const Chevron: React.FC<ChevronProps> = ({ className, cross = false, double = fa
                     d="M0,10.457,1.342,9.15,10.734,0"
                     transform="translate(10.572 0) rotate(90)"
                     stroke='inherit'
-                    stroke-width="2" />
+                    strokeWidth="2" />
             </motion.g>
             {double && !cross && <g
                 transform='translate(9 20.5) rotate(180)'
@@ -37,7 +37,7 @@ const Chevron: React.FC<ChevronProps> = ({ className, cross = false, double = fa
                     d="M0,10.457,1.342,9.15,10.734,0"
                     transform="translate(10.572 0) rotate(90)"
                     stroke='inherit'
-                    stroke-width="2" />
+                    strokeWidth="2" />
             </g>}
             <g transform="translate(-4 0)">
                 <AnimatePresence exitBeforeEnter initial={false}>

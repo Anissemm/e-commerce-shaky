@@ -1,0 +1,8 @@
+@tailwind components;
+
+@layer components {
+  .menubar-item {
+    @apply text-sandy-brown transition-all duration-300 
+  }
+
+}

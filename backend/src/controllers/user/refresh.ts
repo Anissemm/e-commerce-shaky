@@ -21,19 +21,20 @@ const handleRefreshToken = async (req: Request, res: Response) => {
         throw new ClientError(403, 'invalid-refresh-token')
     }
 
-
     const refreshSecret = process.env.REFRESH_TOKEN_SECRET as string
     const accessSecret = process.env.ACCESS_TOKEN_SECRET as string
 
     jwt.verify(refreshToken, refreshSecret, (err: any, decode: any) => {
-        if (err || decode.name !== user.name) {
+        if (err || user.id !== decode.sub) {
             throw new ClientError(403, 'invalid-refresh-token')
         }
+        
         const accessToken = jwt.sign({
-            sub: decode.id,
-            name: decode.name,
-            email: decode.email,
-            role: decode.role
+            sub: user.id,
+            avatar: user.profileImage,
+            name: user.name,
+            email: user.email,
+            role: user.role
         }, accessSecret, { expiresIn: DEVELOPMENT ? '5s' : '30m' })
 
         return res.status(200).json({ message: 'token-refreshed', accessToken, success: true })

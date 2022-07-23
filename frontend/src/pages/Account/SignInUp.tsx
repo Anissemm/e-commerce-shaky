@@ -1,26 +1,26 @@
 import { AnimatePresence, motion } from 'framer-motion'
 import { MutableRefObject, useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
+import useIsAuthorized from '../../authorization/useIsAuthorized'
 import SignInForm from '../../components/SignInForm'
 import SignUpForm from '../../components/SignUpForm'
 import { useClientBox } from '../../hooks/useBox'
 import { usePageSetTitle } from '../../hooks/usePageSet'
-import { getUser, getUserId, useAppSelector } from '../../store'
 
 const SignUp = () => {
   usePageSetTitle('My Account', false, false)
   const navigate = useNavigate()
 
-  const user = useAppSelector(getUser)
+  const IsAuthorized = useIsAuthorized()
 
   const [activeTab, setaActiveTab] = useState('signin')
   const [clientRect, formWrapperRef] = useClientBox()
 
   useEffect(() => {
-    if (user) {
+    if (IsAuthorized) {
       navigate('/')
     }
-  }, [user])
+  }, [IsAuthorized])
 
   return (
     <div className='font-[Oswald]'>
@@ -40,11 +40,11 @@ const SignUp = () => {
               }
             }
           }}
-          style={{ minHeight: `calc(100vh - ${clientRect.top ? clientRect.top : 0}px - 50px)` }}
+          style={{ minHeight: `calc(100vh - ${clientRect.top ? clientRect.top + 50 : 50})` }}
           ref={formWrapperRef as MutableRefObject<HTMLDivElement>}
           layout
-          className='max-w-[530px] mx-auto rounded-xl overflow-hidden bg-ebony-clay touch-none'>
-          <motion.div className='grid grid-cols-2 bg-sandy-brown'>
+          className='max-w-[530px] relative mx-auto rounded-xl overflow-hidden bg-ebony-clay touch-none'>
+          <motion.div className='grid relative z-0 grid-cols-2 bg-sandy-brown'>
             {['signin', 'signup'].map(item => {
               return (
                 <motion.button
@@ -64,16 +64,16 @@ const SignUp = () => {
                 >
                   <span className={`relative z-[2] ${activeTab === item ? 'text-sandy-brown' : 'text-ebony-clay'}`}>{item === 'signin' ? 'Sign In' : 'Sign Up'}</span>
                   {activeTab === item && <motion.span
-                    className={`text-sandy-brown z-[1] bg-ebony-clay absolute top-0 left-0 h-[70px] w-full`}
+                    className={`text-sandy-brown bg-ebony-clay absolute top-0 left-0 h-[70px] w-full`}
                     layoutId='tab-background' />}
                 </motion.button>
 
               )
             })}
-
           </motion.div>
-
-          {activeTab === 'signin' ? <SignInForm key={'signin'} /> : <SignUpForm key={'signup'} />}
+          <div className='relative z-1'>
+            {activeTab === 'signin' ? <SignInForm key={'signin'} /> : <SignUpForm key={'signup'} />}
+          </div>
         </motion.div>
       </AnimatePresence>
     </div >

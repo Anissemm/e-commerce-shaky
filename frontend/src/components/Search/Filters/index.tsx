@@ -4,6 +4,7 @@ import { getFilter, getFilters, getSearchResultHeight, removeFilter, resetFilter
 import style from './Filters.module.css'
 import { ReactComponent as Arrow } from '../../../assets/svg/icons/arrow_left_icon.svg'
 import { ReactComponent as Tick } from '../../../assets/svg/icons/tick_icon.svg'
+import Checkbox from '../../Checkbox'
 
 type PriceRange = {
     min: number,
@@ -44,24 +45,15 @@ const filtersVariants: Variants = {
 
 const FilterElementVariants: Variants = {
     hidden: {
-        opacity: 0
-    },
-    visible: {
-        opacity: 1
-    }
-}
-
-const returnButtonVariants: Variants = {
-    hidden: {
-        x: '-100%',
+        opacity: 0,
         transition: {
-            duration: 0.2,
+            duration: 0.15
         }
     },
     visible: {
-        x: 0,
+        opacity: 1,
         transition: {
-            duration: 0.3,
+            duration: 0.15
         }
     }
 }
@@ -147,47 +139,50 @@ const SearchFilters = forwardRef<HTMLDivElement, PropsWithChildren>((props, ref)
                                 </motion.button>
                             </motion.div>
                         </motion.header>
-                        {shownFilter === '' && <motion.div
-                            style={{ maxHeight: filterValuesHeight }}
-                            className=' overflow-y-auto hover:scrollbar-thumb-raven scrollbar-thin scrollbar-thumb-fiorid'
-                        >
-                            {filterFromServer.map(filter => {
-                                return (
-                                    <motion.div
-                                        key={filter.filterName} >
-                                        <motion.button
-                                            type='button'
-                                            title={getFilterBtnTitleAttr(filter.filterName)}
-                                            onClick={() => setShownFilter(filter.filterName)}
-                                            className='w-full flex justify-between items-center hover:text-sandy-brown transition duration-200'>
-                                            <motion.span
-                                                className='grow text-left'
-                                            >{filter.filterName}</motion.span>
-                                            <motion.span className='flex items-center justify-between'>
-                                                <AnimatePresence>
-                                                    {getPickedFilters(filter.filterName) && <motion.span
-                                                        transition={{ duration: 0.2 }}
-                                                        initial={{ opacity: 0 }}
-                                                        animate={{ opacity: 1 }}
-                                                        exit={{ opacity: 0 }}
-                                                        className='leading-none max-w-[90px] truncate inline-block text-gray-400 text-xs'
-                                                    >
-                                                        {getPickedFilters(filter.filterName)}
-                                                    </motion.span>}
-                                                </AnimatePresence>
-                                                <Arrow className='rotate-180 h-[12px]' />
-                                            </motion.span>
-                                        </motion.button>
-                                    </motion.div>
-                                )
-                            })}
-                        </motion.div>}
-
-                        <AnimatePresence>
+                        <AnimatePresence exitBeforeEnter>
+                            {shownFilter === '' && <motion.div
+                                variants={FilterElementVariants}
+                                initial='hidden'
+                                animate='visible'
+                                exit='hidden'
+                                style={{ maxHeight: filterValuesHeight }}
+                                className=' overflow-y-auto hover:scrollbar-thumb-raven scrollbar-thin scrollbar-thumb-fiorid'
+                            >
+                                {filterFromServer.map(filter => {
+                                    return (
+                                        <motion.div
+                                            key={filter.filterName} >
+                                            <motion.button
+                                                type='button'
+                                                title={getFilterBtnTitleAttr(filter.filterName)}
+                                                onClick={() => setShownFilter(filter.filterName)}
+                                                className='w-full flex justify-between items-center hover:text-sandy-brown transition duration-200'>
+                                                <motion.span
+                                                    className='grow text-left'
+                                                >{filter.filterName}</motion.span>
+                                                <motion.span className='flex items-center justify-between'>
+                                                    <AnimatePresence>
+                                                        {getPickedFilters(filter.filterName) && <motion.span
+                                                            transition={{ duration: 0.2 }}
+                                                            initial={{ opacity: 0 }}
+                                                            animate={{ opacity: 1 }}
+                                                            exit={{ opacity: 0 }}
+                                                            className='max-w-[90px] truncate inline-block text-gray-400 text-xs'
+                                                        >
+                                                            {getPickedFilters(filter.filterName)}
+                                                        </motion.span>}
+                                                    </AnimatePresence>
+                                                    <Arrow className='rotate-180 h-[12px]' />
+                                                </motion.span>
+                                            </motion.button>
+                                        </motion.div>
+                                    )
+                                })}
+                            </motion.div>}
                             <motion.div
                                 style={{ maxHeight: filterValuesHeight }}
                                 className=' overflow-y-auto hover:scrollbar-thumb-raven scrollbar-thin scrollbar-thumb-fiorid px-1'
-                            ></motion.div>
+                            />
                             {filterFromServer.map(filter => {
                                 return (shownFilter === filter.filterName &&
                                     <motion.div
@@ -195,14 +190,15 @@ const SearchFilters = forwardRef<HTMLDivElement, PropsWithChildren>((props, ref)
                                         style={{ maxHeight: filterValuesHeight }}
                                         className='relative'
                                     >
+
                                         <motion.div
                                             variants={FilterElementVariants}
                                             initial='hidden'
                                             animate='visible'
                                             exit='hidden'
                                             style={{ height: filterValuesHeight }}
-                                            className={`px-1 overflow-y-auto hover:scrollbar-thumb-raven scrollbar-thin scrollbar-thumb-fiorid
-                                     bg-opacity-0 absolute top-0 left-0 h-full w-full`}
+                                            className={`overflow-y-auto hover:scrollbar-thumb-raven scrollbar-thin scrollbar-thumb-fiorid
+                                                    bg-opacity-0 absolute top-0 left-0 h-full w-full`}
                                         >
                                             {Array.isArray(filter.values) ? filter.values.map(value => {
                                                 return <FilterElement filterName={filter.filterName} key={value} value={value} />
@@ -238,37 +234,20 @@ const FilterElement: React.FC<FilterElementProps> = ({ value, filterName }) => {
     }, [filter])
 
     return (
-        <motion.div
-            className='flex items-center justify-between mb-1'>
-            <motion.label
-                className={`${checked ? 'text-sandy-brown' : ''} hover:text-sandy-brown 
-                hover:text-opacity-80 transition duration-150 cursor-pointer`}
-                htmlFor={`${filterName}-${value}`}
-            >
-                {value}
-            </motion.label>
-            <motion.div className='relative h-6 w-6'>
-                <motion.input
-                    id={`${filterName}-${value}`}
-                    type='checkbox'
-                    className={`${style.checkboxHover} opacity-0 h-6 w-6 absolute z-[6] cursor-pointer`}
-                    name={value}
-                    checked={checked}
-                    onChange={(e: any) => {
-                        if (e.target.checked) {
-                            dispatch(setFilter({ filterName, value }))
-                        } else {
-                            dispatch(removeFilter({ filterName, value }))
-                        }
-                    }} />
-                <motion.div className='absolute flex items-center justify-center z-[3] top-0 left-0 w-full h-full bg-raven p-[1px]'>
-                    <motion.div className='relative z-[2] w-full h-full border-fiorid border-4 border-solid' />
-                    <Tick
-                        className='absolute top-1/2 left-1/2 z-[4] w-4 h-4 transition duration-150'
-                        style={{ opacity: checked ? 1 : 0 }}  />
-                </motion.div>
-            </motion.div>
-        </motion.div>
+        <Checkbox
+            id={`${filterName}-${value}`}
+            alignLabelTo='left'
+            justify='between'
+            label={value}
+            name={value}
+            checked={checked}
+            onChange={(e: any) => {
+                if (e.target.checked) {
+                    dispatch(setFilter({ filterName, value }))
+                } else {
+                    dispatch(removeFilter({ filterName, value }))
+                }
+            }} />
     )
 }
 

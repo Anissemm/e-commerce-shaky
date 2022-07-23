@@ -4,12 +4,13 @@ import Input from '../Input'
 import Button from '../Button'
 import * as yup from 'yup'
 import { ReactComponent as Google } from '../../assets/svg/icons/google_icon.svg'
-import { getSignInFormValues, toggleModal, useAppDispatch, useAppSelector } from '../../store'
+import { getSignInFormValues, setRemembered, toggleModal, useAppDispatch, useAppSelector } from '../../store'
 import { useEffect, useState } from 'react'
 import ForgotPasswordModal from '../ForgotPasswordModal'
 import { setSignInFormValues } from '../../store'
 import useSignIn from '../../hooks/useSignIn'
 import Alert from '../Alert'
+import Checkbox from '../Checkbox'
 
 const viewVariants: Variants = {
   hidden: {
@@ -41,6 +42,7 @@ const SignInForm = () => {
   const dispatch = useAppDispatch()
   const { email: initialEmailValue } = useAppSelector(getSignInFormValues)
   const [serverError, setServerError] = useState<null | string>(null)
+  const [rememberMe, setRememberMe] = useState(false)
   const signIn = useSignIn()
 
   const signInForm = useFormik({
@@ -54,6 +56,7 @@ const SignInForm = () => {
       setServerError(null)
       try {
         await signIn(values)
+        dispatch(setRemembered(rememberMe))
         setServerError(null)
       } catch (err: any) {
         setServerError(err.data?.message)
@@ -71,13 +74,12 @@ const SignInForm = () => {
   return (
     <motion.div
       layout
-      // style={{ boxShadow: '2.5px -1.5px 2px #222831' }}
       variants={viewVariants}
       initial='hidden'
       animate='visible'
       exit='hidden'
       transition={{ ease: 'linear' }}
-      className='px-8'>
+      className='px-8 h-full'>
       <small
         className='flex py-4 item-center h-full justify-end w-full text-sandy-brown font["Roboto_Condensed"]'>
         *Required
@@ -100,8 +102,9 @@ const SignInForm = () => {
               type='text'
               name='email'
               id='email'
+              placeTooltip='top-start'
               error={signInForm.touched.email && typeof signInForm.errors.email === 'string' && signInForm.errors.email}
-              onChange={signInForm.handleChange}
+              onChange={ signInForm.handleChange}
               onBlur={signInForm.handleBlur}
               value={signInForm.values.email}
 
@@ -120,13 +123,25 @@ const SignInForm = () => {
               id='password'
               placeholder='*************' />
           </div>
-          <div className='flex items-center pb-5 justify-end'>
+          <div className='flex items-center justify-end'>
             <button
               type='button'
               onClick={() => { dispatch(toggleModal({ modalId: 'forgot-password-modal', show: true })) }}
               className='hover:text-sandy-brown font-[Roboto] text-[14px] text-gray-500'>
               Forgot your password?
             </button>
+          </div>
+          <div className='pb-5'>
+            <Checkbox
+              id='remember-me'
+              label='Remember Me'
+              name='remember-me'
+              onChange={() => setRememberMe(prev => !prev)}
+              checked={rememberMe}
+              className='text-raven font-["Roboto_Condensed"]'
+            />
+          </div>
+          <div>
           </div>
         </div>
         <div className='w-full pt-5'>

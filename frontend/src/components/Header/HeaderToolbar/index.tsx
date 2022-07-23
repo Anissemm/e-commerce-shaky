@@ -7,13 +7,14 @@ import Search from '../../Search'
 import style from './HeaderToolbar.module.css'
 import CartModal from '../../CartModal'
 import AccountModal from '../../AccountModal'
+import useIsAuthorized from '../../../authorization/useIsAuthorized'
 
 const HeaderToolbar = () => {
     const navigate = useNavigate()
     const dispatch = useAppDispatch()
     const menuType = useAppSelector(getMenuType)
 
-    const userId = useAppSelector(getUserId)
+    const IsAuthorized = useIsAuthorized()
 
     const handleSidenavToggle: MouseEventHandler<HTMLButtonElement> = () => {
         dispatch(toggleSideNav())
@@ -50,7 +51,7 @@ const HeaderToolbar = () => {
                         <div className='flex items-center justify-center'>
                             <button
                                 onClick={() => {
-                                    if (!userId) {
+                                    if (!IsAuthorized) {
                                         navigate('/account')
                                     } else {
                                         dispatch(toggleModal({ modalId: 'account-modal', show: true }))

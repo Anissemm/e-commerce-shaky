@@ -1,4 +1,4 @@
-import BarMenu from './BarMenu'
+import BarMenu from './BarMenu/BarMenu'
 import SidenavMenu from './SidenavMenu/SidenavMenu'
 import { getMenuType, useAppSelector } from '../../../store'
 import { AnimatePresence, motion } from 'framer-motion'
@@ -17,7 +17,9 @@ const Menu = () => {
   return (
     <>
       <AnimatePresence exitBeforeEnter>
-        {menu}
+        <nav>
+          {menu}
+        </nav>
       </AnimatePresence>
     </>
   )

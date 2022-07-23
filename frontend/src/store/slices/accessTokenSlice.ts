@@ -13,10 +13,12 @@ const refreshTokenApi = apiSlice.injectEndpoints({
 
 interface AccessTokenSlice {
     token: null | string
+    remembered: boolean
 }
 
 const initialState: AccessTokenSlice = {
-    token: null
+    token: null,
+    remembered: false
 }
 
 const AccessTokenSlice = createSlice({

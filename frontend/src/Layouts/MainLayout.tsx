@@ -4,11 +4,12 @@ import Footer from '../components/Header/Footer'
 import { Helmet } from "react-helmet"
 import { getCurrentPageTitle, persistor, useAppSelector } from "../store"
 import { motion } from 'framer-motion'
+import { useLazyMockProtectedQuery } from "../store"
 import Button from "../components/Button"
 
 const Layout = () => {
     const pageTitle = useAppSelector(getCurrentPageTitle)
-
+    const [trigger] = useLazyMockProtectedQuery()
     return (
         <>
             <Helmet>
@@ -28,6 +29,7 @@ const Layout = () => {
                         initial={{ x: '-30%', opacity: 0 }}
                         animate={{ x: 0, opacity: 1 }}
                         exit={{ x: '30%', opacity: 0 }}>
+                            <Button onClick={() => {trigger()}}>Mock route</Button>
                         <Outlet />
                     </motion.div>
                 </div>

@@ -63,7 +63,7 @@ const SignUpForm = () => {
 
   const signUpForm = useFormik({
     initialValues: signUpFormValues,
-    validateOnBlur: true,
+    validateOnChange: true,
     validationSchema,
     onSubmit: async (values) => {
       setRequestError(null)
@@ -125,6 +125,7 @@ const SignUpForm = () => {
             type='email'
             id='email'
             name='email'
+            placeTooltip='top-start'
             onChange={signUpForm.handleChange}
             onBlur={signUpForm.handleBlur}
             value={signUpForm.values.email}

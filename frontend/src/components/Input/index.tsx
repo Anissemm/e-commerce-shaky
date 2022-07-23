@@ -1,10 +1,11 @@
 import { AnimatePresence, motion } from 'framer-motion'
-import { ChangeEvent, forwardRef, PropsWithChildren, useEffect, useImperativeHandle, useRef, useState } from 'react'
+import { ChangeEvent, forwardRef, HTMLAttributes, PropsWithChildren, useEffect, useImperativeHandle, useRef, useState } from 'react'
 import { flushSync } from 'react-dom'
 import { ReactComponent as Eye } from '../../assets/svg/icons/eye_icon.svg'
 import style from './Input.module.css'
+import Tooltip from '../Tooltip'
 
-interface InputProps extends PropsWithChildren {
+interface InputProps extends HTMLAttributes<HTMLInputElement> {
     id: string
     className?: string
     label: string
@@ -14,9 +15,11 @@ interface InputProps extends PropsWithChildren {
     placeholder?: string
     required?: boolean
     error?: null | undefined | boolean | string
-    onFocus?: (e: FocusEvent) => void
-    onBlur?: (e: FocusEvent) => void
-    onChange?: (e: ChangeEvent) => void
+    placeTooltip?: 'top-end' | 'top-start'
+    hint?: string
+    onFocus?: (e: any) => void
+    onBlur?: (e: any) => void
+    onChange?: (e: any) => void
 }
 
 const Input = forwardRef<{ focus: () => void } | null, InputProps>((
@@ -33,6 +36,8 @@ const Input = forwardRef<{ focus: () => void } | null, InputProps>((
         required = false,
         error = null,
         className = '',
+        hint = '',
+        placeTooltip = 'top-end',
         ...props
     }, ref) => {
 
@@ -41,6 +46,9 @@ const Input = forwardRef<{ focus: () => void } | null, InputProps>((
     const [clicked, setClicked] = useState(false)
     const [inputValue, setInputValue] = useState<string | undefined>('')
     const inputRef = useRef<null | HTMLInputElement>(null)
+    const wrapperRef = useRef<null | HTMLDivElement>(null)
+    const [showHint, setShowHint] = useState(false)
+
 
     useImperativeHandle(ref, () => ({
         focus: () => {
@@ -57,10 +65,23 @@ const Input = forwardRef<{ focus: () => void } | null, InputProps>((
 
     }, [value])
 
+    useEffect(() => {
+        if (error) {
+            setShowHint(true)
+            const timerId = setTimeout(() => {
+                setShowHint(false)
+            }, 3000)
+            return () => clearTimeout(timerId)
+        } else {
+            setShowHint(false)
+        }
+    }, [focused, error])
+
     return (
 
         <motion.div layout transition={{ ease: 'linear' }}>
             <motion.div
+                ref={wrapperRef}
                 layout
                 tabIndex={-1}
                 onFocus={(e: any) => {
@@ -72,14 +93,20 @@ const Input = forwardRef<{ focus: () => void } | null, InputProps>((
                 aria-label={label}
                 className={`relative -z[2] font-["Roboto_Condensed"] px-3 bg-melony-clay 
                                 items-center justify-center rounded-2xl pb-1.5 transition duration-200 
-                                focus-within:shadow-[0_0_5px_#000] ${error ? style.error : style.inputWrapper}`}>
+                                focus-within:shadow-[0_0_5px_#000] ${error ? style.error : style.inputWrapper}`}
+            >
                 {(type === 'password' || showPassword) &&
                     <button
+                        tabIndex={-1}
                         type='button'
                         onClick={() => {
                             if (inputRef.current?.type) {
                                 flushSync(setShowPassword(prev => !prev) as any)
                                 inputRef.current.blur()
+                                if (inputRef.current.type !== 'email') {
+                                    const length = inputRef.current.value.length
+                                    inputRef.current.setSelectionRange(length, length)
+                                }
                                 inputRef.current.focus()
                             }
                         }}
@@ -101,7 +128,7 @@ const Input = forwardRef<{ focus: () => void } | null, InputProps>((
                     ref={inputRef}
                     placeholder={!focused ? placeholder : ''}
                     className={`${style.input} font-[Roboto] text-[12px] pr-8 leading-none bg-transparent w-full border-white border-2text-gray-300 
-                z-[0] text-gray-400 outline-none ${className}`}
+                    z-[0] text-gray-400 outline-none ${className}`}
                     type={showPassword ? 'text' : type}
                     aria-labelledby={id}
                     onBlur={(e: any) => {
@@ -114,27 +141,18 @@ const Input = forwardRef<{ focus: () => void } | null, InputProps>((
                         if (typeof onFocus === 'function') {
                             onFocus(e)
                         }
-                        if (e.target.type !== 'email') {
-                            const length = e.target.value.length
-                            e.target.setSelectionRange(length, length)
-                        }
-                    }
-                    }
+                    }}
                     id={id}
                     required={false}
                     {...props}
                 />
             </motion.div>
             <AnimatePresence>
-                {typeof error === 'string' &&
-                    <motion.span
-                        transition={{ ease: 'linear' }}
-                        aria-errormessage='error'
-                        className='pl-2 italic text-[12px] text-red-400 font-["Roboto_Condensed"] leading-none'
-                        initial={{ opacity: 0 }}
-                        animate={{ opacity: 1 }}
-                        exit={{ opacity: 0 }}
-                    >{error}</motion.span>}
+                {showHint &&
+                    <Tooltip referenceElement={wrapperRef.current} shadow='#f87171' placement={placeTooltip} >
+                        <div className='text-red-300 text-[11px] max-w-[250px] font-["Roboto_Condensed"] px-3 py-2'>{error}</div>
+                    </Tooltip>
+                }
             </AnimatePresence>
         </motion.div>
     )

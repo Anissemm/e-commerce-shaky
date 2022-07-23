@@ -16,6 +16,8 @@
     "@types/react": "^18.0.14",
     "@types/react-dom": "^18.0.5",
     "@types/react-helmet": "^6.1.5",
+    "detect-it": "^4.0.1",
+    "event-from": "^1.0.0",
     "formik": "^2.2.9",
     "framer-motion": "^6.3.13",
     "localforage": "^1.10.0",
