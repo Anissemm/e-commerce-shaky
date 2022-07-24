@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { HTMLAttributes, RefAttributes, useEffect, useState } from 'react'
 import { getUser, toggleModal, useAppDispatch, useAppSelector } from '../../store'
 import Button from '../Button'
 import Modal from '../Modal'
@@ -6,15 +6,25 @@ import ModalBody from '../Modal/ModalBody'
 import ModalHeader from '../Modal/ModalHeader'
 import { ReactComponent as Arrow } from '../../assets/svg/icons/arrow_left_icon.svg'
 import { ReactComponent as SignOutIcon } from '../../assets/svg/icons/sign-out-icon.svg'
-import { Link } from 'react-router-dom'
+import { Link, LinkProps, Navigate, useNavigate } from 'react-router-dom'
 import { useResizeObserver } from '../../hooks/useResizeObserver'
 import useSignOut from '../../hooks/useSignOut'
 import { AnimatePresence, motion } from 'framer-motion'
 import { ReactComponent as Loader } from '../../assets/svg/loader.svg'
+import slugify from 'slugify'
 
+const menuItems = [
+  'Order History',
+  'Pending Shipment',
+  'Pending Payment',
+  'Invite Freinds',
+  'Customer Support',
+  'FAQ'
+]
 
 const AccountModal = () => {
   const user = useAppSelector(getUser)
+  const navigate = useNavigate()
   const dispatch = useAppDispatch()
   const [signOut, isLoading] = useSignOut()
   const [setResizeRef, entry] = useResizeObserver()
@@ -27,6 +37,10 @@ const AccountModal = () => {
       setListHeight(listH)
     }
   }, [entry])
+
+  const handleClick = () => {
+    dispatch(toggleModal({ modalId: 'account-modal', show: false }))
+  }
 
   return (
     <>
@@ -63,7 +77,7 @@ const AccountModal = () => {
                 </div>
               </div>
               <div className='border-[5px] shadow-lg border-sandy-brown'>
-                <img src={user?.avatarUrl} className="object-contain" />
+                <img src={user?.avatarUrl as string} alt={`${user?.name}'s profile image`} className="object-contain" />
               </div>
             </div>
             <div
@@ -71,57 +85,22 @@ const AccountModal = () => {
               <ul
                 style={{ maxHeight: listHeight }}
                 className='px-7 overflow-y-auto h-full'>
-                <li className='pb-3'>
-                  <Link to='/account/:id/order-history'
-                    className='flex items-center justify-between uppercase hover:text-sandy-brown duration-150 hover:px-2'>
-                    <span>Order history</span>
-                    <Arrow className='rotate-180 w-2.5' />
-                  </Link>
-                </li>
-                <li className='pb-3'>
-                  <Link to='/account/:id/shipment'
-                    className='flex items-center justify-between uppercase hover:text-sandy-brown duration-150 hover:px-2'>
-                    <span>Pending shipment</span>
-                    <Arrow className='rotate-180 w-2.5' />
-                  </Link>
-                </li>
-                <li className='pb-3'>
-                  <Link to='/account/:id/payments'
-                    className='flex items-center justify-between uppercase hover:text-sandy-brown duration-150 hover:px-2'>
-                    <span>Pending payment</span>
-                    <Arrow className='rotate-180 w-2.5' />
-                  </Link>
-                </li>
-                <li className='pb-3'>
-                  <Link to='/account/:id/invite-freinds'
-                    className='flex items-center justify-between uppercase hover:text-sandy-brown duration-150 hover:px-2'>
-                    <span>Invite freinds</span>
-                    <Arrow className='rotate-180 w-2.5' />
-                  </Link>
-                </li>
-                <li className='pb-3'>
-                  <Link to='/account/faq'
-                    className='flex items-center justify-between uppercase hover:text-sandy-brown duration-150 hover:px-2'>
-                    <span>Customer support </span>
-                    <Arrow className='rotate-180 w-2.5' />
-                  </Link>
-                </li>
-                <li className='pb-3'>
-                  <Link to='/account/faq'
-                    className='flex items-center justify-between uppercase hover:text-sandy-brown duration-150 hover:px-2'>
-                    <span>FAQ </span>
-                    <Arrow className='rotate-180 w-2.5' />
-                  </Link>
-                </li>
+                {menuItems.map(item => {
+                  const slug = slugify(item, { lower: true, replacement: '-' })
+                  return (
+                    <AccountModalListLink key={slug} onClick={handleClick} value={item} to={`/account/${user?.id}/${slug}`} />
+                  )
+                })}
               </ul>
             </div>
           </div>
         </ModalBody>
         <div className='absolute bottom-6 w-full py-4 bg-sandy-brown px-7'>
           <button
-            onClick={() => {
-              dispatch(toggleModal({show: false, modalId: 'account-modal'}))
-              signOut()
+            onClick={async () => {
+              await signOut()
+              dispatch(toggleModal({ show: false, modalId: 'account-modal' }))
+              navigate('/')
             }}
             className='flex items-center justify-between font-[Oswald] uppercase text-[16px] 
           text-ebony-clay duration-150 transition'>
@@ -131,6 +110,33 @@ const AccountModal = () => {
         </div>
       </Modal>
     </>
+  )
+}
+
+interface AccountModalListLinkType extends LinkProps, HTMLAttributes<HTMLAnchorElement> {
+  to: string
+  className?: string
+  value?: string
+  onClick?: (e: any) => void
+}
+
+const AccountModalListLink: React.FC<AccountModalListLinkType> = ({ to, className = '', value = '', onClick = () => { }, ...props }) => {
+  return (
+    <li className='pb-3'>
+      <Link
+        to={to}
+        onClick={(e: any) => {
+          if (typeof onClick === 'function') {
+            onClick(e)
+          }
+        }}
+        className={`flex items-center justify-between uppercase hover:text-sandy-brown duration-150 hover:px-2 ${className}`}
+        {...props}
+      >
+        <span>{value}</span>
+        <Arrow className='rotate-180 w-2.5' />
+      </Link>
+    </li>
   )
 }
 

@@ -1,4 +1,4 @@
-import mongoose, {type Document} from "mongoose"
+import mongoose, { type Document } from "mongoose"
 import bcrypt from "bcrypt"
 import jwt from 'jsonwebtoken'
 import { ServerError } from "../ErrorHandling/errors"
@@ -13,11 +13,13 @@ const DEVELOPMENT = process.env.MODE === 'DEVELOPMENT' && true
 export interface UserDoc extends Document {
     email: string
     emailVerification: VerifyEmailObj
-    password: string
+    password: string | null
     name: string
     accessRight: number
     refreshToken: string
     passwordReset: resetPasswordObj
+    authenticatedWith: string
+    authTypes: string[]
     get role(): string
     set role(role: string)
     profileImage?: string
@@ -82,13 +84,22 @@ const userSchema = new Schema<UserDoc>({
     passwordReset: resetPasswordSchema,
     emailVerification: verifyEmailSchema,
     password: {
+        default: null,
+        type: String
+    },
+    authTypes: {
+        type: [String],
+        defalut: [],
+        enum: ['yandex-oAuth', 'credentials']
+    },
+    authenticatedWith: {
         type: String,
-        required: true
+        default: null
     },
     name: {
         type: String,
-        trim: true,
-        required: true
+        default: '',
+        trim: true
     },
     profileImage: {
         type: String,
@@ -99,6 +110,9 @@ const userSchema = new Schema<UserDoc>({
     methods: {
         comparePasswords: async function (password) {
             try {
+                if (this.password == null) {
+                    this.password = ''
+                }
                 const compared = await bcrypt.compare(password, this.password)
                 return { success: compared }
             } catch (err: any) {
@@ -119,11 +133,11 @@ const userSchema = new Schema<UserDoc>({
                 name: this.name,
                 email: this.email,
                 admin: this.role === 'admin'
-            }, accessSecret, { expiresIn: DEVELOPMENT ? '5s' : '30m' })
+            }, accessSecret, { expiresIn: DEVELOPMENT ? '5s' : '5s' })
 
             const refreshToken: string = jwt.sign({
                 sub: this._id,
-            }, refreshSecret, { expiresIn: DEVELOPMENT ? '30s' : '12h' })
+            }, refreshSecret, { expiresIn: DEVELOPMENT ? '30s' : '30s' })
 
             try {
                 this.refreshToken = refreshToken
@@ -139,6 +153,9 @@ const userSchema = new Schema<UserDoc>({
 userSchema.pre('save', async function (this: UserDoc, next) {
     try {
         if (!this.isModified('password')) next()
+        if (this.password == null) {
+            this.password = ''
+        }
         const hashedPassword = await bcrypt.hash(this.password, 10)
         this.password = hashedPassword
         next()

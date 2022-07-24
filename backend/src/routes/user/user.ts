@@ -2,7 +2,7 @@ import { Router } from "express"
 import { resendVerificationMail, verifyMail } from "../../controllers/user/emailVerification"
 import handleRefreshToken from "../../controllers/user/refresh"
 import { resetPassword, sendResetPasswordToken, verifyResetPasswordToken } from "../../controllers/user/resetPassword"
-import { signIn } from "../../controllers/user/signIn"
+import { signIn, signInWtihYandex } from "../../controllers/user/signIn"
 import SignOut from "../../controllers/user/signOut"
 import { signUp } from "../../controllers/user/signUp"
 
@@ -18,6 +18,7 @@ userRouter.route('/resetPassword/verifyToken').post(verifyResetPasswordToken)
 userRouter.route('/resetPassword/reset').post(resetPassword)
 
 userRouter.route('/signin').post(signIn)
+userRouter.route('/signInWithYandex').put(signInWtihYandex)
 
 userRouter.route('/signout').patch(SignOut)
 

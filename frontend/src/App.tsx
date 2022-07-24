@@ -10,6 +10,9 @@ import UserAuthLayout from "./Layouts/UserAuthLayout"
 import SignInUp from "./pages/Account/SignInUp"
 import PasswordReset from "./pages/Account/PasswordReset"
 import EmailVerification from "./pages/Account/EmailVerification"
+import MockProtected from "./pages/MockProtected"
+import PersistAuth from "./authorization/PersistAuth"
+import YandexSignIn from "./pages/Account/YandexSignIn"
 
 const App: React.FC = () => {
     const location = useLocation()
@@ -23,16 +26,21 @@ const App: React.FC = () => {
                         <Route index element={<SignInUp />} />
                         <Route path='email-verification' element={<EmailVerification />} />
                         <Route path='reset-password' element={<PasswordReset />} />
+                        <Route path='yandex-token' element={<YandexSignIn />} />
 
                         {/* Authenticated */}
-                        <Route element={<IsAuthenticated />} >
-                            <Route path='dashboard' element={<Dashboard />} />
+                        <Route element={<PersistAuth />} >
+                            <Route element={<IsAuthenticated />} >
+                                <Route path=':userId' element={<Dashboard />}>
+                                    <Route path='invite-freinds' element={<MockProtected />} />
+                                </Route>
+                            </Route>
                         </Route>
                     </Route>
                     <Route path='*' element={<Error />} />
                 </Route>
             </Routes>
-        </AnimatePresence>
+        </AnimatePresence >
     )
 }
 

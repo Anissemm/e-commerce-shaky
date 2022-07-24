@@ -1,14 +1,15 @@
 import { BaseQueryFn, createApi, FetchArgs, fetchBaseQuery, FetchBaseQueryError, FetchBaseQueryMeta } from '@reduxjs/toolkit/query/react'
-import { signOut, setUser, deleteToken, setToken } from '..'
+import { signOut, setUser, deleteToken, setToken, type User } from '..'
 import { RootState } from '../store'
 
 const baseQuery = fetchBaseQuery({
     baseUrl: 'http://localhost:4000/api/',
     credentials: 'include',
     prepareHeaders: (headers, { getState }) => {
-        const token = (getState() as RootState).accessToken.token
-        if (token) {
-            headers.set('authorization', `Bearer ${token}`)
+        const accessToken = (getState() as RootState).accessToken
+        if (accessToken.token) {
+            headers.set('authorization', `Bearer ${accessToken.token}`)
+            headers.set('Token-Type', accessToken.tokenOrigin ? accessToken.tokenOrigin : 'credentials')
         }
         return headers
     }
@@ -30,6 +31,7 @@ type RefreshResponse = {
     success: boolean
     message: string
     accessToken: string
+    userInfo?: User
 }
 
 const baseQueryReauth: BaseQueryFn<string | FetchArgs, unknown, FetchBaseQueryError> = async (args, api, extraOptions) => {
@@ -37,13 +39,17 @@ const baseQueryReauth: BaseQueryFn<string | FetchArgs, unknown, FetchBaseQueryEr
     const error = result?.error as CustomResponseError
 
     if (error?.data && error?.data.statusCode === 403 && error?.data.message === 'invalid-access-token') {
-        console.log(error)
         const refreshed = await baseQuery('/v1/refresh', api, extraOptions)
         const data = refreshed?.data as RefreshResponse
-        console.log(data)
+
         if (data?.accessToken) {
+            const tokenOrigin = (api.getState() as RootState).accessToken.tokenOrigin
+
             api.dispatch(setToken(data?.accessToken))
-            api.dispatch(setUser(data?.accessToken))
+            if (tokenOrigin !== 'yandex') {
+                api.dispatch(setUser(data?.accessToken))
+            }
+            api.dispatch(setUser({...data?.userInfo as User, remembered: true}))
         } else {
             api.dispatch(deleteToken())
             api.dispatch(signOut())

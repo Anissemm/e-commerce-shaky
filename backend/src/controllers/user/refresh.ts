@@ -1,15 +1,15 @@
 import { Request, Response } from 'express'
 import jwt from 'jsonwebtoken'
-import { ClientError } from '../../ErrorHandling/errors'
+import { ClientError, ServerError } from '../../ErrorHandling/errors'
 import User from '../../models/user'
-import dotenv from 'dotenv'
-
-dotenv.config()
+import base64 from 'base-64'
+import fetch from 'node-fetch'
 
 const DEVELOPMENT = process.env.MODE === 'DEVELOPMENT'
 
 const handleRefreshToken = async (req: Request, res: Response) => {
     const { refreshToken } = req.cookies
+    const { tokenOrigin } = req.query
 
     if (!refreshToken) {
         throw new ClientError(401, 'unauthorized')
@@ -18,27 +18,81 @@ const handleRefreshToken = async (req: Request, res: Response) => {
     const user = await User.findOne({ refreshToken })
 
     if (!user) {
+        res.clearCookie('refreshToken', {
+            httpOnly: true,
+            secure: true,
+            sameSite: DEVELOPMENT ? 'none' : 'strict',
+            maxAge: Date.now()
+        })
+
         throw new ClientError(403, 'invalid-refresh-token')
     }
 
-    const refreshSecret = process.env.REFRESH_TOKEN_SECRET as string
-    const accessSecret = process.env.ACCESS_TOKEN_SECRET as string
+    if (user.authenticatedWith === 'credentials') {
 
-    jwt.verify(refreshToken, refreshSecret, (err: any, decode: any) => {
-        if (err || user.id !== decode.sub) {
-            throw new ClientError(403, 'invalid-refresh-token')
+        const refreshSecret = process.env.REFRESH_TOKEN_SECRET as string
+        const accessSecret = process.env.ACCESS_TOKEN_SECRET as string
+
+        jwt.verify(refreshToken, refreshSecret, (err: any, decode: any) => {
+            if (err || user.id !== decode.sub) {
+                throw new ClientError(403, 'invalid-refresh-token')
+            }
+
+            const accessToken = jwt.sign({
+                sub: user.id,
+                avatar: user.profileImage,
+                name: user.name,
+                email: user.email,
+                role: user.role
+            }, accessSecret, { expiresIn: DEVELOPMENT ? '5s' : '5s' })
+
+            return res.status(200).json({ message: 'token-refreshed', accessToken, success: true })
+        })
+    }
+
+    if (user.authenticatedWith === 'yandex-oAuth') {
+        const refreshedParams = new URLSearchParams({
+            grant_type: 'refresh_token',
+            refresh_token: refreshToken
+        })
+
+        const refreshedResp = await fetch(`https://oauth.yandex.ru/token`, {
+            method: 'POST',
+            body: refreshedParams,
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded',
+                'Authorization': `Basic ${base64.encode(`${process.env.YANDEX_AUTH_CLIENT_ID}:${process.env.YANDEX_AUTH_SECRET_ID}`)}`
+            }
+        })
+
+        const refreshedTokenObj = await refreshedResp.json() as any
+
+        if (refreshedTokenObj?.error) {
+            throw new ServerError(500, `${refreshToken.error}: ${refreshedTokenObj.error_description}`)
         }
-        
-        const accessToken = jwt.sign({
-            sub: user.id,
-            avatar: user.profileImage,
-            name: user.name,
-            email: user.email,
-            role: user.role
-        }, accessSecret, { expiresIn: DEVELOPMENT ? '5s' : '30m' })
 
-        return res.status(200).json({ message: 'token-refreshed', accessToken, success: true })
-    })
+        user.refreshToken = refreshedTokenObj.refresh_token
+        await user.save()
+
+        res.cookie('refreshToken', user.refreshToken, {
+            httpOnly: true,
+            secure: true,
+            sameSite: DEVELOPMENT ? 'none' : 'strict',
+            maxAge: 1000 * 60 * 60 * 24
+        })
+
+        return res.status(200).json({
+            success: true,
+            message: 'token-refreshed',
+            accessToken: refreshedTokenObj.access_token,
+            userInfo: {
+                email: user.email,
+                id: user.id,
+                name: user.name,
+                avatarUrl: user.profileImage
+            }
+        })
+    }
 }
 
 export default handleRefreshToken

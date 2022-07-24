@@ -49,14 +49,14 @@ const Tooltip: React.FC<TooltipProps> =
                 animate='visible'
                 exit='hidden'
                 ref={setPopperElement}
-                className={`z-50 font-[Oswald] font-light rounded-md ${style.tooltip} shadow-[0_0_4px_${shadow}]`}
-                style={styles.popper}
+                className={`z-50 font-[Oswald] font-light rounded-md ${style.tooltip}`}
+                style={{ boxShadow: `0 0 4px ${shadow}`, ...styles.popper }}
                 {...attributes.popper}
             >
                 <div className={`relative text-white bg-melony-clay rounded-md `}>
                     {children}
                 </div>
-                <div ref={setArrowElement} className={`${style.arrow} bg-melony-clay before:shadow-[0_0_5px] text-red-500`} style={styles.arrow} />
+                <div ref={setArrowElement} className={`${style.arrow} bg-melony-clay before:shadow-[0_0_5px]`} style={{ color: shadow, ...styles.arrow }} />
             </motion.div>
         )
     }

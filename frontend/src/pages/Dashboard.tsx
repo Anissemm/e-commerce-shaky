@@ -1,11 +1,10 @@
 import React from 'react'
+import { Outlet } from 'react-router-dom'
 import { usePageSetTitle } from '../hooks/usePageSet'
 
 const Dashboard = () => {
-  usePageSetTitle('Dashboard', false)
-  
   return (
-    <div>Dashboard</div>
+    <Outlet />
   )
 }
 

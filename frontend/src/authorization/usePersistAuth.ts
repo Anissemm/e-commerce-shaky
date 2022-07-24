@@ -1,31 +1,36 @@
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import useRefreshToken from '../hooks/useRefreshToken'
 import { getAccessToken, getRemembered, signOut, useAppDispatch, useAppSelector } from '../store'
 
 const usePersistAuth = () => {
     const accessToken = useAppSelector(getAccessToken)
-    const rememberd = useAppSelector(getRemembered)
+    const remembered = useAppSelector(getRemembered)
     const dispatch = useAppDispatch()
     const [refresh] = useRefreshToken()
+    const [loading, setLoading] = useState(false)
 
     useEffect(() => {
         const handleRefresh = async () => {
             try {
+                setLoading(true)
                 await refresh()
             } catch (error) {
                 console.log(error)
+            } finally {
+                setLoading(false)
             }
         }
 
-        if (!rememberd && !accessToken) {
+        if (!remembered && !accessToken) {
             dispatch(signOut())
         }
 
-        if (rememberd && !accessToken) {
+        if (remembered && !accessToken) {
             handleRefresh()
         }
     }, [])
 
+    return [accessToken, loading]
 }
 
 export default usePersistAuth

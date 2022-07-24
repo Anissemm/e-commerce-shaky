@@ -17,7 +17,7 @@ export const signUp = async (req: Request, res: Response) => {
         throw new ClientError(409, 'email-conflict')
     }
 
-    await User.create({ email, name, password })
+    await User.update({ email, name, password }, { $addToSet: { authTypes: 'credentials' } }, { upsert: true, new: true })
 
     await sendVerificationMail({ email, hostUrl: req.baseHostUrl })
 

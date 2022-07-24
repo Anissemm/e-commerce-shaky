@@ -12,7 +12,7 @@ type UserSlice = {
     remembered?: boolean
 }
 
-type User = {
+export type User = {
     email: string
     id: string
     name: string
@@ -94,6 +94,13 @@ const userApiSlice = apiSlice.injectEndpoints({
                 body: { ...resetCredentials }
             })
         }),
+        signInWithYandex: builder.mutation<ResponseType & { data: any }, string | number>({
+            query: (code) => ({
+                url: 'v1/signInWithYandex',
+                method: 'PUT',
+                body: { code }
+            })
+        }),
         mockProtected: builder.query<any, void>({
             query: () => 'v1/protected'
         })
@@ -105,16 +112,26 @@ const userSlice = createSlice({
     name: 'user',
     initialState,
     reducers: {
-        setUser(state, action: PayloadAction<string>) {
-            const decodedPayload = decodeAccessToken(action.payload)
-            console.log(decodedPayload)
-            if (decodedPayload) {
-                const { sub: id, name, email, avatar } = decodedPayload
+        setUser(state, action: PayloadAction<string | User & { remembered?: boolean }>) {
+            if (typeof action.payload === 'string') {
+                const decodedPayload = decodeAccessToken(action.payload)
+                if (decodedPayload) {
+                    const { sub: id, name, email, avatar } = decodedPayload
+                    state.id = id
+                    state.name = name
+                    state.email = email
+                    state.avatarUrl = avatar
+                }
+            } else if (action.payload.hasOwnProperty('id')) {
+                const { id, name, email, avatarUrl: avatar, remembered } = action.payload
                 state.id = id
                 state.name = name
                 state.email = email
                 state.avatarUrl = avatar
-            } 
+                state.remembered = remembered ? remembered : false
+            } else {
+                return { remembered: state.remembered, ...initialState }
+            }
         },
         signOut(state) {
             return { remembered: state.remembered, ...initialState }
@@ -153,4 +170,5 @@ export const {
     useResetPasswordMutation,
     useSendResetEmailMutation,
     useLazyMockProtectedQuery,
-    useSignOutMutation } = userApiSlice
+    useSignOutMutation,
+    useSignInWithYandexMutation } = userApiSlice

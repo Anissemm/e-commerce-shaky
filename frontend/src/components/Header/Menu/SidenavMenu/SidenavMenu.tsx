@@ -99,9 +99,9 @@ const SidenavMenu = () => {
                                                 {mountSideNavMenuItems(item)}
                                             </ul>
                                             <div className='sticky flex items-center justify-end bottom-0 px-3 left-0 w-full bg-ebony-clay shadow-[0_0_5px_#000]'>
-                                                <a href={link} className='sidenav-link hover:-translate-x-2'>
-                                                    All {pluralize(item.value)}
-                                                </a>
+                                                <Link to={link} className='sidenav-link hover:-translate-x-2'>
+                                                    All {item.value}
+                                                </Link>
                                                 <Chevron className='rotate-180 h-3 transtion-all duration-300' double />
                                             </div>
                                         </motion.div>}

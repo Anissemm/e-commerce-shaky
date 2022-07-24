@@ -1,25 +1,22 @@
 import { AnimatePresence } from 'framer-motion'
+import { access } from 'fs/promises'
 import React, { PropsWithChildren, ReactElement, useEffect } from 'react'
 import { Navigate, Outlet } from 'react-router-dom'
-import PersistAuth from './PersistAuth'
-import useIsAuthorized from './useIsAuthorized'
+import { getAccessToken, useAppSelector } from '../store'
+import usePersistAuth from './usePersistAuth'
 
 interface IsAuthProps extends PropsWithChildren {
     noOutlet?: boolean
 }
 
 const IsAuthenticated: React.FC<IsAuthProps> = ({ children, noOutlet = false }): ReactElement | null => {
-    const IsAuthorized = useIsAuthorized()
+    const accessToken = useAppSelector(getAccessToken)
 
-    if (!IsAuthorized) {
+    if (!accessToken) {
         return <Navigate to='/account' replace={true} />
     }
 
     return noOutlet ? <>{children}</> : <Outlet />
-        // <PersistAuth>
-
-        // </PersistAuth>
-
 }
 
 export default IsAuthenticated

@@ -1,14 +1,21 @@
-import React from 'react'
-import { Link } from 'react-router-dom'
+import React, { useEffect } from 'react'
+import { Link, useParams } from 'react-router-dom'
 import useBreadcrumbs from 'use-react-router-breadcrumbs'
 import { ReactComponent as Arrow } from '../../assets/svg/icons/arrow_left_icon.svg'
 
 const Breadcrumbs = () => {
     const breadcrumbs = useBreadcrumbs()
+    const { userId } = useParams()
+
     return (
         <ul role='navigation' aria-label='breadcrumbs' className='flex items-center justify-start flex-wrap px-6'>
             {breadcrumbs.map((item, ind) => {
                 const last = ind === breadcrumbs.length - 1
+                
+                if ((item.breadcrumb as any).props.children === userId) {
+                    return null
+                }
+
                 return (
                     <li key={item.key} className='flex items-center justify-center'>
                         <Link

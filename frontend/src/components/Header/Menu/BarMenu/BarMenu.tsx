@@ -68,22 +68,6 @@ const BarMenu = () => {
     }
   }
 
-  useEffect(() => {
-    console.log(depth0ItemHovered, showMenu, currentHeadItemShown)
-  }, [depth0ItemHovered, showMenu, currentHeadItemShown])
-
-  useEffect(() => {
-    const handler = (e: any) => {
-      if (eventFrom(e) === 'touch') {
-        console.log(e.target.closest(`header`), e.target)
-      }
-    }
-
-    document.addEventListener('click', handler)
-
-    return () => { document.removeEventListener('click', handler) }
-  }, [])
-
   const mountMenuBarItems = (data: any) => {
     const dataItems = data?.children
     let items: any[] = []

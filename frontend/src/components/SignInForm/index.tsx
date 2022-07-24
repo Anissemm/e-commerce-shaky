@@ -11,6 +11,7 @@ import { setSignInFormValues } from '../../store'
 import useSignIn from '../../hooks/useSignIn'
 import Alert from '../Alert'
 import Checkbox from '../Checkbox'
+import useYandexSignIn from '../../hooks/useYandexSignIn'
 
 const viewVariants: Variants = {
   hidden: {
@@ -44,6 +45,7 @@ const SignInForm = () => {
   const [serverError, setServerError] = useState<null | string>(null)
   const [rememberMe, setRememberMe] = useState(false)
   const signIn = useSignIn()
+  const signInWithYandex = useYandexSignIn()
 
   const signInForm = useFormik({
     initialValues: {
@@ -151,10 +153,9 @@ const SignInForm = () => {
             </Button>
           </div>
           <div className={`pb-5`}>
-            <Button type="button" color='softBlue'>
+            <Button type="button" onClick={signInWithYandex} color='softBlue'>
               <span className='flex items-center justify-center gap-2'>
-                Sign in with
-                <Google />
+                Sign in with Yandex
               </span>
             </Button>
           </div>

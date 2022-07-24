@@ -2,19 +2,18 @@ import { MouseEventHandler } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { ReactComponent as Logo } from '../../../assets/svg/logo.svg'
 import { motion } from 'framer-motion'
-import { useAppDispatch, toggleSideNav, useAppSelector, getMenuType, toggleModal, getUserId } from '../../../store'
+import { useAppDispatch, toggleSideNav, useAppSelector, getMenuType, toggleModal, getUser } from '../../../store'
 import Search from '../../Search'
 import style from './HeaderToolbar.module.css'
 import CartModal from '../../CartModal'
 import AccountModal from '../../AccountModal'
-import useIsAuthorized from '../../../authorization/useIsAuthorized'
 
 const HeaderToolbar = () => {
     const navigate = useNavigate()
     const dispatch = useAppDispatch()
     const menuType = useAppSelector(getMenuType)
 
-    const IsAuthorized = useIsAuthorized()
+    const user = useAppSelector(getUser)
 
     const handleSidenavToggle: MouseEventHandler<HTMLButtonElement> = () => {
         dispatch(toggleSideNav())
@@ -51,7 +50,7 @@ const HeaderToolbar = () => {
                         <div className='flex items-center justify-center'>
                             <button
                                 onClick={() => {
-                                    if (!IsAuthorized) {
+                                    if (!user?.id) {
                                         navigate('/account')
                                     } else {
                                         dispatch(toggleModal({ modalId: 'account-modal', show: true }))

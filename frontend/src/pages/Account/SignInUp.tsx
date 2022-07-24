@@ -1,26 +1,27 @@
 import { AnimatePresence, motion } from 'framer-motion'
 import { MutableRefObject, useEffect, useState } from 'react'
+import { Helmet } from 'react-helmet'
 import { useNavigate } from 'react-router-dom'
-import useIsAuthorized from '../../authorization/useIsAuthorized'
 import SignInForm from '../../components/SignInForm'
 import SignUpForm from '../../components/SignUpForm'
 import { useClientBox } from '../../hooks/useBox'
 import { usePageSetTitle } from '../../hooks/usePageSet'
+import { getUser, useAppSelector } from '../../store'
 
 const SignUp = () => {
   usePageSetTitle('My Account', false, false)
   const navigate = useNavigate()
 
-  const IsAuthorized = useIsAuthorized()
+  const user = useAppSelector(getUser)
 
   const [activeTab, setaActiveTab] = useState('signin')
   const [clientRect, formWrapperRef] = useClientBox()
 
   useEffect(() => {
-    if (IsAuthorized) {
+    if (user) {
       navigate('/')
     }
-  }, [IsAuthorized])
+  }, [user])
 
   return (
     <div className='font-[Oswald]'>
