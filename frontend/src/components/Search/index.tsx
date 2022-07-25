@@ -179,7 +179,7 @@ const Search = () => {
             />
           </motion.section>
 
-          {results ?
+          {results || true?
             <SearchResults /> :
             <motion.section>
               <LatestResults />

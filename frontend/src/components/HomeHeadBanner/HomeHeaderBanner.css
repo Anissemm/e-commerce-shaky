@@ -1,0 +1,37 @@
+@media (hover: none) {
+  .headerBanner .splide__arrows {
+    display: none;
+  }
+}
+
+.headerBanner .splide__pagination {
+  right: auto;
+  border-radius: none;
+}
+
+.headerBanner .splide__pagination__page {
+  background-color: #222831;
+  border-radius: none;
+  height: 10px;
+  width: 40px;
+  margin-right: 10px;
+  border-radius: 0;
+  box-shadow: 0 0 5px #000;
+}
+
+@media screen and (max-width: 768px) {
+    .headerBanner .splide__pagination__page {
+        height: 10px;
+        width: 24px;
+        margin-right: 5px;
+      }
+}
+
+.headerBanner .splide__pagination__page.is-active {
+  background-color: #f2aa4c;
+  border-radius: none;
+}
+
+.headerBanner .splide__arrow--prev svg {
+  transform: scale(1);
+}

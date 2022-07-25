@@ -2,6 +2,7 @@ import { AnimatePresence, motion } from 'framer-motion'
 import { MutableRefObject, useEffect, useState } from 'react'
 import { Helmet } from 'react-helmet'
 import { useNavigate } from 'react-router-dom'
+import H1 from '../../components/H1'
 import SignInForm from '../../components/SignInForm'
 import SignUpForm from '../../components/SignUpForm'
 import { useClientBox } from '../../hooks/useBox'
@@ -25,10 +26,7 @@ const SignUp = () => {
 
   return (
     <div className='font-[Oswald]'>
-      <h1 className='inline-block my-6 text-ebony-clay px-4 py-[10px] bg-sandy-brown uppercase font-[Oswald] text-[24px] 
-      font-medium'>
-        My Account
-      </h1>
+      <H1>My Account</H1>
       <AnimatePresence exitBeforeEnter>
         <motion.div
           onPanEnd={(e, info) => {

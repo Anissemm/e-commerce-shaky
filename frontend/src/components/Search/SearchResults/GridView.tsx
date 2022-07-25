@@ -12,7 +12,7 @@ const toggleVariants: Variants = {
     }
 }
 
-const GridView = () => {
+const GridView = ({ products }: { products: any }) => {
 
     return (
         <motion.div className="xs:flex xs:justify-center">
@@ -23,11 +23,16 @@ const GridView = () => {
                 exit='hidden'
                 className='grid grid-flow-row grid-cols-1 xs:w-[470px] sm:w-[625px] sxs:grid-cols-2 xs:flex xs:justify-start xs:flex-wrap gap-[5px]'
             >
+                {/* <ProductCard type='searchGrid' />
                 <ProductCard type='searchGrid' />
                 <ProductCard type='searchGrid' />
                 <ProductCard type='searchGrid' />
-                <ProductCard type='searchGrid' />
-                <ProductCard type='searchGrid' />
+                <ProductCard type='searchGrid' /> */}
+                {products?.map((product: any) => {
+                    return (
+                        <ProductCard key={product._id} type='searchGrid' product={product} />
+                    )
+                })}
             </motion.div>
         </motion.div>
     )

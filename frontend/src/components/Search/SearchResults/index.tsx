@@ -5,6 +5,7 @@ import style from './SearchResults.module.css'
 import GridView from './GridView'
 import { getSearchResultHeight, useAppSelector } from '../../../store'
 import ListView from './ListView'
+import { products } from '../../../mockData'
 
 const searchResultsVariants: Variants = {
     hidden: {
@@ -47,7 +48,7 @@ const SearchResults = () => {
                 </motion.header>
                 <motion.section style={{ height: typeof resultsHeight === 'number' ? resultsHeight - 260 : undefined }} className='px-[12px] overflow-y-auto py-3 mt-5 hover:scrollbar-thumb-raven scrollbar-thin scrollbar-thumb-fiorid relative'>
                     <AnimatePresence exitBeforeEnter>
-                        {view === 'grid' ? <GridView /> : <ListView />}
+                        {view === 'grid' ? <GridView products={products} /> : <ListView products={products} />}
                     </AnimatePresence>
                 </motion.section>
             </motion.section>

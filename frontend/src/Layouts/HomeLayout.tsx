@@ -6,7 +6,7 @@ import { getCurrentPageTitle, persistor, useAppSelector } from "../store"
 import { motion } from 'framer-motion'
 import { useEffect } from "react"
 
-const Layout = () => {
+const HomeLayout = () => {
     const pageTitle = useAppSelector(getCurrentPageTitle)
 
     useEffect(() => {
@@ -15,16 +15,16 @@ const Layout = () => {
 
     return (
         <>
-            <Helmet>
-                <title>{pageTitle.value}</title>
-            </Helmet>
-            <div id='main-container' className="mainContainer bg-melony-clay flex flex-col" lang="en">
-                <Header />
+            <motion.div
+                transition={{ ease: 'backInOut', duration: 0.4, delay: 0 }}
+                className='min-h-screen'
+                initial={{ x: '-30%', opacity: 0 }}
+                animate={{ x: 0, opacity: 1 }}
+                exit={{ x: '30%', opacity: 0 }}>
                 <Outlet />
-                <Footer className='mt-auto' />
-            </div>
+            </motion.div>
         </>
     )
 }
 
-export default Layout
+export default HomeLayout

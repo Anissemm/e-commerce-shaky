@@ -13,7 +13,7 @@ const toggleVariants: Variants = {
     }
 }
 
-const ListView = () => {
+const ListView = ({ products }: { products: any }) => {
     return (
         <motion.div
             variants={toggleVariants}
@@ -29,11 +29,11 @@ const ListView = () => {
                 className=''
             >
                 {/*Hard coded */}
-                <ProductCard type='searchList' />
-                <ProductCard type='searchList' />
-                <ProductCard type='searchList' />
-                <ProductCard type='searchList' />
-                <ProductCard type='searchList' />
+                {products?.map((product: any) => {
+                    return (
+                            <ProductCard key={product._id} type='searchList' product={product} />
+                    )
+                })}
                 {/*Hard coded */}
             </motion.div>
         </motion.div>

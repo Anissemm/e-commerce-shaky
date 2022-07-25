@@ -3,49 +3,19 @@ import React, { PropsWithChildren, useLayoutEffect, useRef, useState } from 'rea
 import { Link } from 'react-router-dom'
 import IsoProtein from '../../assets/tempImg/iso_prot.png'
 import { useResizeObserver } from '../../hooks/useResizeObserver'
+import { product } from '../../mockData'
 import Label from './Label'
 import Rate from './Rate'
 
 type CardType = 'card' | 'list' | 'searchGrid' | 'searchList'
 
 interface ProductCard {
-    type?: CardType
-    title?: string
-    promotion?: string
-    price?: string
-    unit?: string
+    type: 'list' | 'card' | 'searchGrid' | 'searchList'
+    product: typeof product
 }
 
-const ProductCard: React.FC<PropsWithChildren<ProductCard>> = (
-    {
-        type = 'card',
-        title = 'Whey Protein',
-        promotion = 'Your promotion here...',
-        price = '9.99',
-        unit = '$'
-    }
-) => {
 
-    const product = {
-        _id: 'f6s4a6f4as4fa545fd45f4sd8',
-        rate: 4.7,
-        feature: {
-            type: 'Promo',
-            text: '15% OFF EVERYTHING'
-        },
-        productFeature: {
-            flavour: 'Double Chocolate',
-            size: '2.4kg'
-        },
-        brand: 'Shaky',
-        title: 'Whey Protein',
-        price: {
-            value: 29.99,
-            currency: '$'
-        },
-        imageUrl: IsoProtein,
-        quantity: 1
-    }
+const ProductCard: React.FC<PropsWithChildren<ProductCard>> = ({ product, type }) => {
 
     const listSearchRef = useRef<HTMLElement | null>(null)
 

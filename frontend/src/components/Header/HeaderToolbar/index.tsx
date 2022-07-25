@@ -48,6 +48,7 @@ const HeaderToolbar = () => {
                             </motion.button>
                         }
                         <div className='flex items-center justify-center'>
+                            {user?.id && <span title={user?.name} className="font-['Roboto_Condensed'] max-w-[105px] leading-none text-sandy-brown hidden italic text-[14px] truncate mr-1 lg:!block">Welcome, {user?.name}</span>}
                             <button
                                 onClick={() => {
                                     if (!user?.id) {

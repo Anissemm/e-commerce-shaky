@@ -13,6 +13,8 @@ import EmailVerification from "./pages/Account/EmailVerification"
 import MockProtected from "./pages/MockProtected"
 import PersistAuth from "./authorization/PersistAuth"
 import YandexSignIn from "./pages/Account/YandexSignIn"
+import HomeLayout from "./Layouts/HomeLayout"
+import PageLayout from "./Layouts/PageLayout"
 
 const App: React.FC = () => {
     const location = useLocation()
@@ -21,23 +23,27 @@ const App: React.FC = () => {
         <AnimatePresence initial={false} exitBeforeEnter>
             <Routes location={location} key={location.pathname}>
                 <Route path='/' element={<MainLayout />}>
-                    <Route index element={<Home />} />
-                    <Route path='account' element={<UserAuthLayout />}>
-                        <Route index element={<SignInUp />} />
-                        <Route path='email-verification' element={<EmailVerification />} />
-                        <Route path='reset-password' element={<PasswordReset />} />
-                        <Route path='yandex-token' element={<YandexSignIn />} />
+                    <Route element={<HomeLayout />}>
+                        <Route index element={<Home />} />
+                    </Route>
+                    <Route element={<PageLayout />}>
+                        <Route path='account' element={<UserAuthLayout />}>
+                            <Route index element={<SignInUp />} />
+                            <Route path='email-verification' element={<EmailVerification />} />
+                            <Route path='reset-password' element={<PasswordReset />} />
+                            <Route path='yandex-token' element={<YandexSignIn />} />
 
-                        {/* Authenticated */}
-                        <Route element={<PersistAuth />} >
-                            <Route element={<IsAuthenticated />} >
-                                <Route path=':userId' element={<Dashboard />}>
-                                    <Route path='invite-freinds' element={<MockProtected />} />
+                            {/* Authenticated */}
+                            <Route element={<PersistAuth />} >
+                                <Route element={<IsAuthenticated />} >
+                                    <Route path=':userId' element={<Dashboard />}>
+                                        <Route path='invite-freinds' element={<MockProtected />} />
+                                    </Route>
                                 </Route>
                             </Route>
                         </Route>
+                        <Route path='*' element={<Error />} />
                     </Route>
-                    <Route path='*' element={<Error />} />
                 </Route>
             </Routes>
         </AnimatePresence >
