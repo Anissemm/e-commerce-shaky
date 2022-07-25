@@ -12,6 +12,8 @@ import useSignOut from '../../hooks/useSignOut'
 import { AnimatePresence, motion } from 'framer-motion'
 import { ReactComponent as Loader } from '../../assets/svg/loader.svg'
 import slugify from 'slugify'
+import { createPortal, flushSync } from 'react-dom'
+import FullScreenLoader from '../FullScreenLoader'
 
 const menuItems = [
   'Order History',
@@ -26,7 +28,8 @@ const AccountModal = () => {
   const user = useAppSelector(getUser)
   const navigate = useNavigate()
   const dispatch = useAppDispatch()
-  const [signOut, isLoading] = useSignOut()
+  const [signOut] = useSignOut()
+  const [loadingSignOut, setLoadingSignOut] = useState(false)
   const [setResizeRef, entry] = useResizeObserver()
   const [listHeight, setListHeight] = useState<string | number>('auto')
 
@@ -45,14 +48,8 @@ const AccountModal = () => {
   return (
     <>
       <AnimatePresence>
-        {isLoading &&
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            className='fixed top-0 left-0 z-[100] w-screen h-screen bg-raven bg-opacity-80 flex  items-center justify-center'>
-            <Loader width={80} height={80} />
-          </motion.div>}
+        {loadingSignOut &&
+          createPortal(<FullScreenLoader />, document.getElementById('root')!)}
       </AnimatePresence>
       <Modal justify='end' align='start' right={20} width={400} modalId='account-modal'>
         <ModalHeader title='Account' />
@@ -97,10 +94,14 @@ const AccountModal = () => {
         </ModalBody>
         <div className='absolute bottom-6 w-full py-4 bg-sandy-brown px-7'>
           <button
-            onClick={async () => {
-              await signOut()
+            onClick={() => {
               dispatch(toggleModal({ show: false, modalId: 'account-modal' }))
-              navigate('/')
+              setLoadingSignOut(true)
+              setTimeout(async () => {
+                await signOut()
+                navigate('/')
+                setLoadingSignOut(false)
+              }, 500)
             }}
             className='flex items-center justify-between font-[Oswald] uppercase text-[16px] 
           text-ebony-clay duration-150 transition'>

@@ -1,15 +1,17 @@
-import { BaseQueryFn, createApi, FetchArgs, fetchBaseQuery, FetchBaseQueryError, FetchBaseQueryMeta } from '@reduxjs/toolkit/query/react'
-import { signOut, setUser, deleteToken, setToken, type User } from '..'
+import { BaseQueryFn, createApi, FetchArgs, fetchBaseQuery, FetchBaseQueryError } from '@reduxjs/toolkit/query/react'
+import { signOut, setUser, deleteToken, setToken, type User, setTokenOrigin } from '..'
 import { RootState } from '../store'
 
 const baseQuery = fetchBaseQuery({
     baseUrl: 'http://localhost:4000/api/',
     credentials: 'include',
     prepareHeaders: (headers, { getState }) => {
-        const accessToken = (getState() as RootState).accessToken
-        if (accessToken.token) {
-            headers.set('authorization', `Bearer ${accessToken.token}`)
-            headers.set('Token-Type', accessToken.tokenOrigin ? accessToken.tokenOrigin : 'credentials')
+        const accessToken = (getState() as RootState).accessToken.token
+        const tokenOrigin = (getState() as RootState).user.tokenOrigin
+
+        if (accessToken) {
+            headers.set('authorization', `Bearer ${accessToken}`)
+            headers.set('Token-Type', tokenOrigin ? tokenOrigin : 'credentials')
         }
         return headers
     }
@@ -24,8 +26,6 @@ type CustomResponseError = {
         success: boolean;
     }
 }
-
-type ResponseError = FetchBaseQueryError | CustomResponseError
 
 type RefreshResponse = {
     success: boolean
@@ -43,16 +43,18 @@ const baseQueryReauth: BaseQueryFn<string | FetchArgs, unknown, FetchBaseQueryEr
         const data = refreshed?.data as RefreshResponse
 
         if (data?.accessToken) {
-            const tokenOrigin = (api.getState() as RootState).accessToken.tokenOrigin
+            const tokenOrigin = (api.getState() as RootState).user.tokenOrigin
 
             api.dispatch(setToken(data?.accessToken))
-            if (tokenOrigin !== 'yandex') {
+            if (tokenOrigin !== 'yandex-oAuth') {
                 api.dispatch(setUser(data?.accessToken))
+            } else {
+                api.dispatch(setUser({...data?.userInfo as User, remembered: true}))
             }
-            api.dispatch(setUser({...data?.userInfo as User, remembered: true}))
         } else {
             api.dispatch(deleteToken())
-            api.dispatch(signOut())
+            api.dispatch(signOut(true))
+            api.dispatch(setTokenOrigin(null))
         }
     }
     return result

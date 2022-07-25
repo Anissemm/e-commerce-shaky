@@ -9,7 +9,6 @@ const DEVELOPMENT = process.env.MODE === 'DEVELOPMENT'
 
 const handleRefreshToken = async (req: Request, res: Response) => {
     const { refreshToken } = req.cookies
-    const { tokenOrigin } = req.query
 
     if (!refreshToken) {
         throw new ClientError(401, 'unauthorized')
@@ -38,13 +37,24 @@ const handleRefreshToken = async (req: Request, res: Response) => {
                 throw new ClientError(403, 'invalid-refresh-token')
             }
 
+            const newRefreshToken: string = jwt.sign({
+                sub: user.id,
+            }, refreshSecret, { expiresIn: '14d' })
+
+            res.cookie('refreshToken', refreshToken, {
+                httpOnly: true,
+                secure: true,
+                sameSite: DEVELOPMENT ? 'none' : 'strict',
+                maxAge: 1000 * 60 * 60 * 24 * 14
+            })
+
             const accessToken = jwt.sign({
                 sub: user.id,
                 avatar: user.profileImage,
                 name: user.name,
                 email: user.email,
                 role: user.role
-            }, accessSecret, { expiresIn: DEVELOPMENT ? '5s' : '5s' })
+            }, accessSecret, { expiresIn: '30m' })
 
             return res.status(200).json({ message: 'token-refreshed', accessToken, success: true })
         })
@@ -78,7 +88,7 @@ const handleRefreshToken = async (req: Request, res: Response) => {
             httpOnly: true,
             secure: true,
             sameSite: DEVELOPMENT ? 'none' : 'strict',
-            maxAge: 1000 * 60 * 60 * 24
+            maxAge: 1000 * (typeof refreshedTokenObj?.expires_in === 'number' ? refreshedTokenObj?.expires_in : 60 * 60 * 24 * 14)
         })
 
         return res.status(200).json({

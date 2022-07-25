@@ -2,6 +2,7 @@ import { Request, Response } from "express"
 import { ClientError } from "../../ErrorHandling/errors"
 import User from "../../models/user"
 import { sendResetPasswordMail } from "../../utils/utilityMails"
+import bcrypt from 'bcrypt'
 
 export const sendResetPasswordToken = async (req: Request, res: Response) => {
     const { email } = req.body
@@ -42,15 +43,12 @@ export const resetPassword = async (req: Request, res: Response) => {
     const { newPassword, resetToken } = req.body
     if (resetToken) {
         const [id, _resetKey] = (resetToken as string).split('.')
-        const user = await User.findById(id)
+        const hashedPassword = await bcrypt.hash(newPassword, 10)
+        const user = await User.findByIdAndUpdate(id, { password: hashedPassword, $unset: { passwordReset: '' } }, { new: true })
 
         if (!user) {
             throw new ClientError(400, 'invalid-reset-token')
         }
-
-        user.password = newPassword
-        user.passwordReset.remove()
-        await user.save()
 
         return res.status(200).json({ message: 'passsword-reset-success', success: true })
     }

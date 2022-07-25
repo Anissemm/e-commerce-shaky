@@ -1,4 +1,4 @@
-import { useEffect, useLayoutEffect } from "react"
+import { useEffect } from "react"
 import { useAppDispatch, setCurrentPageTitle } from "../store"
 
 export const usePageSetTitle = (title: string, show: boolean, mount?: boolean) => {

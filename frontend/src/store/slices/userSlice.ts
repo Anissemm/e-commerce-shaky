@@ -10,6 +10,7 @@ type UserSlice = {
     name?: null | string
     avatarUrl?: null | string
     remembered?: boolean
+    tokenOrigin?: 'yandex-oAuth' | 'credentials' | null
 }
 
 export type User = {
@@ -19,7 +20,9 @@ export type User = {
     avatarUrl: string
 }
 
-const initialState: UserSlice = {}
+const initialState: UserSlice = {
+    tokenOrigin: null
+}
 
 type SignInCredentials = {
     email: string,
@@ -133,18 +136,21 @@ const userSlice = createSlice({
                 return { remembered: state.remembered, ...initialState }
             }
         },
-        signOut(state) {
-            return { remembered: state.remembered, ...initialState }
+        signOut(state, action: PayloadAction<boolean | undefined>) {
+            return { remembered: !action.payload ? state.remembered : false, ...initialState }
         },
         setRemembered: (state, action: PayloadAction<boolean>) => {
             state.remembered = action.payload
+        },
+        setTokenOrigin: (state, action: PayloadAction<"credentials" | "yandex-oAuth" | null>) => {
+            state.tokenOrigin = action.payload
         }
     }
 })
 
 export default userSlice.reducer
 
-export const { setUser, signOut, setRemembered } = userSlice.actions
+export const { setUser, signOut, setRemembered, setTokenOrigin } = userSlice.actions
 
 export const getUserId = (state: RootState): string | null => {
     if (state.user?.id) {
@@ -161,6 +167,7 @@ export const getUser = (state: RootState): User | null => {
 }
 
 export const getRemembered = (state: RootState) => state.user.remembered
+export const getUserTokenOrigin = (state: RootState) => state.user.tokenOrigin 
 
 export const {
     useSignInMutation,

@@ -9,7 +9,6 @@ import base64 from 'base-64'
 
 const DEVELOPMENT = process.env.MODE === 'DEVELOPMENT' && true
 
-// to implement on front end
 export const signIn = async (req: Request, res: Response) => {
     const { email, password } = req.body
 
@@ -17,7 +16,7 @@ export const signIn = async (req: Request, res: Response) => {
         throw new ClientError(400, 'missing-credentials')
     }
 
-    const user = await User.findOne({ email, authTypes: { $eq: 'credentials' } })
+    const user = await User.findOne({ email, authTypes: { $elemMatch: { $eq: 'credentials' } } })
 
     if (!user) {
         throw new ClientError(401, 'wrong-credentials')
@@ -26,6 +25,7 @@ export const signIn = async (req: Request, res: Response) => {
     const { success: isPwdsMatch } = await user.comparePasswords(password)
 
     if (isPwdsMatch) {
+        console.log(isPwdsMatch)
         const generatedTokens = await user.generateAccessTokensPair()
         if (!generatedTokens.success) {
             throw new ServerError(500, generatedTokens.message)
@@ -40,7 +40,7 @@ export const signIn = async (req: Request, res: Response) => {
             httpOnly: true,
             secure: true,
             sameSite: DEVELOPMENT ? 'none' : 'strict',
-            maxAge: 1000 * 60 * 60 * 24
+            maxAge: 1000 * 60 * 60 * 24 * 14
         })
 
         return res.status(200).json({ message: 'authenticated', success: true, accessToken })
@@ -80,7 +80,7 @@ export const signInWtihYandex = async (req: Request, res: Response) => {
         httpOnly: true,
         secure: true,
         sameSite: DEVELOPMENT ? 'none' : 'strict',
-        maxAge: 1000 * 60 * 60 * 12
+        maxAge: 1000 * (typeof data?.expires_in === 'number' ? data?.expires_in : 60 * 60 * 24 * 14)
     })
 
     const userInfoParams = new URLSearchParams({
@@ -100,14 +100,14 @@ export const signInWtihYandex = async (req: Request, res: Response) => {
         throw new ServerError(500, 'missing-yandex-user-info')
     }
 
-    let user = await User.findOneAndUpdate({ email: userInfo.default_email, authTypes: { $elemMatch: { $eq: 'yandex-oAuth' } } },
+    let user = await User.findOneAndUpdate({ email: userInfo.default_email, authTypes: { $elemMatch: { $in: ['yandex-oAuth', 'credentials'] } } },
         { $addToSet: { authTypes: 'yandex-oAuth' }, refreshToken: data?.refresh_token },
         { upsert: true, new: true })
 
     if (!user.name) {
-        user.name = data.real_name
+        user.name = userInfo.real_name
     }
-    
+
     user.authenticatedWith = 'yandex-oAuth'
     await user.save()
 

@@ -1,4 +1,4 @@
-import mongoose, { type Document } from "mongoose"
+import mongoose, { Types, type Document } from "mongoose"
 import bcrypt from "bcrypt"
 import jwt from 'jsonwebtoken'
 import { ServerError } from "../ErrorHandling/errors"
@@ -13,13 +13,13 @@ const DEVELOPMENT = process.env.MODE === 'DEVELOPMENT' && true
 export interface UserDoc extends Document {
     email: string
     emailVerification: VerifyEmailObj
-    password: string | null
+    password: string
     name: string
     accessRight: number
     refreshToken: string
     passwordReset: resetPasswordObj
     authenticatedWith: string
-    authTypes: string[]
+    authTypes: Types.Array<string>
     get role(): string
     set role(role: string)
     profileImage?: string
@@ -84,13 +84,11 @@ const userSchema = new Schema<UserDoc>({
     passwordReset: resetPasswordSchema,
     emailVerification: verifyEmailSchema,
     password: {
-        default: null,
+        default: '',
         type: String
     },
     authTypes: {
-        type: [String],
-        defalut: [],
-        enum: ['yandex-oAuth', 'credentials']
+        type: [String]
     },
     authenticatedWith: {
         type: String,
@@ -128,16 +126,16 @@ const userSchema = new Schema<UserDoc>({
             }
 
             const accessToken: string = jwt.sign({
-                sub: this._id,
+                sub: this.id,
                 avatar: this.profileImage,
                 name: this.name,
                 email: this.email,
-                admin: this.role === 'admin'
-            }, accessSecret, { expiresIn: DEVELOPMENT ? '5s' : '5s' })
+                admin: this.role === 'admin' // to implement roles
+            }, accessSecret, { expiresIn: '30m' })
 
             const refreshToken: string = jwt.sign({
-                sub: this._id,
-            }, refreshSecret, { expiresIn: DEVELOPMENT ? '30s' : '30s' })
+                sub: this.id,
+            }, refreshSecret, { expiresIn: '14d' })
 
             try {
                 this.refreshToken = refreshToken
@@ -153,9 +151,7 @@ const userSchema = new Schema<UserDoc>({
 userSchema.pre('save', async function (this: UserDoc, next) {
     try {
         if (!this.isModified('password')) next()
-        if (this.password == null) {
-            this.password = ''
-        }
+
         const hashedPassword = await bcrypt.hash(this.password, 10)
         this.password = hashedPassword
         next()

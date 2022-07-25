@@ -19,7 +19,7 @@ const useSignOut = (): SignOutHookReturn => {
             setLoading(true)
             try {
                 await signOutServer(userId).unwrap()
-                dispatch(signOutClient())
+                dispatch(signOutClient(true))
                 dispatch(deleteToken())
                 navigate('/')
             } catch (err) {

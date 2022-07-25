@@ -1,6 +1,6 @@
 import { useState } from "react"
 import { useDispatch } from "react-redux"
-import { deleteToken, getAccessTokenOrigin, setToken, setUser, signOut, useAppSelector, useLazyRefreshTokenQuery, User } from "../store"
+import { deleteToken, getUserTokenOrigin, setToken, setUser, signOut, useAppSelector, useLazyRefreshTokenQuery, User } from "../store"
 
 type useRefreshTokenReturn = [
     () => Promise<void>,
@@ -11,13 +11,13 @@ const useRefreshToken = (): useRefreshTokenReturn => {
     const dispatch = useDispatch()
     const [refreshHandler] = useLazyRefreshTokenQuery()
     const [isLoading, setIsLoading] = useState(false)
-    const tokenOrigin = useAppSelector(getAccessTokenOrigin)
+    const tokenOrigin = useAppSelector(getUserTokenOrigin)
 
     const refresh = async () => {
         try {
             const payload = await refreshHandler(tokenOrigin).unwrap()
             dispatch(setToken(payload?.accessToken))
-            if (tokenOrigin !== 'yandex') {
+            if (tokenOrigin !== 'yandex-oAuth') {
                 dispatch(setUser(payload?.accessToken))
             } else {
                 dispatch(setUser({ ...payload.userInfo as User, remembered: true }))
@@ -25,7 +25,7 @@ const useRefreshToken = (): useRefreshTokenReturn => {
         } catch (error: any) {
             if (error.data.message === 'invalid-refresh-token') {
                 dispatch(deleteToken())
-                dispatch(signOut())
+                dispatch(signOut(true))
             }
         }
     }
