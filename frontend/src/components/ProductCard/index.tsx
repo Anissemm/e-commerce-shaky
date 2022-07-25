@@ -44,7 +44,7 @@ const ProductCard: React.FC<PropsWithChildren<ProductCard>> = (
             currency: '$'
         },
         imageUrl: IsoProtein,
-        quatity: 1
+        quantity: 1
     }
 
     const listSearchRef = useRef<HTMLElement | null>(null)
@@ -63,6 +63,7 @@ const ProductCard: React.FC<PropsWithChildren<ProductCard>> = (
     return (
         type === 'list' ? (
             <article
+                title={`${product.brand}: ${product.title}`}
                 ref={ref => {
                     listSearchRef.current = ref
                     if (typeof setResizeRef === 'function') setResizeRef(ref)
@@ -70,42 +71,31 @@ const ProductCard: React.FC<PropsWithChildren<ProductCard>> = (
                 className='flex items-center justify-center relative mb-3'>
                 <div
                     className={`flex relative flex-row justify-center
-                        items-center w-full h-[100px] bg-melony-clay rounded-xl 
-                        hover:bg-opacity-60 hover:shadow-[0_0_5px_#000] transition duration-300`}>
-                    <div className='relative flex items-center justify-between w-full px-6'>
-                        <div className='aspect-1 w-[105px] h-[105px]'>
+                        items-center w-full bg-melony-clay rounded-xl transition duration-300`}>
+                    <div className='relative flex items-center justify-between w-full px-2 pr-3 xs:px-6 xs:pr-8'>
+                        <div className='aspect-1 w-[75px] h-[75px] sxs:w-[90px] sxs:h-[90px] xs:w-[105px] xs:h-[105px]'>
                             <img
                                 src={product.imageUrl}
                                 className='object-contain object-center w-full h-full'
                                 alt={`${product.title} image`}
                             />
                         </div>
-                        <div
-                            style={{ maxWidth: listCardTextWidth }}
+                        <div style={{ maxWidth: listCardTextWidth }}
                             className='text-center font-[Oswald] h-full pt-2 flex 
                                 flex-col items-start justify-start grow'>
-                            <p
-                                className='uppercase text-[12px] xs:text-[14px] 
-                                    text-left truncate w-full'
-                            >
-                                {product.brand}
-                            </p>
-                            <p
-                                className='uppercase text-[14px] xs:text-[16px] 
-                                    text-left truncate w-full' >
+                            <p className='uppercase leading-none text-[12px] xs:text-[14px] text-left truncate w-full' >
                                 {product.title}
                             </p>
-
-                                <p className='uppercase text-[12px] xs:text-[14px] 
-                                    absolute bottom-2 right-2 xs:right-4' >
-                                    {/* {`${product.productFeature.quantity}`} */}
-                                </p>
-                                <p className='uppercase text-[12px] xs:text-[14px] 
-                                    absolute bottom-2 right-2 xs:right-4' >
-                                    {`${product.price.currency}${product.price.value}`}
-                                </p>
-                            <div>
-                            </div>
+                            <p className='text-[12px] leading-4 text-left truncate w-full' >
+                                {product.productFeature.size}
+                            </p>
+                            <p className='text-[12px] text-left truncate w-full' >
+                                {product.productFeature.flavour}
+                            </p>
+                        </div>
+                        <div className='text-[12px] xs:text-[14px] xs:right-4'>
+                            <p>Qty: {`${product.quantity}`}</p>
+                            <p>{`${product.price.currency}${product.price.value}`}</p>
                         </div>
                     </div>
                 </div>
