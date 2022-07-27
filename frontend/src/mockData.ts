@@ -47,14 +47,14 @@ export const products = [
         rate: 4.7,
         feature: {
             type: 'Promo',
-            text: '15% OFF EVERYTHING'
+            text: 'Save an extra 30% off Best Sellers | Use code: EXTRA'
         },
         productFeature: {
             flavour: 'Double Chocolate',
             size: '2.4kg'
         },
-        brand: 'Shaky',
-        title: 'Whey Protein',
+        brand: 'Optimum Nutrition',
+        title: 'Gold Standard 100% Whey Protein',
         price: {
             value: 29.99,
             currency: '$'

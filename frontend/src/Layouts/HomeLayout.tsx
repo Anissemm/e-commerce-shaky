@@ -1,6 +1,6 @@
 import { Outlet } from "react-router-dom"
 import Header from "../components/Header"
-import Footer from '../components/Header/Footer'
+import Footer from '../components/Footer'
 import { Helmet } from "react-helmet"
 import { getCurrentPageTitle, persistor, useAppSelector } from "../store"
 import { motion } from 'framer-motion'

@@ -1,0 +1,3 @@
+.splide__slide.is-active .card {
+    transform: scale(1.05);
+}

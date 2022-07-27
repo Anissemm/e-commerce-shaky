@@ -11,6 +11,8 @@ interface InputProps extends HTMLAttributes<HTMLInputElement> {
     label: string
     type: 'text' | 'password' | 'number' | 'email'
     value?: string
+    bgColor?: string
+    height?: number | 'auto' | 'inherit' | '100%'
     name?: string
     placeholder?: string
     required?: boolean
@@ -27,6 +29,7 @@ const Input = forwardRef<{ focus: () => void } | null, InputProps>((
         label,
         placeholder = '',
         value,
+        bgColor = 'bg-melony-clay',
         name = '',
         id,
         type,
@@ -91,7 +94,7 @@ const Input = forwardRef<{ focus: () => void } | null, InputProps>((
                     setClicked(false)
                 }}
                 aria-label={label}
-                className={`relative -z[2] font-["Roboto_Condensed"] px-3 bg-melony-clay 
+                className={`relative -z[2] font-["Roboto_Condensed"] px-3 ${bgColor} 
                                 items-center justify-center rounded-2xl pb-1.5 transition duration-200 
                                 focus-within:shadow-[0_0_5px_#000] ${error ? style.error : style.inputWrapper}`}
             >
@@ -127,8 +130,8 @@ const Input = forwardRef<{ focus: () => void } | null, InputProps>((
                     onChange={onChange}
                     ref={inputRef}
                     placeholder={!focused ? placeholder : ''}
-                    className={`${style.input} font-[Roboto] text-[12px] pr-8 leading-none bg-transparent w-full border-white border-2text-gray-300 
-                    z-[0] text-gray-400 outline-none ${className}`}
+                    className={`${style.input} font-[Roboto] text-[12px] pr-8 leading-none bg-transparent w-full text-gray-300 
+                    z-[0] outline-none ${className}`}
                     type={showPassword ? 'text' : type}
                     aria-labelledby={id}
                     onBlur={(e: any) => {

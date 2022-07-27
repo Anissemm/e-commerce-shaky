@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 import { useMenuResponsive } from '../../hooks/useMenuResponsive'
 import { getHeaderZIndex, useAppSelector } from '../../store'
 import { getCurrentPageTitle } from '../../store/slices/pageSlice'
+import Heading from '../Heading'
 import TextHeaderBanner from '../TextBanner'
 import HeaderToolbar from './HeaderToolbar'
 import Menu from './Menu'
@@ -20,7 +21,7 @@ const Header = () => {
                 }
             }}
         >
-            {pageTitle.mount && <h1 className={`${pageTitle.show ? '' : 'sr-only'}`}>{pageTitle.value}</h1>}
+            {pageTitle.mount && <Heading level={1} className={`${pageTitle.show ? '' : '!sr-only'}`}>{pageTitle.value}</Heading>}
             {textBannerPlacement === 'top' && textBanner}
             <HeaderToolbar />
             <Menu />

@@ -13,6 +13,7 @@ interface uiSliceState {
     isSearchFiltersShown: boolean
     currentModalId: string | undefined | null
     headerZIndex: number
+    screenBreakpoint: null | string
 }
 
 const initialState: uiSliceState = {
@@ -25,7 +26,8 @@ const initialState: uiSliceState = {
     currentShownModalId: '',
     searchResultHeight: undefined,
     backgroundMotionValue: 0,
-    headerZIndex: 49
+    headerZIndex: 49,
+    screenBreakpoint: null
 }
 
 const uiSlice = createSlice({
@@ -72,6 +74,9 @@ const uiSlice = createSlice({
         },
         setHeaderZIndex(state, action: PayloadAction<number>) {
             state.headerZIndex = action.payload
+        },
+        setScreenSizeBreakpoint(state, action: PayloadAction<string | null>) {
+            state.screenBreakpoint = action.payload
         }
     }
 
@@ -86,6 +91,7 @@ export const {
     setSearchResultheight,
     setShownModalId,
     setBackgroundMotionValue,
+    setScreenSizeBreakpoint,
     setHeaderZIndex } = uiSlice.actions
 
 export const getMenuType = (state: RootState) => state.UI.menuType
@@ -97,3 +103,4 @@ export const getSearchResultHeight = (state: RootState) => state.UI.searchResult
 export const getCurrentShownModalId = (state: RootState) => state.UI.currentShownModalId
 export const getBackgroundMotionValue = (state: RootState) => state.UI.backgroundMotionValue
 export const getHeaderZIndex = (state: RootState) => state.UI.headerZIndex
+export const getScreenBreakpoint = (state: RootState) => state.UI.screenBreakpoint

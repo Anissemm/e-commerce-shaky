@@ -1,0 +1,23 @@
+.productCarousel .splide__pagination {
+  position: static;
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  align-items: center;
+}
+
+.productCarousel .splide__pagination__page {
+  background-color: #f2aa4c;
+  opacity: 0.5;
+  border-radius: none;
+  height: 6px;
+  width: 40px;
+  margin-right: 10px;
+  border-radius: 0;
+  box-shadow: 0 0 5px #000;
+  transition: all 300ms ease-in-out
+}
+
+.productCarousel .splide__pagination__page.is-active {
+  opacity: 1;
+}

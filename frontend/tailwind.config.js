@@ -25,6 +25,7 @@ module.exports = {
     // require('@tailwindcss/forms'),
     require('@tailwindcss/aspect-ratio'),
     require('tailwind-scrollbar'),
-    require('@tailwindcss/line-clamp')
+    require('@tailwindcss/line-clamp'),
+    require('tailwindcss-textshadow')
   ],
 }

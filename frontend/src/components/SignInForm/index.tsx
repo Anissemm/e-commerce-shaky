@@ -152,6 +152,11 @@ const SignInForm = () => {
               Sign in
             </Button>
           </div>
+          <div className='w-full flex items-center justify-center px-4 pb-2'>
+            <div className='flex-grow-1 w-full h-[2px] bg-fiorid rounded'></div>
+            <div className='flex-grow-0 text-fiorid text-lg px-2'>Or</div>
+            <div className='flex-grow-1 w-full h-[2px] bg-fiorid rounded'></div>
+          </div>
           <div className={`pb-5`}>
             <Button type="button" onClick={signInWithYandex} color='softBlue'>
               <span className='flex items-center justify-center gap-2'>

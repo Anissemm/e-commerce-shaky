@@ -14,7 +14,7 @@ const CartModal = () => {
           <div className='h-full overflow-y-auto max-h-[195px] xs:max-h-[225px] scrollbar-thin mx-auto pr-3'>
             <ul>
               {products?.map((product: any) => {
-                return (<li key={product.id}>
+                return (<li key={product._id}>
                   <ProductCard type='list' product={product} />
                 </li>)
 
