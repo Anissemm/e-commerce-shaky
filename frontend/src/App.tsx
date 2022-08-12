@@ -15,6 +15,7 @@ import PersistAuth from "./authorization/PersistAuth"
 import YandexSignIn from "./pages/Account/YandexSignIn"
 import HomeLayout from "./Layouts/HomeLayout"
 import PageLayout from "./Layouts/PageLayout"
+import Cart from "./pages/Cart"
 
 const App: React.FC = () => {
     const location = useLocation()
@@ -27,6 +28,7 @@ const App: React.FC = () => {
                         <Route index element={<Home />} />
                     </Route>
                     <Route element={<PageLayout />}>
+                        <Route path='cart' element={<Cart />} />
                         <Route path='account' element={<UserAuthLayout />}>
                             <Route index element={<SignInUp />} />
                             <Route path='email-verification' element={<EmailVerification />} />
@@ -42,6 +44,7 @@ const App: React.FC = () => {
                                 </Route>
                             </Route>
                         </Route>
+
                         <Route path='*' element={<Error />} />
                     </Route>
                 </Route>

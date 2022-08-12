@@ -101,12 +101,12 @@ const SignInForm = () => {
             <Input
               required
               label='Email'
-              type='text'
+              type='email'
               name='email'
               id='email'
               placeTooltip='top-start'
               error={signInForm.touched.email && typeof signInForm.errors.email === 'string' && signInForm.errors.email}
-              onChange={ signInForm.handleChange}
+              onChange={signInForm.handleChange}
               onBlur={signInForm.handleBlur}
               value={signInForm.values.email}
 

@@ -4,8 +4,9 @@ import { flushSync } from 'react-dom'
 import { ReactComponent as Eye } from '../../assets/svg/icons/eye_icon.svg'
 import style from './Input.module.css'
 import Tooltip from '../Tooltip'
+import { RefAttributes } from 'react'
 
-interface InputProps extends HTMLAttributes<HTMLInputElement> {
+interface InputProps extends RefAttributes<HTMLInputElement> {
     id: string
     className?: string
     label: string
@@ -18,6 +19,8 @@ interface InputProps extends HTMLAttributes<HTMLInputElement> {
     required?: boolean
     error?: null | undefined | boolean | string
     placeTooltip?: 'top-end' | 'top-start'
+    labeledBy?: string
+    // describedBy?: string
     hint?: string
     onFocus?: (e: any) => void
     onBlur?: (e: any) => void
@@ -32,6 +35,8 @@ const Input = forwardRef<{ focus: () => void } | null, InputProps>((
         bgColor = 'bg-melony-clay',
         name = '',
         id,
+        labeledBy = '',
+        // describedBy = '',
         type,
         onFocus,
         onBlur,
@@ -47,7 +52,6 @@ const Input = forwardRef<{ focus: () => void } | null, InputProps>((
     const [focused, setFocucsed] = useState(false)
     const [showPassword, setShowPassword] = useState(false)
     const [clicked, setClicked] = useState(false)
-    const [inputValue, setInputValue] = useState<string | undefined>('')
     const inputRef = useRef<null | HTMLInputElement>(null)
     const wrapperRef = useRef<null | HTMLDivElement>(null)
     const [showHint, setShowHint] = useState(false)
@@ -58,15 +62,6 @@ const Input = forwardRef<{ focus: () => void } | null, InputProps>((
             inputRef.current?.focus();
         }
     }))
-
-    useEffect(() => {
-        if (value) {
-            setInputValue(value)
-        } else {
-            setInputValue('')
-        }
-
-    }, [value])
 
     useEffect(() => {
         if (error) {
@@ -119,6 +114,7 @@ const Input = forwardRef<{ focus: () => void } | null, InputProps>((
                         <Eye className='w-5 pointer-events-none' />
                     </button>}
                 <motion.label
+                    id={`${id}-label`}
                     className={`${focused || clicked ? 'text-[14px]' : 'text-[12px]'} font-bold top-1 leading-none text-sandy-brown transiton duration-300
                      relative  z-[0]`}
                     htmlFor={id}>{`${required ? '*' : ''}${label}`}
@@ -126,14 +122,15 @@ const Input = forwardRef<{ focus: () => void } | null, InputProps>((
                 <input
                     autoComplete="new-password"
                     name={name}
-                    value={inputValue}
-                    onChange={onChange}
+                    value={value}
                     ref={inputRef}
                     placeholder={!focused ? placeholder : ''}
                     className={`${style.input} font-[Roboto] text-[12px] pr-8 leading-none bg-transparent w-full text-gray-300 
                     z-[0] outline-none ${className}`}
                     type={showPassword ? 'text' : type}
-                    aria-labelledby={id}
+                    aria-labelledby={`${labeledBy} ${id}-label`}
+                    // aria-describedBy={describdBy}
+                    onChange={onChange}
                     onBlur={(e: any) => {
                         if (typeof onBlur === 'function') {
                             onBlur(e)

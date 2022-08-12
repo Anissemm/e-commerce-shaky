@@ -37,9 +37,12 @@ const handleRefreshToken = async (req: Request, res: Response) => {
                 throw new ClientError(403, 'invalid-refresh-token')
             }
 
-            const newRefreshToken: string = jwt.sign({
+            const refreshToken: string = jwt.sign({
                 sub: user.id,
-            }, refreshSecret, { expiresIn: '14d' })
+            }, refreshSecret, { expiresIn: '14d' }) // to implement
+
+            // user.refreshToken = newRefreshToken
+            // await user.save()
 
             res.cookie('refreshToken', refreshToken, {
                 httpOnly: true,

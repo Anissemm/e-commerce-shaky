@@ -1,32 +1,34 @@
 import React, { HTMLAttributes, PropsWithChildren } from 'react'
-import Button from '../Button'
-import Input from '../Input'
+import SocialLinks from './SocialLinks'
+import FooterMenu from './FooterMenu'
+
+import NewsLetter from './NewsLetter'
+import PaymentMethods from './PaymentMethods'
+import Copyright from './Copyright'
+import AdditionalInfo from './AdditionalInfo'
+import FooterEmail from './FooterEmail'
 
 interface FooterProps extends HTMLAttributes<HTMLDivElement> {
     className: string
 }
 
+
 const Footer: React.FC<PropsWithChildren<FooterProps>> = ({ className, ...props }) => {
+
     return (
         <footer className={`mt-auto ${className}`} {...props} >
-            <div className='pt-14 bg-ebony-clay'>
-
-                <section>
-                    <div>
-                        <h4>Join Our Newsletter</h4>
-                        <form className='w-full'>
-                            <div className='relative max-w-[313px] mx-auto'>
-                                <div className='w-full'>
-                                    <Input type='email' id='newsletter-email' height={58} label='Email' bgColor='bg-[#14181D]' placeholder='Jhondoe@mail.com' />
-                                </div>
-                                <div className={`absolute h-full right-0.5 top-0 flex items-center justify-center`}>
-                                    <Button inline={true} className='font-[Oswald] rounded-[12px] font-medium uppercase px-2 py-4 text-[18px] leading-[18px]' type='submit'>Send</Button>
-                                </div>
-                            </div>
-                        </form>
+            <div className='bg-ebony-clay'>
+                <div className='pt-14 bg-ebony-clay px-6 max-w-[1440px] mx-auto' >
+                    <div className='flex items-start justify-start md:justify-between flex-wrap flex-col md:flex-row'>
+                        <div className='md:order-3 mb-11'><NewsLetter /></div>
+                        <div className='md:order-1 md:mr-10 md:flex-grow mb-4'><FooterMenu /></div>
+                        <div className='md:order-2 md:ml-0 md:mr-10 pb-5'><SocialLinks /></div>
                     </div>
-                </section>
-
+                    <FooterEmail />
+                </div>
+                <PaymentMethods />
+                <Copyright />
+                <AdditionalInfo />
             </div>
         </footer>
     )

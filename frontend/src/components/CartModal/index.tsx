@@ -4,8 +4,12 @@ import ModalBody from '../Modal/ModalBody'
 import ModalHeader from '../Modal/ModalHeader'
 import ProductCard from '../ProductCard'
 import { products } from '../../mockData'
+import { Navigate, useNavigate } from 'react-router-dom'
+import { toggleModal, useAppDispatch } from '../../store'
 
 const CartModal = () => {
+  const navigate = useNavigate()
+  const dispatch = useAppDispatch()
   return (
     <Modal justify='end' align='start' top={50} right={50} left={50} width={590} height={690} modalId='cart-modal'>
       <ModalHeader title='Your Order' />
@@ -31,8 +35,18 @@ const CartModal = () => {
             </div>
           </div>
           <div className='mt-14 xs:mt-6'>
-            <Button variant='outlined' className="!py-1">Continue Shopping</Button>
-            <Button className="py-2 mt-2 xs:mt-4">Go to cart</Button>
+            <Button
+              variant='outlined'
+              onClick={(e: any) => {
+                dispatch(toggleModal({ modalId: 'cart-modal', show: false }))
+              }}
+              className="!py-1"
+            >Continue Shopping
+            </Button>
+            <Button onClick={(e: any) => { 
+                dispatch(toggleModal({ modalId: 'cart-modal', show: false }))
+              navigate('/cart') 
+              }} className="py-2 mt-2 xs:mt-4">Go to cart</Button>
           </div>
         </div>
       </ModalBody>

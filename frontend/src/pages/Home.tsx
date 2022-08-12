@@ -48,6 +48,19 @@ const Home = () => {
         }}>
           <ProductCarousel products={products} withPagination />
         </HomeRow>
+        <HomeRow heading={{
+          level: 2,
+          text: 'New incomings',
+          extraBlock: <Link
+            className={`relative inline-block overflow-hidden font-[Oswald] text-sandy-brown text-[24px] xs:text-[28px] text-opacity-75 mr-4
+                        hover:text-opacity-100 transitionduration-300 after:bg-sandy-brown after:absolute after:block 7 after:right-full 
+                        after:bottom-0 after:h-[4px] after:w-full hover:after:right-0 after:transition-all after:duration-300`}
+            to='/placeholder'>
+            See All
+          </Link>
+        }}>
+          <ProductCarousel products={products} withPagination />
+        </HomeRow>
         <HomeRow role='banner'>
           <Banner backdropBlur />
         </HomeRow>

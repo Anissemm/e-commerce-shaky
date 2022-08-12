@@ -27,6 +27,8 @@ app.use(express.json())
 app.use(cookieParser())
 app.use(HostBaseUrlMiddleware)
 
+app.use(express.static())
+
 app.use('/api/v1', userRouter)
 app.use('/api/v1', productRouter)
 app.use('/api/v1', menuRouter)
