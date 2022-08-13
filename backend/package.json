@@ -8,7 +8,7 @@
     "copy-non-ts": "copyfiles -f \"./src/templates/**.ejs\" ./dist/templates",
     "deleteAndSeed": "cross-env DELETE=true node --experimental-specifier-resolution=node --loader ts-node/esm ./src/seederScript.ts",
     "seed": "cross-env DELETE=false node --experimental-specifier-resolution=node --loader ts-node/esm ./src/seederScript.ts",
-    "dev": "nodemon"
+    "dev": "nodemon ./src/index.ts"
   },
   "type": "module",
   "main": "./dist/index.js",

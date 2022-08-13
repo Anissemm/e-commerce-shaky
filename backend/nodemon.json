@@ -1,6 +1,7 @@
 {
-    "watch": ["./**/*.ts"],
-    "ext": ".ts,.js",
-    "ignore": [],
-    "exec": "cross-env MODE=DEVELOPMENT node --experimental-specifier-resolution=node --loader ts-node/esm ./src/index.ts"
+  "watch": ["./src/**/*.ts"],
+  "ignore": [],
+  "execMap": {
+    "ts": "cross-env MODE=DEVELOPMENT node --inspect=127.0.0.1:9229 --nolazy --loader ts-node/esm" 
   }
+}

@@ -1,19 +1,20 @@
 {
   "ts-node": {
     "transpileOnly": true,
-    "esm": true
+    "esm": true,
+    "experimentalSpecifierResolution": "node"
   },
   "include": [
-    "src",
-    "src/@types"
+    "./src",
+    "./src/@types"
   ],
   "compilerOptions": {
     /* Visit https://aka.ms/tsconfig to read more about this file */
     "typeRoots": [
-      "src/@types",
-      "node_modules/@types",
+      "./src/@types",
+      "./node_modules/@types",
     ],  
-    "target": "es2017",
+    "target": "ES2020",
     "moduleDetection": "auto",
     "newLine": "lf",
     "module": "ESNext",
